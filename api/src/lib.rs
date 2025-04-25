@@ -6,3 +6,8 @@ use dioxus::prelude::*;
 pub async fn echo(input: String) -> Result<String, ServerFnError> {
     Ok(input)
 }
+
+#[server(Recipes)]
+pub async fn recipes() -> Result<String, ServerFnError> {
+    Ok("recipes".to_string())
+}
