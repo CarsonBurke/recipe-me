@@ -1,0 +1,165 @@
+* {
+    margin: unset;
+    padding: unset;
+    box-sizing: content-box;
+    outline: unset;
+    font-size: unset;
+    text-decoration: unset;
+    color: unset;
+}
+
+body {
+    color: #ffffff;
+    font-family: 'sans-serif', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden,
+    --bg1:rgb(30, 34, 45);
+    --bg2:rgb(15, 17, 22);
+    --bg3:rgb(12, 13, 18);
+    --spacingXSmall: 2px;
+    --spacingSmall: 4px;
+    --spacingMedium: 8px;
+    --spacingLarge: 16px;
+    --spacingXLarge: 32px;
+    --spacingXXLarge: 64px;
+    /* Font */
+    --textXSmall: 12px;
+    --textSmall: 14px;
+    --textMedium: 16px;
+    --textLarge: 20px;
+    --textXLarge: 24px;
+    --textXXLarge: 32px;
+    /*  */
+    --defaultBorderRadius: 6px;
+    --defaultTransitionTime: 0.2s;
+    /*  */
+    background-color: var(--bg1);
+}
+
+.bg1 {
+    background-color: var(--bg1);
+}
+
+.bg2 {
+    background-color: var(--bg2);
+}
+
+.bg3 {
+    background-color: var(--bg3);
+}
+
+.text-weak {
+    color: lightslategray;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.centerRow {
+    justify-content: center;
+}
+
+.centerColumn {
+    align-items: center;
+}
+
+.gapXSmall {
+    gap: var(--spacingXSmall)
+}
+
+.gapSmall {
+    gap: var(--spacingSmall)
+}
+
+.gapMedium {
+    gap: var(--spacingMedium)
+}
+
+.gapLarge {
+    gap: var(--spacingLarge)
+}
+
+.gapXLarge {
+    gap: var(--spacingXLarge)
+}
+
+.gapXXLarge {
+    gap: var(--spacingXXLarge)
+}
+
+.paddingXSmall {
+    padding: var(--spacingXSmall)
+}
+
+.paddingSmall {
+    padding: var(--spacingSmall)
+}
+
+.paddingMedium {
+    padding: var(--spacingMedium)
+}
+
+.paddingLarge {
+    padding: var(--spacingLarge)
+}
+
+.paddingXLarge {
+    padding: var(--spacingXLarge)
+}
+
+.paddingXXLarge {
+    padding: var(--spacingXXLarge)
+}
+
+.paddingSectionSide {
+    padding: 0 5vw;
+}
+
+.paddingSection {
+    padding: var(--spacingLarge) 5vw;
+}
+
+.textXSmall {
+    font-size: var(--textXSmall);
+}
+
+.textSmall {
+    font-size: var(--textSmall);
+}
+
+.textMedium {
+    font-size: var(--textMedium);
+}
+
+.textLarge {
+    font-size: var(--textLarge);
+}
+
+.textXLarge {
+    font-size: var(--textXLarge);
+}
+
+.textXXLarge {
+    font-size: var(--textXXLarge);
+}
+
+.button {
+    padding: var(--spacingMedium) var(--spacingLarge);
+    border-radius: var(--defaultBorderRadius);
+    transition: all var(--defaultTransitionTime);
+    font-size: var(--textMedium);
+}
+
+.buttonBg1 {
+    background-color: var(--bg1);
+}
+
+.buttonBg1:hover {
+    background-color: var(--bg2);
+}
