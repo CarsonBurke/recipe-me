@@ -1,3 +1,20 @@
+use serde::{Deserialize, Serialize};
+
+// #[derive(Serialize, Deserialize)]
+// pub struct Recipe {
+//     pub id: i32,
+//     pub name: String,
+//     pub description: String,
+//     pub instructions: String,
+//     pub ingredients: Vec<String>,
+//     pub views: i32,
+//     pub ratings: i32,
+//     pub total_rating: i32,
+//     pub cousine_id: CousineId,
+//     pub recipe_types: Vec<RecipeType>
+// }
+
+#[derive(Serialize, Deserialize)]
 pub enum CousineId {
     Italian,
     Mexican,
@@ -14,6 +31,7 @@ impl ToString for CousineId {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum RecipeType {
     Breakfast,
     Lunch,
