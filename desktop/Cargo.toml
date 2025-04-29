@@ -11,3 +11,4 @@ ui = { workspace = true }
 default = []
 desktop = ["dioxus/desktop"]
 server = ["dioxus/server"]
+web = ["dioxus/web"]

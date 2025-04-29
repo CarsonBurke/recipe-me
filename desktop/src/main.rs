@@ -1,51 +1,52 @@
 use dioxus::prelude::*;
 
-use ui::Navbar;
-use views::{Blog, Home};
+use ui::{views::app::App};
 
 mod views;
-
-#[derive(Debug, Clone, Routable, PartialEq)]
-#[rustfmt::skip]
-enum Route {
-    #[layout(DesktopNavbar)]
-    #[route("/")]
-    Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
-}
 
 fn main() {
     dioxus::launch(App);
 }
 
-#[component]
-fn App() -> Element {
-    // Build cool things ✌️
+// use dioxus::prelude::*;
 
-    rsx! {
-        // Global app resources
+// use views::{Blog, Home};
 
-        Router::<Route> {}
-    }
-}
+// mod views;
 
-/// A desktop-specific Router around the shared `Navbar` component
-/// which allows us to use the desktop-specific `Route` enum.
-#[component]
-fn DesktopNavbar() -> Element {
-    rsx! {
-        Navbar {
-            Link {
-                to: Route::Home {},
-                "Home"
-            }
-            Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
-            }
-        }
+// fn main() {
+//     dioxus::launch(App);
+// }
 
-        Outlet::<Route> {}
-    }
-}
+// #[derive(Debug, Clone, Routable, PartialEq)]
+// #[rustfmt::skip]
+// pub enum Route {
+//     #[layout(WebNavbar)]
+//     #[route("/")]
+//     Home {},
+//     #[route("/blog/:id")]
+//     Blog { id: i32 },
+// }
+
+// #[component]
+// pub fn App() -> Element {
+
+//     rsx! {
+//         // Global app resources
+
+//         Router::<Route> {}
+//     }
+// }
+
+// /// A web-specific Router around the shared `Navbar` component
+// /// which allows us to use the web-specific `Route` enum.
+// #[component]
+// fn WebNavbar() -> Element {
+//     rsx! {
+//         div {
+//             "Hi"
+//         }
+
+//         Outlet::<Route> {}
+//     }
+// }
