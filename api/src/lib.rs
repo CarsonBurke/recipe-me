@@ -3,6 +3,8 @@ use dioxus::prelude::*;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, EntityTrait};
 // use sqlx::{postgres::{PgConnectOptions, PgPool, PgPoolOptions, PgRow}, Connection, PgConnection};
 
+use recipes::init_db;
+
 use self::entities::recipe;
 
 mod data;
@@ -18,17 +20,19 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
     Ok(input)
 }
 
-pub async fn db() -> DatabaseConnection {
-    let opt = ConnectOptions::new("protocol://username:password@host/database");
-    let db = Database::connect(opt).await.unwrap();
-    db
-}
+// pub async fn db() -> DatabaseConnection {
+//     let opt = ConnectOptions::new("protocol://username:password@host/database");
+//     let db = Database::connect(opt).await.unwrap();
+//     db
+// }
 
 #[server(Recipes)]
 pub async fn get_recipes() -> Result<Vec<recipe::Model>, ServerFnError> {
-    let db = db().await;
+    let db = init_db().await.unwrap();
     let recipes = recipe::Entity::find().all(&db).await.unwrap();
     Ok(recipes)
+
+    // Ok(vec![])
 }
 
 //#[server(Recipes)]
