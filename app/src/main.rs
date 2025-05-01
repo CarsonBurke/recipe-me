@@ -1,14 +1,27 @@
+#![allow(unused)]
+
+use components::Navbar;
 use dioxus::prelude::*;
 
-use crate::components::navbar::Navbar;
+mod components;
+mod views;
+// #[cfg(feature = "server")]
+// mod server;
 
-use crate::views::home::Home;
-use crate::views::blog::Blog;
-use crate::views::recipe::Recipe;
-use crate::views::recipes::Recipes;
+use views::{Home, Blog, recipe::{RecipePage, Recipes}};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
+
+fn main() {
+    // #[cfg(feature = "server")]
+    // tokio::runtime::Runtime::new()
+    //     .unwrap()
+    //     .block_on(server::launch_server());
+    
+    // #[cfg(not(feature = "server"))]
+    dioxus::launch(App);
+}
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -21,7 +34,7 @@ pub enum Route {
     #[route("/recipes")]
     Recipes {},
     #[route("/recipe/:id")]
-    Recipe { id: i32 },
+    RecipePage { id: i32 },
 }
 
 #[component]
@@ -48,11 +61,11 @@ fn WebNavbar() -> Element {
                 to: Route::Home {},
                 "Home"
             }
-            /* Link {
+            Link {
                 class: "buttonBg3 button",
                 to: Route::Recipes {},
                 "Recipes"
-            } */
+            }
             Link {
                 class: "buttonBg3 button",
                 to: Route::Blog { id: 1 },

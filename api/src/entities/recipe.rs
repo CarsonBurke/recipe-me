@@ -4,46 +4,132 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "recipe")]
+#[sea_orm(table_name = "Recipe")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub name: String,
-    #[sea_orm(column_type = "Text", nullable)]
+    #[sea_orm(column_type = "Text")]
     pub description: String,
-    #[sea_orm(column_type = "Text", nullable)]
+    #[sea_orm(column_type = "Text")]
     pub instructions: String,
-    pub ingredients: Option<Vec<String>>,
+    pub summary: String,
+    #[sea_orm(column_type = "Text")]
+    pub ingredients: String,
     pub views: i32,
     pub ratings: i32,
     pub total_rating: i32,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub source: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::recipecousine::Entity")]
-    Recipecousine,
-    #[sea_orm(has_many = "super::recipeingredient::Entity")]
-    Recipeingredient,
-    #[sea_orm(has_many = "super::recipetype::Entity")]
-    Recipetype,
+    #[sea_orm(has_many = "super::comment::Entity")]
+    Comment,
+    #[sea_orm(has_many = "super::recipe_collection_recipe::Entity")]
+    RecipeCollectionRecipe,
+    #[sea_orm(has_many = "super::recipe_cousine::Entity")]
+    RecipeCousine,
+    #[sea_orm(has_many = "super::recipe_diet::Entity")]
+    RecipeDiet,
+    #[sea_orm(has_many = "super::recipe_ingredient::Entity")]
+    RecipeIngredient,
+    #[sea_orm(has_many = "super::recipe_meal::Entity")]
+    RecipeMeal,
 }
 
-impl Related<super::recipecousine::Entity> for Entity {
+impl Related<super::comment::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Recipecousine.def()
+        Relation::Comment.def()
     }
 }
 
-impl Related<super::recipeingredient::Entity> for Entity {
+impl Related<super::recipe_collection_recipe::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Recipeingredient.def()
+        Relation::RecipeCollectionRecipe.def()
     }
 }
 
-impl Related<super::recipetype::Entity> for Entity {
+impl Related<super::recipe_cousine::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Recipetype.def()
+        Relation::RecipeCousine.def()
+    }
+}
+
+impl Related<super::recipe_diet::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::RecipeDiet.def()
+    }
+}
+
+impl Related<super::recipe_ingredient::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::RecipeIngredient.def()
+    }
+}
+
+impl Related<super::recipe_meal::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::RecipeMeal.def()
+    }
+}
+
+impl Related<super::cousine_name::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_cousine::Relation::CousineName.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::recipe_cousine::Relation::Recipe.def().rev())
+    }
+}
+
+impl Related<super::diet_name::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_diet::Relation::DietName.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::recipe_diet::Relation::Recipe.def().rev())
+    }
+}
+
+impl Related<super::ingredient_name::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_ingredient::Relation::IngredientName.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::recipe_ingredient::Relation::Recipe.def().rev())
+    }
+}
+
+impl Related<super::meal_name::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_meal::Relation::MealName.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::recipe_meal::Relation::Recipe.def().rev())
+    }
+}
+
+impl Related<super::recipe_collection::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_collection_recipe::Relation::RecipeCollection.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(
+            super::recipe_collection_recipe::Relation::Recipe
+                .def()
+                .rev(),
+        )
+    }
+}
+
+impl Related<super::user::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::comment::Relation::User.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::comment::Relation::Recipe.def().rev())
     }
 }
 

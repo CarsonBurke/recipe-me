@@ -35,6 +35,10 @@ body {
     /*  */
     --defaultBorderRadius: 6px;
     --defaultTransitionTime: 0.2s;
+
+    /* Specifics */
+    --navbarHeight: 60px;
+
     /*  */
     background-color: var(--bg1);
 }
@@ -51,8 +55,36 @@ body {
     background-color: var(--bg3);
 }
 
+.bg4 {
+    background-color: var(--bg4);
+}
+
+.borderBg1 {
+    border: 2px solid var(--bg1);
+}
+
+.borderBg2 {
+    border: 2px solid var(--bg2);
+}
+
+.borderBg3 {
+    border: 2px solid var(--bg3);
+}
+
+.borderBg4 {
+    border: 2px solid var(--bg4);
+}
+
+.round {
+    border-radius: var(--defaultBorderRadius);
+}
+
 .text-weak {
     color: lightslategray;
+}
+
+.flexWrap {
+    flex-wrap: wrap;
 }
 
 .row {
@@ -185,3 +217,28 @@ body {
     background-color: var(--bg4);
 }
 
+.main {
+    display: flex;
+    flex-direction: column;
+    padding: var(--navbarHeight) 0;
+    gap: var(--spacingLarge);
+}
+
+.section {
+    padding-left: 5vw;
+    padding-right: 5vw;
+    gap: var(--spacingLarge);
+}
+
+.sectionImage {
+    width: 70%;
+    min-height: 500px;
+    max-width: 1920px;
+    max-height: 1080px;
+    max-height: 60vh;
+}
+
+.pill {
+    border-radius: 1000px;
+    padding: var(--spacingSmall) var(--spacingLarge);
+}

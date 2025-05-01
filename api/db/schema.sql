@@ -1,150 +1,90 @@
-CREATE TABLE User (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS User (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Recipe (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Recipe (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    description TEXT,
-    instructions TEXT,
-    ingredients TEXT[],
-    views INTEGER DEFAULT 0,
-    ratings INTEGER DEFAULT 0,
-    total_rating INTEGER DEFAULT 0,
-    cousine_id INTEGER
+    description TEXT NOT NULL,
+    instructions TEXT NOT NULL,
+    summary VARCHAR(255) NOT NULL,
+    ingredients TEXT NOT NULL,
+    views INTEGER DEFAULT 0 NOT NULL,
+    ratings INTEGER DEFAULT 0 NOT NULL,
+    total_rating INTEGER DEFAULT 0 NOT NULL,
+    -- The URL where the recipe came from. May not have a source
+    source TEXT
 );
 
-CREATE TABLE RecipeType (
-    id SERIAL,
-    recipe_id INTEGER REFERENCES Recipe(id),
-    meal_id INTEGER NOT NULL,
-    PRIMARY KEY (id, recipe_id)
+CREATE TABLE IF NOT EXISTS RecipeMeal (
+    recipe_id INTEGER REFERENCES Recipe(id) NOT NULL,
+    meal_id INTEGER NOT NULL REFERENCES MealName(id),
+    PRIMARY KEY (recipe_id, meal_id)
 );  
 
-CREATE TABLE RecipeIngredient (
-    recipe_id INTEGER REFERENCES Recipe(id),
-    ingredient_id INTEGER NOT NULL,
-    ingredient_count INTEGER,
+CREATE TABLE IF NOT EXISTS MealName (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS RecipeIngredient (
+    recipe_id INTEGER REFERENCES Recipe(id) NOT NULL,
+    ingredient_id INTEGER NOT NULL REFERENCES IngredientName(id),
+    -- I forgot what this does or if it is even used
+    ingredient_count INTEGER, 
     amount INTEGER,
     description VARCHAR(255),
     PRIMARY KEY (ingredient_id, recipe_id)
 );
 
 -- Map many ingredients to one name
-CREATE TABLE IngredientName (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS IngredientName (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE RecipeCousine (
-    id SERIAL,
-    recipe_id INTEGER REFERENCES Recipe(id),
-    cousine_id INTEGER NOT NULL,
-    PRIMARY KEY (id, recipe_id)
+CREATE TABLE IF NOT EXISTS RecipeCousine (
+    recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
+    cousine_id INTEGER NOT NULL REFERENCES CousineName(id),
+    PRIMARY KEY (recipe_id, cousine_id)
 );
 
-CREATE TABLE Comment (
-    user_id INTEGER REFERENCES User(id),
-    recipe_id INTEGER REFERENCES Recipe(id),
-    comment TEXT,
-    rating INTEGER,
+CREATE TABLE IF NOT EXISTS CousineName (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Comment (
+    user_id INTEGER NOT NULL REFERENCES User(id),
+    recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
+    comment TEXT NOT NULL,
+    rating INTEGER NOT NULL,
     PRIMARY KEY (user_id, recipe_id)
 );
 
-CREATE TABLE RecipeCollection (
-    id SERIAL,
+CREATE TABLE IF NOT EXISTS RecipeCollection (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     user_id INTEGER REFERENCES User(id),
-    collection_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id, user_id)
+    collection_name VARCHAR(255) NOT NULL
 );
 
 -- Map many recipes to one collection
-CREATE TABLE RecipeCollectionRecipe (
-    recipe_id INTEGER REFERENCES Recipe(id),
-    collection_id INTEGER REFERENCES RecipeCollection(id),
+CREATE TABLE IF NOT EXISTS RecipeCollectionRecipe (
+    recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
+    collection_id INTEGER NOT NULL REFERENCES RecipeCollection(id),
     PRIMARY KEY (recipe_id, collection_id)
 );
 
+CREATE TABLE IF NOT EXISTS RecipeDiet (
+    recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
+    diet_id INTEGER NOT NULL REFERENCES DietName(id),
+    PRIMARY KEY (recipe_id, diet_id)
+);
 
--- CREATE TABLE Recipe (
---     PRIMARY KEY id AUTO_INCREMENT,
---     name: string,
---     description: string,
---     instructions: string,
---     ingredients: string[],
---     views: int,
---     ratings: int,
---     total_rating: int,
---     cousine_id: int
--- );
-
--- CREATE TABLE RecipeType (
---     id AUTO_INCREMENT,
---     recipe_id: int,
---     FOREIGN KEY recipe_id REFERENCES Recipe(id),
---     PRIMARY KEY (id, recipe_id),
---     meal_id: int
--- );  
-
--- CREATE TABLE RecipeIngredient (
---     ingredient_id,
---     recipe_id: int,
---     FOREIGN KEY recipe_id REFERENCES Recipe(id),
---     PRIMARY KEY (ingredient_id, recipe_id),
---     ingredient_id: int,
---     ingredient_count: int,
---     amount: int,
---     -- For example: "for garnish"
---     description: string 
--- );
-
--- -- Map many ingredients to one name
--- CREATE TABLE IngredientName (
---     PRIMARY KEY id AUTO_INCREMENT,
---     name: string
--- );
-
--- CREATE TABLE RecipeCousine (
---     id AUTO_INCREMENT,
---     recipe_id: int,
---     FOREIGN KEY recipe_id REFERENCES Recipe(id),
---     PRIMARY KEY (id, recipe_id),
---     cousine_id: int,
--- );
-
--- CREATE TABLE Comment (
---     user_id int,
---     FOREIGN KEY user_id,
---     recipe_id: int,
---     FOREIGN KEY recipe_id REFERENCES Recipe(id),
---     PRIMARY KEY (user_id, recipe_id),
---     comment: string,
---     rating: int
--- );
-
--- CREATE TABLE RecipeCollection (
---     id AUTO_INCREMENT,
---     user_id: int,
---     FOREIGN KEY user_id, REFERENCES User(id),
---     PRIMARY KEY (id, user_id),
---     collection_name: string
--- );
-
--- -- Map many recipes to one collection
--- CREATE TABLE RecipeCollectionRecipe (
---     recipe_id: int,
---     collection_id: int,
---     PRIMARY KEY (recipe_id, collection_id),
---     FOREIGN KEY collection_id REFERENCES RecipeCollection(id),
---     FOREIGN KEY recipe_id REFERENCES Recipe(id),
--- );
-
--- CREATE TABLE User (
---     PRIMARY KEY id AUTO_INCREMENT,
---     username: string,
---     email: string,
---     password: string
--- );
+CREATE TABLE IF NOT EXISTS DietName (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL
+);

@@ -1,0 +1,17 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dioxus = { workspace = true, features = ["router", "fullstack"] }
+tokio = { version = "1", features = ["full"], optional = true }
+axum = { version = "0.8.4", optional = true }
+api = { workspace = true }
+
+[features]
+default = []
+web = ["dioxus/web"]
+mobile = ["dioxus/mobile"]
+desktop = ["dioxus/desktop"]
+server = ["dioxus/server", "dep:tokio", "dep:axum"]

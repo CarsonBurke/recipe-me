@@ -1,12 +1,14 @@
-use sea_orm::{ConnectionTrait, Database, DatabaseConnection, DbBackend, DbErr, Statement};
+pub mod sample_data;
+
+use sea_orm::{ConnectionTrait, Database, DatabaseBackend, DatabaseConnection, DbBackend, DbErr, Statement};
 
 use crate::{constants::DB_NAME, secrets::DATABASE_URL};
 
-pub async fn init_db() -> Result<DatabaseConnection, DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
-
-    let conn = match db.get_database_backend() {
-        DbBackend::Postgres => {
+pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
+    let db = Database::connect(DATABASE_URL).await;
+    db
+    /* let conn = match db.get_database_backend() {
+        /* DbBackend::Postgres => {
             /* db.execute(Statement::from_string(
                 db.get_database_backend(),
                 format!("DROP DATABASE IF EXISTS \"{}\";", DB_NAME),
@@ -20,11 +22,14 @@ pub async fn init_db() -> Result<DatabaseConnection, DbErr> {
         
              let url = format!("{}/{}", DATABASE_URL, DB_NAME);
              Database::connect(&url).await?
+        } */
+        DatabaseBackend::Sqlite => {
+            Database::connect(&url).await?;
         }
         _ => {
             panic!("Unsupported database backend");
         }
     };
 
-    Ok(conn)
+    Ok(conn) */
 }

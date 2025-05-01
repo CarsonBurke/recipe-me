@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
-use ui::views::app::Route;
+
+use crate::Route;
 
 const BLOG_CSS: Asset = asset!("/assets/blog.css");
 

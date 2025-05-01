@@ -1,0 +1,14 @@
+.recipe_preview {
+    max-width: 280px;
+    justify-content: space-between;
+}
+
+.recipe_preview:hover {
+
+}
+
+.recipe_image {
+    background-color: var(--bg2);
+    width: 280px;
+    height: 200px;
+}

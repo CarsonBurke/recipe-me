@@ -1,8 +1,11 @@
 use dioxus::prelude::*;
 
 #[component]
-pub fn RecipePreview(id: i32) -> Element {
+pub fn RecipePreview(name: String) -> Element {
     rsx! {
-        "Recipe"
+        div {
+            class: "row bg3 paddingMedium",
+            {name}
+        }
     }
 }

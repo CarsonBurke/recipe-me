@@ -2,8 +2,16 @@
 
 pub mod prelude;
 
-pub mod ingredientname;
+pub mod comment;
+pub mod cousine_name;
+pub mod diet_name;
+pub mod ingredient_name;
+pub mod meal_name;
 pub mod recipe;
-pub mod recipecousine;
-pub mod recipeingredient;
-pub mod recipetype;
+pub mod recipe_collection;
+pub mod recipe_collection_recipe;
+pub mod recipe_cousine;
+pub mod recipe_diet;
+pub mod recipe_ingredient;
+pub mod recipe_meal;
+pub mod user;
