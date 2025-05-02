@@ -1,7 +1,7 @@
 use api::{get_recipe, get_recipe_cousines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals, get_recipes};
 use dioxus::{prelude::*, logger::tracing::{info}};
 
-use crate::components::RecipePreview;
+use crate::{components::RecipePreview, views::recipe::recipes::RecipeFilterParams, Route};
 
 #[component]
 pub fn RecipePage(id: i32) -> Element {
@@ -87,7 +87,14 @@ pub fn RecipePage(id: i32) -> Element {
                     div {
                         class: "row gapSmall",
                         for cousine in cousines_ref {
-                            div {
+                            {info!("Cousine: {:#?}", cousine);}
+                            Link {
+                                to: Route::Recipes { filter_params: RecipeFilterParams {
+                                    cousine_id: Some(cousine.id),
+                                    limit: Some(0),
+                                    page_offset: 1,
+                                    /* ..Default::default() */
+                                }},
                                 class: "pill textXSmall button buttonBg2",
                                 {cousine.name.clone()}
                             }

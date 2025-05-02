@@ -10,10 +10,10 @@ pub fn RecipePreview(id: i32, name: String, summary: String, source: Option<Stri
         document::Link { rel: "stylesheet", href: CSS }
 
         Link {
-            class: "recipe_preview column paddingMedium round borderBg2 button buttonBg1 gapMedium",
+            class: "recipe_preview column round borderBg2 button buttonBg1 gapMedium",
             to: Route::RecipePage { id, },
             div {
-                class: "column gapSmall",
+                class: "column gapSmall paddingSmall",
                 h2 {
                     class: "textMedium",
                     "{name}"

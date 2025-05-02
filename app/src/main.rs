@@ -8,7 +8,7 @@ mod views;
 // #[cfg(feature = "server")]
 // mod server;
 
-use views::{Home, Blog, recipe::{RecipePage, Recipes}};
+use views::{recipe::{recipes::RecipeFilterParams, RecipePage, Recipes}, Blog, Home};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
@@ -32,7 +32,7 @@ pub enum Route {
     #[route("/blog/:id")]
     Blog { id: i32 },
     #[route("/recipes")]
-    Recipes {},
+    Recipes { filter_params: RecipeFilterParams },
     #[route("/recipe/:id")]
     RecipePage { id: i32 },
 }
@@ -63,7 +63,7 @@ fn WebNavbar() -> Element {
             }
             Link {
                 class: "buttonBg3 button",
-                to: Route::Recipes {},
+                to: Route::Recipes { filter_params: RecipeFilterParams::default() },
                 "Recipes"
             }
             Link {
