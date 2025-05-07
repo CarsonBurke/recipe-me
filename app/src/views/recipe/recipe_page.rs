@@ -49,13 +49,19 @@ pub fn RecipePage(id: i32) -> Element {
 
     let rating = recipe_ref.total_rating as f32 / recipe_ref.ratings as f32;
 
+    let mut ingredients_mult = use_signal(|| 1);
+
+    use_effect(move || {
+        let mult = ingredients_mult();
+    });
+
     rsx! {
         main {
             class: "main",
             section {
                 class: "section column gapMedium",
                 div {
-                    class: "column gapMedium borderBg2 round paddingLarge",
+                    class: "column gapLarge borderBg2 round paddingLarge",
                     div {
                         class: "column centerRow gapSmall",
                         div {
@@ -145,11 +151,31 @@ pub fn RecipePage(id: i32) -> Element {
                         class: "column gapMedium",
                         h2 { class: "textLarge",  "Ingredients"}
                         div {
+                            class: "row gapLarge centerColumn widthFit",
+                            h3 {
+                                class: "textSmall",
+                                {format!("{} Servings", ingredients_mult())}
+                            }
+                            div {
+                                class: "row gapSmall round bg2",
+                                button {
+                                    class: "button buttonBg2",
+                                    onclick: move |_| ingredients_mult.set((ingredients_mult() + 1).min(20)),
+                                    "+"
+                                }
+                                button {
+                                    class: "button buttonBg2",
+                                    onclick: move |_| ingredients_mult.set((ingredients_mult() - 1).max(1)),
+                                    "-"
+                                }
+                            }
+                        }
+                        div {
                             class: "column gapSmall",
                             for ingredient in ingredients_ref {
                                 p {
                                     class: "textSmall",
-                                    {format!("{} {} {}", ingredient.amount.clone().to_string(), ingredient.description.clone(), ingredient.name.clone())}
+                                    {format!("{} {} {}", (ingredient.amount.clone() * ingredients_mult()).to_string(), ingredient.description.clone(), ingredient.name.clone())}
                                 }
                             }
                         }

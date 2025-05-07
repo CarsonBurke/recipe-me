@@ -5,6 +5,8 @@
     outline: unset;
     font-size: unset;
     text-decoration: unset;
+    border: unset;
+    width: unset;
     color: unset;
 }
 
@@ -240,4 +242,8 @@ body {
 .pill {
     border-radius: 1000px;
     padding: var(--spacingSmall) var(--spacingLarge);
+}
+
+.widthFit {
+    width: "fit-content";
 }
