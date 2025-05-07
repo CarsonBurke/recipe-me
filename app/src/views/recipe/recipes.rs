@@ -2,7 +2,7 @@ use api::{FilteredRecipesParams, get_filtered_recipes, get_recipes};
 use dioxus::{logger::tracing::info, prelude::*};
 use serde::{Deserialize, Serialize};
 
-use crate::{components::RecipePreview, Route};
+use crate::{components::{filtered_recipes::{self, FilteredRecipes}, RecipePreview}, Route};
 
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct RecipeFilterParams {
@@ -68,41 +68,21 @@ impl std::fmt::Display for Query {
 #[component]
 pub fn Recipes(query: Query) -> Element {
     let route = use_route::<Route>();
-    info!("Route {:#?}", route);
-
-    /* info!("Client filter params {:#?}", filter_params); */
-    let recipes = use_server_future(move || {
-        /* let params =
-            <RecipeFilterParams as Clone>::clone(&filter_params).into_filtered_recipes_params(); */
-        let params = FilteredRecipesParams {
-            cousine_id: query.cousine_id.clone(),
-            diet_id: query.diet_id.clone(),
-            ingredient_id: query.ingredient_id.clone(),
-            meal_id: query.meal_id.clone(),
-            limit: query.limit.clone().unwrap_or(50),
-            ..Default::default()
-        };
-        async move {
-            get_filtered_recipes(params)
-            .await
-            .unwrap()
-        }
-    })?;
-    let recipes_read = recipes.read();
 
     rsx! {
         main {
             class: "main column gapMedium",
             section {
                 class: "section column",
-                h1 { class: "textLarge", "Recipes" }
+                h1 { class: "textXLarge", "Recipes" }
 
-                div {
-                    class: "row gapMedium centerRow flexWrap",
-                    for recipe in recipes_read.as_ref().unwrap().iter() {
-                        // info!("Recipe: {:#?} id {}", recipe, recipe.id.clone());
-
-                        RecipePreview { id: recipe.id, name: recipe.name.clone(), summary: recipe.summary.clone(), source: recipe.source.clone() }
+                FilteredRecipes {  
+                    params: filtered_recipes::Params {
+                        cousine_id: query.cousine_id,
+                        diet_id: query.diet_id,
+                        ingredient_id: query.ingredient_id,
+                        meal_id: query.meal_id,
+                        limit: query.limit
                     }
                 }
             }

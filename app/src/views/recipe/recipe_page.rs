@@ -5,7 +5,12 @@ use api::{
 use dioxus::{logger::tracing::info, prelude::*};
 
 use crate::{
-    components::{RatingStatic, RecipePreview}, views::recipe::recipes::{self, RecipeFilterParams}, Route
+    Route,
+    components::{
+        RatingStatic, RecipePreview,
+        filtered_recipes::{self, FilteredRecipes},
+    },
+    views::recipe::recipes::{self, RecipeFilterParams},
 };
 
 #[component]
@@ -49,112 +54,161 @@ pub fn RecipePage(id: i32) -> Element {
 
     rsx! {
         main {
-            class: "main centerColumn",
+            class: "main",
             section {
                 class: "section column gapMedium",
                 div {
-                    class: "column centerRow gapSmall",
+                    class: "column gapMedium bg2 round paddingLarge",
                     div {
-                        class: "row gapLarge",
-                        h1 { class: "textLarge", {recipe_ref.name.clone()} }
+                        class: "column centerRow gapSmall",
                         div {
-                            class: "row centerColumn gapMedium",
-                            RatingStatic {  
-                                rating
+                            class: "row gapLarge",
+                            h1 { class: "textLarge", {recipe_ref.name.clone()} }
+                            div {
+                                class: "row centerColumn gapMedium",
+                                RatingStatic {
+                                    rating
+                                }
+                                p { class: "textSmall textWeak", {format!("{rating:.1} / 5")} }
                             }
-                            p { class: "textSmall textWeak", {format!("{rating:.1} / 5")} }
+                        }
+
+                        p {
+                            {recipe_ref.summary.clone()},
                         }
                     }
-                    
+                    div {
+                        class: "row gapLarge flexWrap centerColumn",
+                        div {
+                            class: "column gapSmall",
+                            p { class: "textSmall textWeak", "Meal" },
+                            div {
+                                class: "row gapSmall",
+                                for meal in meals_ref {
+                                    Link {
+                                        to: Route::Recipes {
+                                            query: recipes::Query {
+                                                meal_id: Some(meal.id),
+                                                ..Default::default()
+                                            }
+                                        },
+                                        class: "pill textSmall button buttonBg2",
+                                        {meal.name.clone()}
+                                    }
+                                }
+                            }
+                        }
+                        div {
+                            class: "column gapSmall",
+                            p { class: "textSmall textWeak", "Meal" },
+                            div {
+                                class: "row gapSmall",
+                                for diet in diets_ref {
+                                    Link {
+                                        to: Route::Recipes {
+                                            query: recipes::Query {
+                                                diet_id: Some(diet.id),
+                                                ..Default::default()
+                                            }
+                                        },
+                                        class: "pill textSmall button buttonBg2",
+                                        {diet.name.clone()}
+                                    }
+                                }
+                            }
+                        }
+                        div {
+                            class: "column gapSmall",
+                            p { class: "textSmall textWeak", "Cousine" },
+                            div {
+                                class: "row gapSmall",
+                                for cousine in cousines_ref {
+                                    {info!("Cousine: {:#?}", cousine);}
+                                    Link {
+                                        to: Route::Recipes {
+                                            query: recipes::Query {
+                                                cousine_id: Some(cousine.id),
+                                                ..Default::default()
+                                            }
+                                        },
+                                        class: "pill textSmall button buttonBg2",
+                                        {cousine.name.clone()}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    div {
+                        class: "sectionImage bg3 round",
+                    }
                     p {
-                        {recipe_ref.summary.clone()},
+                        {recipe_ref.description.clone()},
                     }
-                }
-                div {
-                    class: "row gapLarge flexWrap centerColumn",
                     div {
-                        class: "column gapSmall",
-                        p { class: "textSmall textWeak", "Meal" },
+                        class: "column gapMedium",
+                        h2 { class: "textMedium",  "Ingredients"}
                         div {
-                            class: "row gapSmall",
-                            for meal in meals_ref {
-                                Link {
-                                    to: Route::Recipes {
-                                        query: recipes::Query {
-                                            meal_id: Some(meal.id),
-                                            ..Default::default()
-                                        }
-                                    },
-                                    class: "pill textSmall button buttonBg2",
-                                    {meal.name.clone()}
+                            class: "column gapSmall",
+                            for ingredient in ingredients_ref {
+                                p {
+                                    class: "textSmall",
+                                    {format!("{} {} {}", ingredient.amount.clone().to_string(), ingredient.description.clone(), ingredient.name.clone())}
                                 }
                             }
                         }
                     }
                     div {
                         class: "column gapSmall",
-                        p { class: "textSmall textWeak", "Meal" },
-                        div {
-                            class: "row gapSmall",
-                            for diet in diets_ref {
-                                Link {
-                                    to: Route::Recipes {
-                                        query: recipes::Query {
-                                            diet_id: Some(diet.id),
-                                            ..Default::default()
-                                        }
-                                    },
-                                    class: "pill textSmall button buttonBg2",
-                                    {diet.name.clone()}
-                                }
-                            }
-                        }
-                    }
-                    div {
-                        class: "column gapSmall",
-                        p { class: "textSmall textWeak", "Cousine" },
-                        div {
-                            class: "row gapSmall",
-                            for cousine in cousines_ref {
-                                {info!("Cousine: {:#?}", cousine);}
-                                Link {
-                                    to: Route::Recipes {
-                                        query: recipes::Query {
-                                            cousine_id: Some(cousine.id),
-                                            ..Default::default()
-                                        }
-                                    },
-                                    class: "pill textSmall button buttonBg2",
-                                    {cousine.name.clone()}
-                                }
-                            }
+                        h2 { class: "textMedium",  "Instructions"}
+                        p {
+                            {recipe_ref.instructions.clone()},
                         }
                     }
                 }
-                div {
-                    class: "sectionImage bg2 round",
+            }
+            section {
+                class: "section column gapMedium",
+                h1 {
+                    class: "textLarge",
+                    "More Recipes"
                 }
-                p {
-                    {recipe_ref.description.clone()},
-                }
-                div {
-                    class: "column gapMedium",
-                    h2 { class: "textMedium",  "Ingredients"}
-                    div {
-                        class: "column gapSmall",
-                        for ingredient in ingredients_ref {
-                            p {
-                                class: "textSmall",
-                                {format!("{} {} {}", ingredient.amount.clone().to_string(), ingredient.description.clone(), ingredient.name.clone())}
-                            }
+                for diet in diets_ref {
+                    h2 {
+                        class: "textMedium",
+                        {format!("{} Recipes", diet.name.clone())},
+                    }
+                    FilteredRecipes {
+                        params: filtered_recipes::Params {
+                            diet_id: Some(diet.id),
+                            limit: Some(4),
+                            ..Default::default()
                         }
                     }
                 }
-                div {
-                    class: "column gapSmall",
-                    h2 { class: "textMedium",  "Instructions"}
-                    p {
-                        {recipe_ref.instructions.clone()},
+                for cousine in cousines_ref {
+                    h2 {
+                        class: "textMedium",
+                        {format!("{} Recipes", cousine.name.clone())},
+                    }
+                    FilteredRecipes {
+                        params: filtered_recipes::Params {
+                            cousine_id: Some(cousine.id),
+                            limit: Some(4),
+                            ..Default::default()
+                        }
+                    }
+                }
+                for meal in meals_ref {
+                    h2 {
+                        class: "textMedium",
+                        {format!("{} Recipes", meal.name.clone())},
+                    }
+                    FilteredRecipes {
+                        params: filtered_recipes::Params {
+                            meal_id: Some(meal.id),
+                            limit: Some(4),
+                            ..Default::default()
+                        }
                     }
                 }
             }
