@@ -79,7 +79,7 @@ body {
     border-radius: var(--defaultBorderRadius);
 }
 
-.text-weak {
+.textWeak {
     color: lightslategray;
 }
 
@@ -189,7 +189,6 @@ body {
     padding: var(--spacingMedium) var(--spacingLarge);
     border-radius: var(--defaultBorderRadius);
     transition: all var(--defaultTransitionTime);
-    font-size: var(--textMedium);
     cursor: pointer;
 }
 

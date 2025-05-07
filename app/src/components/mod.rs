@@ -9,3 +9,6 @@ pub use echo::Echo;
 
 mod hero;
 pub use hero::Hero;
+
+mod rating_static;
+pub use rating_static::RatingStatic;

@@ -6,7 +6,10 @@ use entities::{
     recipe_ingredient, recipe_meal,
 };
 use sea_orm::{
-    prelude::Expr, sea_query::{Query, IntoCondition}, ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect, QueryTrait, RelationTrait,
+    ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
+    FromQueryResult, JoinType, QueryFilter, QuerySelect, QueryTrait, RelationTrait,
+    prelude::Expr,
+    sea_query::{IntoCondition, Query},
 };
 // use sqlx::{postgres::{PgConnectOptions, PgPool, PgPoolOptions, PgRow}, Connection, PgConnection};
 use db::db_conn;
@@ -54,27 +57,75 @@ pub struct FilteredRecipesParams {
 
 #[server]
 pub async fn get_filtered_recipes(
-    params: FilteredRecipesParams
+    params: FilteredRecipesParams,
 ) -> Result<Vec<recipe::Model>, ServerFnError> {
     println!("Server side params {:#?}", params);
 
     let db = db_conn().await.unwrap();
     let recipes = recipe::Entity::find()
-    .apply_if(params.cousine_id, |mut query, v| {
-        
-        // recipe_cousine::Entity::find_by_id((values))
-        query.filter(
-            Condition::any().add(
-                recipe::Column::Id.in_subquery(
-                    Query::select().expr(recipe::Column::Id.eq(v)).from(recipe_cousine::Entity)/* .where_col(recipe_cousine::Column::CousineId.eq(v)) */.to_owned()
-                )
+        // Cousine
+        .apply_if(params.cousine_id, |mut query, v| {
+            query.filter(
+                Condition::any().add(
+                    recipe::Column::Id.in_subquery(
+                        Query::select()
+                            .column(recipe_cousine::Column::RecipeId)
+                            .and_where(recipe_cousine::Column::CousineId.eq(v))
+                            .from(recipe_cousine::Entity)
+                            .to_owned(),
+                    ),
+                ),
             )
-        )
-    })
-    .limit(params.limit)
-    /* .apply_if(Some(params.limit), QuerySelect::limit::<Option<u64>>) */
-    .apply_if(Some(params.page_offset), QuerySelect::offset::<Option<u64>>).all(&db).await.unwrap();
-    
+        })
+        // Diet
+        .apply_if(params.diet_id, |mut query, v| {
+            query.filter(
+                Condition::any().add(
+                    recipe::Column::Id.in_subquery(
+                        Query::select()
+                            .column(recipe_diet::Column::RecipeId)
+                            .and_where(recipe_diet::Column::DietId.eq(v))
+                            .from(recipe_diet::Entity)
+                            .to_owned(),
+                    ),
+                ),
+            )
+        })
+        // Meal
+        .apply_if(params.meal_id, |mut query, v| {
+            query.filter(
+                Condition::any().add(
+                    recipe::Column::Id.in_subquery(
+                        Query::select()
+                            .column(recipe_meal::Column::RecipeId)
+                            .and_where(recipe_meal::Column::MealId.eq(v))
+                            .from(recipe_meal::Entity)
+                            .to_owned(),
+                    ),
+                ),
+            )
+        })
+        // Ingredient
+        .apply_if(params.ingredient_id, |mut query, v| {
+            query.filter(
+                Condition::any().add(
+                    recipe::Column::Id.in_subquery(
+                        Query::select()
+                            .column(recipe_ingredient::Column::RecipeId)
+                            .and_where(recipe_ingredient::Column::IngredientId.eq(v))
+                            .from(recipe_ingredient::Entity)
+                            .to_owned(),
+                    ),
+                ),
+            )
+        })
+        .limit(params.limit)
+        /* .apply_if(Some(params.limit), QuerySelect::limit::<Option<u64>>) */
+        .apply_if(Some(params.page_offset), QuerySelect::offset::<Option<u64>>)
+        .all(&db)
+        .await
+        .unwrap();
+
     Ok(recipes)
 }
 

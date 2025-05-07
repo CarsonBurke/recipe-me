@@ -83,6 +83,8 @@ dependencies = [
  "api",
  "axum 0.8.4",
  "dioxus",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
