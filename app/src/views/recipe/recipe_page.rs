@@ -64,7 +64,13 @@ pub fn RecipePage(id: i32) -> Element {
                     div {
                         class: "row gapSmall",
                         for meal in meals_ref {
-                            div {
+                            Link {
+                                to: Route::Recipes { 
+                                    query: recipes::Query {
+                                        meal_id: Some(meal.id),
+                                        ..Default::default()
+                                    }
+                                },
                                 class: "pill textXSmall button buttonBg2",
                                 {meal.name.clone()}
                             }
@@ -74,7 +80,13 @@ pub fn RecipePage(id: i32) -> Element {
                     div {
                         class: "row gapSmall",
                         for diet in diets_ref {
-                            div {
+                            Link {
+                                to: Route::Recipes { 
+                                    query: recipes::Query {
+                                        diet_id: Some(diet.id),
+                                        ..Default::default()
+                                    }
+                                },
                                 class: "pill textXSmall button buttonBg2",
                                 {diet.name.clone()}
                             }
@@ -89,14 +101,9 @@ pub fn RecipePage(id: i32) -> Element {
                                 to: Route::Recipes { 
                                     query: recipes::Query {
                                         cousine_id: Some(cousine.id),
-                                        limit: Some(50),
+                                        ..Default::default()
                                     }
-                                },/* filter_params: RecipeFilterParams {
-                                    cousine_id: Some(cousine.id),
-                                    limit: Some(0),
-                                    page_offset: 1,
-                                    /* ..Default::default() */
-                                } */
+                                },
                                 class: "pill textXSmall button buttonBg2",
                                 {cousine.name.clone()}
                             }

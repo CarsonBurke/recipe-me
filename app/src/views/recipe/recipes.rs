@@ -24,6 +24,9 @@ impl RecipeFilterParams {
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Query {
     pub cousine_id: Option<i32>,
+    pub diet_id: Option<i32>,
+    pub ingredient_id: Option<i32>, 
+    pub meal_id: Option<i32>,
     pub limit: Option<u64>,
 }
 
@@ -46,6 +49,9 @@ impl From<&str> for Query {
 
         Self {
             cousine_id: res.cousine_id,
+            ingredient_id: res.ingredient_id,
+            meal_id: res.meal_id,
+            diet_id: res.diet_id,
             limit: res.limit,
             ..Default::default()
         }
@@ -70,6 +76,9 @@ pub fn Recipes(query: Query) -> Element {
             <RecipeFilterParams as Clone>::clone(&filter_params).into_filtered_recipes_params(); */
         let params = FilteredRecipesParams {
             cousine_id: query.cousine_id.clone(),
+            diet_id: query.diet_id.clone(),
+            ingredient_id: query.ingredient_id.clone(),
+            meal_id: query.meal_id.clone(),
             limit: query.limit.clone().unwrap_or(50),
             ..Default::default()
         };
