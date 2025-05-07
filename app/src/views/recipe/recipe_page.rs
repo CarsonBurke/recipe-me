@@ -5,12 +5,9 @@ use api::{
 use dioxus::{logger::tracing::info, prelude::*};
 
 use crate::{
-    Route,
     components::{
-        RatingStatic, RecipePreview,
-        filtered_recipes::{self, FilteredRecipes},
-    },
-    views::recipe::recipes::{self, RecipeFilterParams},
+        filtered_recipes::{self, FilteredRecipes}, recipe::comments::RecipeComments, RatingStatic, RecipePreview
+    }, views::recipe::recipes::{self, RecipeFilterParams}, Route
 };
 
 #[component]
@@ -58,12 +55,12 @@ pub fn RecipePage(id: i32) -> Element {
             section {
                 class: "section column gapMedium",
                 div {
-                    class: "column gapMedium bg2 round paddingLarge",
+                    class: "column gapMedium borderBg2 round paddingLarge",
                     div {
                         class: "column centerRow gapSmall",
                         div {
                             class: "row gapLarge",
-                            h1 { class: "textLarge", {recipe_ref.name.clone()} }
+                            h1 { class: "textXLarge", {recipe_ref.name.clone()} }
                             div {
                                 class: "row centerColumn gapMedium",
                                 RatingStatic {
@@ -100,7 +97,7 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                         div {
                             class: "column gapSmall",
-                            p { class: "textSmall textWeak", "Meal" },
+                            p { class: "textSmall textWeak", "Diet" },
                             div {
                                 class: "row gapSmall",
                                 for diet in diets_ref {
@@ -146,7 +143,7 @@ pub fn RecipePage(id: i32) -> Element {
                     }
                     div {
                         class: "column gapMedium",
-                        h2 { class: "textMedium",  "Ingredients"}
+                        h2 { class: "textLarge",  "Ingredients"}
                         div {
                             class: "column gapSmall",
                             for ingredient in ingredients_ref {
@@ -159,7 +156,7 @@ pub fn RecipePage(id: i32) -> Element {
                     }
                     div {
                         class: "column gapSmall",
-                        h2 { class: "textMedium",  "Instructions"}
+                        h2 { class: "textLarge",  "Instructions"}
                         p {
                             {recipe_ref.instructions.clone()},
                         }
@@ -168,13 +165,26 @@ pub fn RecipePage(id: i32) -> Element {
             }
             section {
                 class: "section column gapMedium",
+                div {
+                    class: "column gapMedium borderBg2 round paddingLarge",
+                    h1 {
+                        class: "textXLarge",
+                        "Comments"
+                    }
+                    RecipeComments {
+                        recipe_id: id,
+                    }
+                }
+            }
+            section {
+                class: "section column gapMedium",
                 h1 {
-                    class: "textLarge",
+                    class: "textXLarge",
                     "More Recipes"
                 }
                 for diet in diets_ref {
                     h2 {
-                        class: "textMedium",
+                        class: "textLarge",
                         {format!("{} Recipes", diet.name.clone())},
                     }
                     FilteredRecipes {
@@ -187,7 +197,7 @@ pub fn RecipePage(id: i32) -> Element {
                 }
                 for cousine in cousines_ref {
                     h2 {
-                        class: "textMedium",
+                        class: "textLarge",
                         {format!("{} Recipes", cousine.name.clone())},
                     }
                     FilteredRecipes {
@@ -200,7 +210,7 @@ pub fn RecipePage(id: i32) -> Element {
                 }
                 for meal in meals_ref {
                     h2 {
-                        class: "textMedium",
+                        class: "textLarge",
                         {format!("{} Recipes", meal.name.clone())},
                     }
                     FilteredRecipes {

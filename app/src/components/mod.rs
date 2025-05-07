@@ -1,3 +1,5 @@
+pub mod recipe;
+
 mod navbar;
 pub use navbar::Navbar;
 
