@@ -1,5 +1,6 @@
 use api::{FilteredRecipesParams, get_filtered_recipes, get_recipes};
 use dioxus::{logger::tracing::info, prelude::*};
+use serde::{Deserialize, Serialize};
 
 use crate::{components::RecipePreview, Route};
 
@@ -20,15 +21,58 @@ impl RecipeFilterParams {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
+pub struct Query {
+    pub cousine_id: Option<i32>,
+    pub limit: Option<u64>,
+}
+
+impl From<&str> for Query {
+    fn from(query: &str) -> Self {
+        println!("Query {:?}", query);
+
+        let x: String = query.parse().unwrap_or(query.to_string());
+        println!("Query parsed {:#?}", x);
+
+        let parsed = serde_json::from_str::<Query>(query);
+        println!("Query parsed {:?}", parsed);
+
+        let Ok(res) = parsed else {
+            println!("query parse err {:?}", parsed);
+            return Self {
+                ..Default::default()
+            }
+        };
+
+        Self {
+            cousine_id: res.cousine_id,
+            limit: res.limit,
+            ..Default::default()
+        }
+    }
+}
+
+impl std::fmt::Display for Query {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = serde_json::to_string(self).unwrap();
+        write!(f, "{}", str)
+    }
+}
+
 #[component]
-pub fn Recipes(filter_params: RecipeFilterParams) -> Element {
+pub fn Recipes(query: Query) -> Element {
     let route = use_route::<Route>();
     info!("Route {:#?}", route);
 
-    info!("Client filter params {:#?}", filter_params);
+    /* info!("Client filter params {:#?}", filter_params); */
     let recipes = use_server_future(move || {
-        let params =
-            <RecipeFilterParams as Clone>::clone(&filter_params).into_filtered_recipes_params();
+        /* let params =
+            <RecipeFilterParams as Clone>::clone(&filter_params).into_filtered_recipes_params(); */
+        let params = FilteredRecipesParams {
+            cousine_id: query.cousine_id.clone(),
+            limit: query.limit.clone().unwrap_or(50),
+            ..Default::default()
+        };
         async move {
             get_filtered_recipes(params)
             .await
