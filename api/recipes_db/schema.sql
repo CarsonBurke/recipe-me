@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS RecipeIngredient (
 -- Map many ingredients to one name
 CREATE TABLE IF NOT EXISTS IngredientName (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    affiliate_link VARCHAR(255),
     name VARCHAR(255) NOT NULL
 );
 

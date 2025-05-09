@@ -32,16 +32,10 @@ pub struct Query {
 
 impl From<&str> for Query {
     fn from(query: &str) -> Self {
-        println!("Query {:?}", query);
-
-        let x: String = query.parse().unwrap_or(query.to_string());
-        println!("Query parsed {:#?}", x);
 
         let parsed = serde_json::from_str::<Query>(query);
-        println!("Query parsed {:?}", parsed);
 
         let Ok(res) = parsed else {
-            println!("query parse err {:?}", parsed);
             return Self {
                 ..Default::default()
             }

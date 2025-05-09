@@ -12,48 +12,65 @@ use crate::{
 
 #[component]
 pub fn RecipePage(id: i32) -> Element {
-    let recipe = use_server_future(move || {
-        let id = id;
-        async move { get_recipe(id).await.unwrap() }
-    })?;
-    let recipe_read = recipe.read();
-    let recipe_ref = recipe_read.as_ref().unwrap();
 
-    let ingredients = use_server_future(move || {
-        let id = id;
-        async move { get_recipe_ingredients(id).await.unwrap() }
-    })?;
-    let ingredients_read = ingredients.read();
-    let ingredients_ref = ingredients_read.as_ref().unwrap();
+    info!("RecipePage: {id}");
 
-    let cousines = use_server_future(move || {
-        let id = id;
-        async move { get_recipe_cousines(id).await.unwrap() }
-    })?;
-    let cousines_read = cousines.read();
-    let cousines_ref = cousines_read.as_ref().unwrap();
+    let id_d = use_memo(move || id);
 
-    let meals = use_server_future(move || {
-        let id = id;
-        async move { get_recipe_meals(id).await.unwrap() }
-    })?;
-    let meals_read = meals.read();
-    let meals_ref = meals_read.as_ref().unwrap();
+    // let id = use_signal(|| id);
+    let recipe = use_resource(move || {
+        // let cloned_id = id();
+        let cloned_id = id;
+        println !("check 1 id: {cloned_id}");
+        async move { println!("check 2 id: {cloned_id}"); get_recipe(cloned_id).await.unwrap() }
+    }).suspend()?;
+    let recipe_read = &*recipe.read();
+    println!("Recipe: {:#?}", recipe_read);
+    // let recipe_ref = recipe_read.as_ref().unwrap();
 
-    let diets = use_server_future(move || {
-        let id = id;
-        async move { get_recipe_diets(id).await.unwrap() }
-    })?;
-    let diets_read = diets.read();
-    let diets_ref = diets_read.as_ref().unwrap();
+    let ingredients = use_resource(move || {
+        // let cloned_id = id();
+        let cloned_id = id;
+        async move { get_recipe_ingredients(cloned_id).await.unwrap() }
+    }).suspend()?;
+    let ingredients_read = &*ingredients.read();
+    // let ingredients_ref = ingredients_read.as_ref().unwrap();
 
-    let rating = recipe_ref.total_rating as f32 / recipe_ref.ratings as f32;
+    let cousines = use_resource(move || {
+        // let cloned_id = id();
+        let cloned_id = id;
+        async move { get_recipe_cousines(cloned_id).await.unwrap() }
+    }).suspend()?;
+    let cousines_read = &*cousines.read();
+    // let cousines_ref = cousines_read.as_ref().unwrap();
+
+    let meals = use_resource(move || {
+        // let cloned_id = id();
+        let cloned_id = id;
+        async move { get_recipe_meals(cloned_id).await.unwrap() }
+    }).suspend()?;
+    let meals_read = &*meals.read();
+    // let meals_ref = meals_read.as_ref().unwrap();
+
+    let diets = use_resource(move || {
+        // let cloned_id = id();
+        let cloned_id = id;
+        async move { get_recipe_diets(cloned_id).await.unwrap() }
+    }).suspend()?;
+    let diets_read = &*diets.read();
+    // let diets_ref = diets_read.as_ref().unwrap();
+
+    let rating = recipe_read.total_rating as f32 / recipe_read.ratings as f32;
 
     let mut ingredients_mult = use_signal(|| 1);
 
     use_effect(move || {
         let mult = ingredients_mult();
     });
+
+    /* use_effect(move || {
+        let id = id();
+    }); */
 
     rsx! {
         main {
@@ -66,7 +83,7 @@ pub fn RecipePage(id: i32) -> Element {
                         class: "column centerRow gapSmall",
                         div {
                             class: "row gapLarge",
-                            h1 { class: "textXLarge", {recipe_ref.name.clone()} }
+                            h1 { class: "textXLarge", {recipe_read.name.clone()} }
                             div {
                                 class: "row centerColumn gapMedium",
                                 RatingStatic {
@@ -77,7 +94,7 @@ pub fn RecipePage(id: i32) -> Element {
                         }
 
                         p {
-                            {recipe_ref.summary.clone()},
+                            {recipe_read.summary.clone()},
                         }
                     }
                     div {
@@ -87,7 +104,7 @@ pub fn RecipePage(id: i32) -> Element {
                             p { class: "textSmall textWeak", "Meal" },
                             div {
                                 class: "row gapSmall",
-                                for meal in meals_ref {
+                                for meal in meals_read {
                                     Link {
                                         to: Route::Recipes {
                                             query: recipes::Query {
@@ -106,7 +123,7 @@ pub fn RecipePage(id: i32) -> Element {
                             p { class: "textSmall textWeak", "Diet" },
                             div {
                                 class: "row gapSmall",
-                                for diet in diets_ref {
+                                for diet in diets_read {
                                     Link {
                                         to: Route::Recipes {
                                             query: recipes::Query {
@@ -125,8 +142,7 @@ pub fn RecipePage(id: i32) -> Element {
                             p { class: "textSmall textWeak", "Cousine" },
                             div {
                                 class: "row gapSmall",
-                                for cousine in cousines_ref {
-                                    {info!("Cousine: {:#?}", cousine);}
+                                for cousine in cousines_read {
                                     Link {
                                         to: Route::Recipes {
                                             query: recipes::Query {
@@ -145,7 +161,7 @@ pub fn RecipePage(id: i32) -> Element {
                         class: "sectionImage bg3 round",
                     }
                     p {
-                        {recipe_ref.description.clone()},
+                        {recipe_read.description.clone()},
                     }
                     div {
                         class: "column gapMedium",
@@ -172,7 +188,7 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                         div {
                             class: "column gapSmall",
-                            for ingredient in ingredients_ref {
+                            for ingredient in ingredients_read {
                                 p {
                                     class: "textSmall",
                                     {format!("{} {} {}", (ingredient.amount.clone() * ingredients_mult()).to_string(), ingredient.description.clone(), ingredient.name.clone())}
@@ -184,7 +200,7 @@ pub fn RecipePage(id: i32) -> Element {
                         class: "column gapSmall",
                         h2 { class: "textLarge",  "Instructions"}
                         p {
-                            {recipe_ref.instructions.clone()},
+                            {recipe_read.instructions.clone()},
                         }
                     }
                 }
@@ -208,7 +224,7 @@ pub fn RecipePage(id: i32) -> Element {
                     class: "textXLarge",
                     "More Recipes"
                 }
-                for diet in diets_ref {
+                for diet in diets_read {
                     h2 {
                         class: "textLarge",
                         {format!("{} Recipes", diet.name.clone())},
@@ -221,7 +237,7 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                     }
                 }
-                for cousine in cousines_ref {
+                for cousine in cousines_read {
                     h2 {
                         class: "textLarge",
                         {format!("{} Recipes", cousine.name.clone())},
@@ -234,7 +250,7 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                     }
                 }
-                for meal in meals_ref {
+                for meal in meals_read {
                     h2 {
                         class: "textLarge",
                         {format!("{} Recipes", meal.name.clone())},

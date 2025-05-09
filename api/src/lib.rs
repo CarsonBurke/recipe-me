@@ -1,9 +1,8 @@
 //! This crate contains all shared fullstack server functions.
-use data::{PartialCombinedRecipeIngredient, PartialCousine, PartialDiet, PartialMeal};
+use data::{PartialCombinedRecipeIngredient, PartialComment, PartialCousine, PartialDiet, PartialMeal};
 use dioxus::{html::g::offset, prelude::*};
 use entities::{
-    cousine_name, diet_name, ingredient_name, meal_name, recipe_cousine, recipe_diet,
-    recipe_ingredient, recipe_meal,
+    comment, cousine_name, diet_name, ingredient_name, meal_name, recipe_cousine, recipe_diet, recipe_ingredient, recipe_meal, user
 };
 use sea_orm::{
     ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
@@ -212,6 +211,25 @@ pub async fn get_recipe_diets(id: i32) -> Result<Vec<PartialDiet>, ServerFnError
         .await
         .unwrap();
     Ok(recipe_diets)
+}
+
+#[server]
+pub async fn get_recipe_comments(recipe_id: i32) -> Result<Vec<PartialComment>, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let recipe_comments = comment::Entity::find()
+        .join(JoinType::InnerJoin, comment::Relation::Recipe.def())
+        .filter(comment::Column::RecipeId.eq(recipe_id))
+        .join(JoinType::InnerJoin, comment::Relation::User.def())
+        .select_only()
+        .column_as(user::Column::Username, "name")
+        .column_as(comment::Column::UserId, "user_id")
+        .column_as(comment::Column::Comment, "comment")
+        .column_as(comment::Column::Rating, "rating")
+        .into_model::<PartialComment>()
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(recipe_comments)
 }
 
 //#[server(Recipes)]

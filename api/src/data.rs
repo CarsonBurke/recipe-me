@@ -26,3 +26,11 @@ pub struct PartialDiet {
     pub name: String,
     pub id: i32,
 }
+
+#[derive(FromQueryResult, Serialize, Deserialize, Debug)]
+pub struct PartialComment {
+    pub name: String,
+    pub user_id: i32,
+    pub comment: String,
+    pub rating: i32,
+}
