@@ -47,13 +47,13 @@ CREATE TABLE IF NOT EXISTS IngredientName (
     name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS RecipeCousine (
+CREATE TABLE IF NOT EXISTS RecipeCuisine (
     recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
-    cousine_id INTEGER NOT NULL REFERENCES CousineName(id),
-    PRIMARY KEY (recipe_id, cousine_id)
+    cuisine_id INTEGER NOT NULL REFERENCES CuisineName(id),
+    PRIMARY KEY (recipe_id, cuisine_id)
 );
 
-CREATE TABLE IF NOT EXISTS CousineName (
+CREATE TABLE IF NOT EXISTS CuisineName (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL
 );

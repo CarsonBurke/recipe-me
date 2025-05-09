@@ -1,8 +1,8 @@
 //! This crate contains all shared fullstack server functions.
-use data::{PartialCombinedRecipeIngredient, PartialComment, PartialCousine, PartialDiet, PartialMeal};
+use data::{PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal};
 use dioxus::{html::g::offset, prelude::*};
 use entities::{
-    comment, cousine_name, diet_name, ingredient_name, meal_name, recipe_cousine, recipe_diet, recipe_ingredient, recipe_meal, user
+    comment, cuisine_name, diet_name, ingredient_name, meal_name, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
 };
 use sea_orm::{
     ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
@@ -47,7 +47,7 @@ pub async fn get_recipes() -> Result<Vec<recipe::Model>, ServerFnError> {
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct FilteredRecipesParams {
     pub ingredient_id: Option<i32>,
-    pub cousine_id: Option<i32>,
+    pub cuisine_id: Option<i32>,
     pub diet_id: Option<i32>,
     pub meal_id: Option<i32>,
     pub limit: u64,
@@ -62,15 +62,15 @@ pub async fn get_filtered_recipes(
 
     let db = db_conn().await.unwrap();
     let recipes = recipe::Entity::find()
-        // Cousine
-        .apply_if(params.cousine_id, |mut query, v| {
+        // Cuisine
+        .apply_if(params.cuisine_id, |mut query, v| {
             query.filter(
                 Condition::any().add(
                     recipe::Column::Id.in_subquery(
                         Query::select()
-                            .column(recipe_cousine::Column::RecipeId)
-                            .and_where(recipe_cousine::Column::CousineId.eq(v))
-                            .from(recipe_cousine::Entity)
+                            .column(recipe_cuisine::Column::RecipeId)
+                            .and_where(recipe_cuisine::Column::CuisineId.eq(v))
+                            .from(recipe_cuisine::Entity)
                             .to_owned(),
                     ),
                 ),
@@ -163,22 +163,22 @@ pub async fn get_recipe_ingredients(
 }
 
 #[server]
-pub async fn get_recipe_cousines(id: i32) -> Result<Vec<PartialCousine>, ServerFnError> {
+pub async fn get_recipe_cuisines(id: i32) -> Result<Vec<PartialCuisine>, ServerFnError> {
     let db = db_conn().await.unwrap();
-    let recipe_cousines = recipe_cousine::Entity::find()
+    let recipe_cuisines = recipe_cuisine::Entity::find()
         .join(
             JoinType::InnerJoin,
-            recipe_cousine::Relation::CousineName.def(),
+            recipe_cuisine::Relation::CuisineName.def(),
         )
-        .filter(recipe_cousine::Column::RecipeId.eq(id))
+        .filter(recipe_cuisine::Column::RecipeId.eq(id))
         .select_only()
-        .column_as(cousine_name::Column::Name, "name")
-        .column_as(recipe_cousine::Column::CousineId, "id")
-        .into_model::<PartialCousine>()
+        .column_as(cuisine_name::Column::Name, "name")
+        .column_as(recipe_cuisine::Column::CuisineId, "id")
+        .into_model::<PartialCuisine>()
         .all(&db)
         .await
         .unwrap();
-    Ok(recipe_cousines)
+    Ok(recipe_cuisines)
 }
 
 #[server]

@@ -1,5 +1,5 @@
 use api::{
-    get_recipe, get_recipe_cousines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals,
+    get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals,
     get_recipes,
 };
 use dioxus::{logger::tracing::info, prelude::*};
@@ -11,16 +11,16 @@ use crate::{
 };
 
 #[component]
-pub fn RecipePage(id: i32) -> Element {
+pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
 
     info!("RecipePage: {id}");
 
-    let id_d = use_memo(move || id);
+    // let id_d = use_memo(move || id);
 
     // let id = use_signal(|| id);
     let recipe = use_resource(move || {
         // let cloned_id = id();
-        let cloned_id = id;
+        let cloned_id = id();
         println !("check 1 id: {cloned_id}");
         async move { println!("check 2 id: {cloned_id}"); get_recipe(cloned_id).await.unwrap() }
     }).suspend()?;
@@ -30,23 +30,23 @@ pub fn RecipePage(id: i32) -> Element {
 
     let ingredients = use_resource(move || {
         // let cloned_id = id();
-        let cloned_id = id;
+        let cloned_id = id();
         async move { get_recipe_ingredients(cloned_id).await.unwrap() }
     }).suspend()?;
     let ingredients_read = &*ingredients.read();
     // let ingredients_ref = ingredients_read.as_ref().unwrap();
 
-    let cousines = use_resource(move || {
+    let cuisines = use_resource(move || {
         // let cloned_id = id();
-        let cloned_id = id;
-        async move { get_recipe_cousines(cloned_id).await.unwrap() }
+        let cloned_id = id();
+        async move { get_recipe_cuisines(cloned_id).await.unwrap() }
     }).suspend()?;
-    let cousines_read = &*cousines.read();
-    // let cousines_ref = cousines_read.as_ref().unwrap();
+    let cuisines_read = &*cuisines.read();
+    // let cuisines_ref = cuisines_read.as_ref().unwrap();
 
     let meals = use_resource(move || {
         // let cloned_id = id();
-        let cloned_id = id;
+        let cloned_id = id();
         async move { get_recipe_meals(cloned_id).await.unwrap() }
     }).suspend()?;
     let meals_read = &*meals.read();
@@ -54,7 +54,7 @@ pub fn RecipePage(id: i32) -> Element {
 
     let diets = use_resource(move || {
         // let cloned_id = id();
-        let cloned_id = id;
+        let cloned_id = id();
         async move { get_recipe_diets(cloned_id).await.unwrap() }
     }).suspend()?;
     let diets_read = &*diets.read();
@@ -139,19 +139,19 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                         div {
                             class: "column gapSmall",
-                            p { class: "textSmall textWeak", "Cousine" },
+                            p { class: "textSmall textWeak", "Cuisine" },
                             div {
                                 class: "row gapSmall",
-                                for cousine in cousines_read {
+                                for cuisine in cuisines_read {
                                     Link {
                                         to: Route::Recipes {
                                             query: recipes::Query {
-                                                cousine_id: Some(cousine.id),
+                                                cuisine_id: Some(cuisine.id),
                                                 ..Default::default()
                                             }
                                         },
                                         class: "pill textSmall button buttonBg2",
-                                        {cousine.name.clone()}
+                                        {cuisine.name.clone()}
                                     }
                                 }
                             }
@@ -214,7 +214,7 @@ pub fn RecipePage(id: i32) -> Element {
                         "Comments"
                     }
                     RecipeComments {
-                        recipe_id: id,
+                        recipe_id: id(),
                     }
                 }
             }
@@ -237,14 +237,14 @@ pub fn RecipePage(id: i32) -> Element {
                         }
                     }
                 }
-                for cousine in cousines_read {
+                for cuisine in cuisines_read {
                     h2 {
                         class: "textLarge",
-                        {format!("{} Recipes", cousine.name.clone())},
+                        {format!("{} Recipes", cuisine.name.clone())},
                     }
                     FilteredRecipes {
                         params: filtered_recipes::Params {
-                            cousine_id: Some(cousine.id),
+                            cuisine_id: Some(cuisine.id),
                             limit: Some(4),
                             ..Default::default()
                         }

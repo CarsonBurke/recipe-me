@@ -4,24 +4,24 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "RecipeCousine")]
+#[sea_orm(table_name = "RecipeCuisine")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub recipe_id: i32,
     #[sea_orm(primary_key, auto_increment = false)]
-    pub cousine_id: i32,
+    pub cuisine_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::cousine_name::Entity",
-        from = "Column::CousineId",
-        to = "super::cousine_name::Column::Id",
+        belongs_to = "super::cuisine_name::Entity",
+        from = "Column::CuisineId",
+        to = "super::cuisine_name::Column::Id",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]
-    CousineName,
+    CuisineName,
     #[sea_orm(
         belongs_to = "super::recipe::Entity",
         from = "Column::RecipeId",
@@ -32,9 +32,9 @@ pub enum Relation {
     Recipe,
 }
 
-impl Related<super::cousine_name::Entity> for Entity {
+impl Related<super::cuisine_name::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::CousineName.def()
+        Relation::CuisineName.def()
     }
 }
 

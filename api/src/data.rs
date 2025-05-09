@@ -16,7 +16,7 @@ pub struct PartialMeal {
 }
 
 #[derive(FromQueryResult, Serialize, Deserialize, Debug)]
-pub struct PartialCousine {
+pub struct PartialCuisine {
     pub name: String,
     pub id: i32,
 }

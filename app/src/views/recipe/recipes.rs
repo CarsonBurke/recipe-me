@@ -6,7 +6,7 @@ use crate::{components::{filtered_recipes::{self, FilteredRecipes}, RecipePrevie
 
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct RecipeFilterParams {
-    pub cousine_id: Option<i32>,
+    pub cuisine_id: Option<i32>,
     pub limit: Option<u64>,
     pub page_offset: u64,
 }
@@ -14,7 +14,7 @@ pub struct RecipeFilterParams {
 impl RecipeFilterParams {
     pub fn into_filtered_recipes_params(self) -> FilteredRecipesParams {
         FilteredRecipesParams {
-            cousine_id: self.cousine_id,
+            cuisine_id: self.cuisine_id,
             limit: self.limit.unwrap_or(50),
             ..Default::default()
         }
@@ -23,7 +23,7 @@ impl RecipeFilterParams {
 
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Query {
-    pub cousine_id: Option<i32>,
+    pub cuisine_id: Option<i32>,
     pub diet_id: Option<i32>,
     pub ingredient_id: Option<i32>, 
     pub meal_id: Option<i32>,
@@ -42,7 +42,7 @@ impl From<&str> for Query {
         };
 
         Self {
-            cousine_id: res.cousine_id,
+            cuisine_id: res.cuisine_id,
             ingredient_id: res.ingredient_id,
             meal_id: res.meal_id,
             diet_id: res.diet_id,
@@ -72,7 +72,7 @@ pub fn Recipes(query: Query) -> Element {
 
                 FilteredRecipes {  
                     params: filtered_recipes::Params {
-                        cousine_id: query.cousine_id,
+                        cuisine_id: query.cuisine_id,
                         diet_id: query.diet_id,
                         ingredient_id: query.ingredient_id,
                         meal_id: query.meal_id,

@@ -192,7 +192,7 @@ INSERT INTO "RecipeMeal" (recipe_id, meal_id) VALUES
     (10, 4); -- Apple Pie - Dessert
 
 -- Link recipes to cuisines
-INSERT INTO "RecipeCousine" (recipe_id, cousine_id) VALUES
+INSERT INTO "RecipeCuisine" (recipe_id, cuisine_id) VALUES
     (1, 1), -- Spaghetti Bolognese - Italian
     (2, 1), -- Chicken Alfredo - Italian
     (3, 4), -- Vegetable Stir Fry - Chinese
@@ -282,8 +282,8 @@ INSERT INTO "MealName" (name) VALUES
     ('Snack'),
     ('Dessert');
 
--- Cousine name
-INSERT INTO "CousineName" (name) VALUES
+-- Cuisine name
+INSERT INTO "CuisineName" (name) VALUES
     ('Italian'),
     ('Mexican'),
     ('Chinese'),

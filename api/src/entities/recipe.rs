@@ -29,8 +29,8 @@ pub enum Relation {
     Comment,
     #[sea_orm(has_many = "super::recipe_collection_recipe::Entity")]
     RecipeCollectionRecipe,
-    #[sea_orm(has_many = "super::recipe_cousine::Entity")]
-    RecipeCousine,
+    #[sea_orm(has_many = "super::recipe_cuisine::Entity")]
+    RecipeCuisine,
     #[sea_orm(has_many = "super::recipe_diet::Entity")]
     RecipeDiet,
     #[sea_orm(has_many = "super::recipe_ingredient::Entity")]
@@ -51,9 +51,9 @@ impl Related<super::recipe_collection_recipe::Entity> for Entity {
     }
 }
 
-impl Related<super::recipe_cousine::Entity> for Entity {
+impl Related<super::recipe_cuisine::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::RecipeCousine.def()
+        Relation::RecipeCuisine.def()
     }
 }
 
@@ -75,12 +75,12 @@ impl Related<super::recipe_meal::Entity> for Entity {
     }
 }
 
-impl Related<super::cousine_name::Entity> for Entity {
+impl Related<super::cuisine_name::Entity> for Entity {
     fn to() -> RelationDef {
-        super::recipe_cousine::Relation::CousineName.def()
+        super::recipe_cuisine::Relation::CuisineName.def()
     }
     fn via() -> Option<RelationDef> {
-        Some(super::recipe_cousine::Relation::Recipe.def().rev())
+        Some(super::recipe_cuisine::Relation::Recipe.def().rev())
     }
 }
 

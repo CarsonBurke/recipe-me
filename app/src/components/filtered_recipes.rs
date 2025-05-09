@@ -5,7 +5,7 @@ use crate::components::RecipePreview;
 
 #[derive(Clone, Debug, Copy, PartialEq, Default)]
 pub struct Params {
-    pub cousine_id: Option<i32>,
+    pub cuisine_id: Option<i32>,
     pub diet_id: Option<i32>,
     pub meal_id: Option<i32>,
     pub ingredient_id: Option<i32>,
@@ -16,7 +16,7 @@ pub struct Params {
 pub fn FilteredRecipes(params: Params) -> Element {
     let recipes = use_server_future(move || {
         let params = FilteredRecipesParams {
-            cousine_id: params.cousine_id.clone(),
+            cuisine_id: params.cuisine_id.clone(),
             diet_id: params.diet_id.clone(),
             ingredient_id: params.ingredient_id.clone(),
             meal_id: params.meal_id.clone(),
