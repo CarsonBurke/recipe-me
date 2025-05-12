@@ -8,7 +8,9 @@ use entities::{
     recipe_ingredient, recipe_meal, user,
 };
 use lettre::{
-    message::header::ContentType, transport::smtp::authentication::Credentials, Message, SmtpTransport, Transport
+    Message, SmtpTransport, Transport,
+    message::{MultiPart, SinglePart, header::ContentType},
+    transport::smtp::authentication::Credentials,
 };
 use sea_orm::{
     ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
@@ -274,14 +276,38 @@ pub fn create_login_token(user_id: i32) -> String {
     token.to_string()
 }
 
-pub fn login_confirm_email(email: String) -> () {
+pub fn login_confirm_email(username: String, email: String) -> () {
+    let html = format!(r#"<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Welcome to Recipe Me</title>
+    </head>
+    <body>
+        <h1>You've created a new account with Recipe Me!</h1>
+        <p>To continue the process, please click the link below. If you did not create an account with Recipe Me, please ignore this email.</p>
+        <a href="{}" style="background-color: #4CAF50; border-radius: 6px; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">Verify Login</a>
+        <p>Why are we asking you to verify your login? It allows us to ensure that your accountis safe and secure.</p>
+    </body>
+</html>"#, email);
+
     let email = Message::builder()
-        .from("Template name <carsonburke22@gmail.com>".parse().unwrap())
+        .from("Recipe Me <carsonburke22@gmail.com>".parse().unwrap())
         // .reply_to("Yuin <yuin@domain.tld>".parse().unwrap())
         .to(format!("Hei <{}>", email).parse().unwrap())
-        .subject("Test subject")
-        .header(ContentType::TEXT_HTML)
-        .body(String::from("Be happy!"))
+        .subject(format!("Welcome to Recipe Me {username}"))
+        .multipart(
+            MultiPart::alternative()
+                .singlepart(
+                    SinglePart::builder()
+                        .header(ContentType::TEXT_PLAIN)
+                        .body("Welcome to Recipe Me!".to_string()),
+                )
+                .singlepart(
+                    SinglePart::builder()
+                        .header(ContentType::TEXT_HTML)
+                        .body(html.to_string()),
+                ),
+        )
         .unwrap();
 
     let creds = Credentials::new("carsonburke22".to_owned(), "oxsw dypy gkoh kwze".to_owned());
@@ -302,6 +328,6 @@ mod test {
 
     #[test]
     fn test_login_confirm_email() {
-        login_confirm_email("marvinburke22@gmail.com".to_string());
+        login_confirm_email("marvin22".to_string(), "carsonburke22@gmail.com".to_string());
     }
 }
