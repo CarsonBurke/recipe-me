@@ -8,8 +8,10 @@ axum = "0.8.4"
 dioxus = { workspace = true, features = ["fullstack"] }
 # Seem to need this to resolve an issue with webassembly stuff
 getrandom = {version = "0.2.16", features = ["js"] }
+jsonwebtoken = "9.3.1"
+lettre = "0.11.15"
 sea-orm = { version = "1.1.10", features = ["sqlx-postgres", "sqlx-sqlite", "runtime-tokio", "macros"] }
-serde = "1.0.219"
+serde = { version = "1.0.219", features = ["derive"] }
 tokio = "1.44.2"
 # sqlx = { version = "0.8.5", features = ["postgres", "runtime-tokio"] }
 

@@ -1,8 +1,14 @@
 //! This crate contains all shared fullstack server functions.
-use data::{PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal};
+use data::{
+    PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal,
+};
 use dioxus::{html::g::offset, prelude::*};
 use entities::{
-    comment, cuisine_name, diet_name, ingredient_name, meal_name, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
+    comment, cuisine_name, diet_name, ingredient_name, meal_name, recipe_cuisine, recipe_diet,
+    recipe_ingredient, recipe_meal, user,
+};
+use lettre::{
+    message::header::ContentType, transport::smtp::authentication::Credentials, Message, SmtpTransport, Transport
 };
 use sea_orm::{
     ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
@@ -232,42 +238,70 @@ pub async fn get_recipe_comments(recipe_id: i32) -> Result<Vec<PartialComment>, 
     Ok(recipe_comments)
 }
 
-//#[server(Recipes)]
-// #[server]
-// pub async fn get_recipes() -> Result<Vec<Recipe>, ServerFnError> {
-//     let mut x = PgConnection::connect(&format!("postgres://postgres:{DB_PASSWORD}@localhost/db.db")).await.unwrap();
+#[server]
+pub async fn create_user(
+    username: String,
+    email: String,
+    password: String,
+) -> Result<(), ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let user = User::new(username, email, password);
+    user.create(&db).await.unwrap();
+    Ok(())
+}
 
-//     let recipes = sqlx::query_as!(Recipe, "SELECT * FROM recipes").fetch_all(&mut x).await.map_err(|_| ServerFnError::ServerError("Error fetching recipes".to_string()));
+#[server]
+pub async fn login(username_or_email: String, password: String) -> Result<String, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let user = User::login(&db, username_or_email, password).await.unwrap();
+    Ok(user.username)
+}
 
-//     recipes
-// }
+#[server]
+pub async fn delete_user(
+    username_or_email: String,
+    password: String,
+) -> Result<String, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let user = User::delete(&db, username_or_email, password)
+        .await
+        .unwrap();
+    Ok(user.username)
+}
 
-// #[cfg(features = "server")]
-// thread_local! {
-//     pub static DB: PgPool = {
-//         let pool = PgPoolOptions::new()
-//         .max_connections(5)
-//         .connect("postgres://postgres:postgres@localhost/recipes").await.unwrap();
+pub fn create_login_token(user_id: i32) -> String {
+    let token = "";
+    token.to_string()
+}
 
-//         pool
-//     }
-// }
+pub fn login_confirm_email(email: String) -> () {
+    let email = Message::builder()
+        .from("Template name <carsonburke22@gmail.com>".parse().unwrap())
+        // .reply_to("Yuin <yuin@domain.tld>".parse().unwrap())
+        .to(format!("Hei <{}>", email).parse().unwrap())
+        .subject("Test subject")
+        .header(ContentType::TEXT_HTML)
+        .body(String::from("Be happy!"))
+        .unwrap();
 
-// #[cfg(features = "server")]
-// thread_local! {
-//     pub static DB {
-//         let mut opt = ConnectOptions::new("postgres://postgres:postgres@localhost/recipes");
-//         opt.max_connections(100)
-//             .min_connections(5)
-//             .connect_timeout(Duration::from_secs(8))
-//             .acquire_timeout(Duration::from_secs(8))
-//             .idle_timeout(Duration::from_secs(8))
-//             .max_lifetime(Duration::from_secs(8))
-//             .sqlx_logging(true)
-//             .sqlx_logging_level(log::LevelFilter::Info)
-//             .set_schema_search_path("my_schema"); // Setting default PostgreSQL schema
+    let creds = Credentials::new("carsonburke22".to_owned(), "oxsw dypy gkoh kwze".to_owned());
 
-//         let db = Database::connect(opt).await?;
-//         db
-//     }
-// }
+    // Open a remote connection to gmail
+    let mailer = SmtpTransport::relay("smtp.gmail.com")
+        .unwrap()
+        .credentials(creds)
+        .build();
+
+    let res = mailer.send(&email);
+    println!("res {res:?}");
+}
+
+#[cfg(test)]
+mod test {
+    use crate::login_confirm_email;
+
+    #[test]
+    fn test_login_confirm_email() {
+        login_confirm_email("marvinburke22@gmail.com".to_string());
+    }
+}
