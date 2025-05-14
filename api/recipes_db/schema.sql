@@ -91,8 +91,7 @@ CREATE TABLE IF NOT EXISTS DietName (
 );
 
 CREATE TABLE IF NOT EXISTS LoginToken (
-    user_id INTEGER NOT NULL REFERENCES User(id),
-    PRIMARY KEY (user_id),
+    user_id INTEGER PRIMARY NOT NULL KEY REFERENCES User(id),
     token VARCHAR(255) NOT NULL,
     created_epoch INTEGER NOT NULL
 );

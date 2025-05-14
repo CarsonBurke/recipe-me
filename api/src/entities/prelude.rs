@@ -4,6 +4,7 @@ pub use super::comment::Entity as Comment;
 pub use super::cuisine_name::Entity as CuisineName;
 pub use super::diet_name::Entity as DietName;
 pub use super::ingredient_name::Entity as IngredientName;
+pub use super::login_token::Entity as LoginToken;
 pub use super::meal_name::Entity as MealName;
 pub use super::recipe::Entity as Recipe;
 pub use super::recipe_collection::Entity as RecipeCollection;

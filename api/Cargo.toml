@@ -6,12 +6,17 @@ edition = "2024"
 [dependencies]
 axum = "0.8.4"
 dioxus = { workspace = true, features = ["fullstack"] }
+dotenv = "0.15.0"
 # Seem to need this to resolve an issue with webassembly stuff
 getrandom = {version = "0.2.16", features = ["js"] }
+hex = "0.4.3"
+hmac = "0.12.1"
 jsonwebtoken = "9.3.1"
 lettre = "0.11.15"
+rand = "0.9.1"
 sea-orm = { version = "1.1.10", features = ["sqlx-postgres", "sqlx-sqlite", "runtime-tokio", "macros"] }
 serde = { version = "1.0.219", features = ["derive"] }
+sha2 = "0.10.9"
 tokio = "1.44.2"
 # sqlx = { version = "0.8.5", features = ["postgres", "runtime-tokio"] }
 

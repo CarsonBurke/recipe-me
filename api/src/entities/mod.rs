@@ -6,6 +6,7 @@ pub mod comment;
 pub mod cuisine_name;
 pub mod diet_name;
 pub mod ingredient_name;
+pub mod login_token;
 pub mod meal_name;
 pub mod recipe;
 pub mod recipe_collection;

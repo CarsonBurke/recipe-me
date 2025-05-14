@@ -1,26 +1,26 @@
 //! This crate contains all shared fullstack server functions.
+use std::time::Duration;
+
 use data::{
     PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal,
 };
 use dioxus::{html::g::offset, prelude::*};
 use entities::{
-    comment, cuisine_name, diet_name, ingredient_name, meal_name, recipe_cuisine, recipe_diet,
-    recipe_ingredient, recipe_meal, user,
+    comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
 };
+use hmac::{Hmac, Mac};
 use lettre::{
     Message, SmtpTransport, Transport,
     message::{MultiPart, SinglePart, header::ContentType},
     transport::smtp::authentication::Credentials,
 };
 use sea_orm::{
-    ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait,
-    FromQueryResult, JoinType, QueryFilter, QuerySelect, QueryTrait, RelationTrait,
-    prelude::Expr,
-    sea_query::{IntoCondition, Query},
+    prelude::Expr, sea_query::{IntoCondition, Query}, sqlx::types::chrono::Utc, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect, QueryTrait, RelationTrait
 };
 // use sqlx::{postgres::{PgConnectOptions, PgPool, PgPoolOptions, PgRow}, Connection, PgConnection};
 use db::db_conn;
 use serde::{Deserialize, Serialize};
+use sha2::Sha256;
 
 use self::entities::recipe;
 
@@ -240,7 +240,7 @@ pub async fn get_recipe_comments(recipe_id: i32) -> Result<Vec<PartialComment>, 
     Ok(recipe_comments)
 }
 
-#[server]
+/* #[server]
 pub async fn create_user(
     username: String,
     email: String,
@@ -269,11 +269,36 @@ pub async fn delete_user(
         .await
         .unwrap();
     Ok(user.username)
-}
+} */
 
-pub fn create_login_token(user_id: i32) -> String {
-    let token = "";
-    token.to_string()
+/* type HmacSha256 = Hmac<Sha256>; */
+
+pub async fn create_login_token(user_id: i32) -> String {
+    /* dotenv::dotenv().ok();
+
+    let secret = std::env::var("LOGIN_TOKEN_SECRET").unwrap();
+
+    let mut mac = HmacSha256::new_from_slice(secret.as_bytes()).unwrap();
+    mac.update(user_id.to_string().as_bytes());
+
+    let result = mac.finalize();
+    let code = result.into_bytes();
+
+    "".to_string() */
+    
+    let random_bytes: [u8; 16] = rand::random();
+    let token = hex::encode(random_bytes);
+
+    let db = db_conn().await.unwrap();
+
+    let server_token = login_token::ActiveModel {
+        token: ActiveValue::Set(token.clone()),
+        user_id: ActiveValue::Set(user_id),
+        created_epoch: ActiveValue::Set(Utc::now().timestamp() as i32),
+    };
+    let result = server_token.insert(&db).await.unwrap();
+
+    token
 }
 
 pub fn login_confirm_email(username: String, email: String) -> () {
@@ -324,10 +349,15 @@ pub fn login_confirm_email(username: String, email: String) -> () {
 
 #[cfg(test)]
 mod test {
-    use crate::login_confirm_email;
+    use crate::{create_login_token, login_confirm_email};
 
     #[test]
     fn test_login_confirm_email() {
         login_confirm_email("marvin22".to_string(), "carsonburke22@gmail.com".to_string());
+    }
+
+    #[tokio::test]
+    async fn test_create_login_token() {
+        create_login_token(rand::random_range(0..50000)).await;
     }
 }
