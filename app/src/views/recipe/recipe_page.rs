@@ -5,15 +5,22 @@ use api::{
 use dioxus::{logger::tracing::info, prelude::*};
 
 use crate::{
+    Route,
     components::{
-        filtered_recipes::{self, FilteredRecipes}, recipe::comments::RecipeComments, RatingStatic, RecipePreview
-    }, views::recipe::recipes::{self, RecipeFilterParams}, Route
+        RatingStatic, RecipePreview,
+        filtered_recipes::{self, FilteredRecipes},
+        recipe::comments::RecipeComments,
+    },
+    views::recipe::recipes::{self, RecipeFilterParams},
 };
 
 #[component]
 pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
-
     info!("RecipePage: {id}");
+
+    info!("Second check {}", id());
+
+    /* web_sys::window().and_then(|win| Some(win.scroll_to_with_x_and_y(0.0, 0.0))); */
 
     // let id_d = use_memo(move || id);
 
@@ -21,18 +28,23 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
     let recipe = use_resource(move || {
         // let cloned_id = id();
         let cloned_id = id();
-        println !("check 1 id: {cloned_id}");
-        async move { println!("check 2 id: {cloned_id}"); get_recipe(cloned_id).await.unwrap() }
-    }).suspend()?;
+        println!("check 1 id: {cloned_id}");
+        async move {
+            println!("check 2 id: {cloned_id}");
+            get_recipe(cloned_id).await.unwrap()
+        }
+    })
+    .suspend()?;
     let recipe_read = &*recipe.read();
-    println!("Recipe: {:#?}", recipe_read);
+    println!("Read recipe id: {}", recipe_read.id);
     // let recipe_ref = recipe_read.as_ref().unwrap();
 
     let ingredients = use_resource(move || {
         // let cloned_id = id();
         let cloned_id = id();
         async move { get_recipe_ingredients(cloned_id).await.unwrap() }
-    }).suspend()?;
+    })
+    .suspend()?;
     let ingredients_read = &*ingredients.read();
     // let ingredients_ref = ingredients_read.as_ref().unwrap();
 
@@ -40,7 +52,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
         // let cloned_id = id();
         let cloned_id = id();
         async move { get_recipe_cuisines(cloned_id).await.unwrap() }
-    }).suspend()?;
+    })
+    .suspend()?;
     let cuisines_read = &*cuisines.read();
     // let cuisines_ref = cuisines_read.as_ref().unwrap();
 
@@ -48,7 +61,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
         // let cloned_id = id();
         let cloned_id = id();
         async move { get_recipe_meals(cloned_id).await.unwrap() }
-    }).suspend()?;
+    })
+    .suspend()?;
     let meals_read = &*meals.read();
     // let meals_ref = meals_read.as_ref().unwrap();
 
@@ -56,7 +70,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
         // let cloned_id = id();
         let cloned_id = id();
         async move { get_recipe_diets(cloned_id).await.unwrap() }
-    }).suspend()?;
+    })
+    .suspend()?;
     let diets_read = &*diets.read();
     // let diets_ref = diets_read.as_ref().unwrap();
 
@@ -70,10 +85,26 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
 
     /* use_effect(move || {
         let id = id();
+
+        web_sys::window().and_then(|win| Some(win.scroll_to_with_x_and_y(0.0, 0.0)));
     }); */
+
+    let mut main = use_signal(|| None);
 
     rsx! {
         main {
+            onmounted: move |cx| {
+                println!("Mounted");
+                main.set(Some(cx.data()));
+
+                match main.cloned() {
+                    Some(main) => {
+                        println!("try to scroll to");
+                        main.scroll_to(ScrollBehavior::Smooth);
+                    }
+                    None => ()
+                };
+            },
             class: "main",
             section {
                 class: "section column gapMedium",
@@ -83,6 +114,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         class: "column centerRow gapSmall",
                         div {
                             class: "row gapLarge",
+
                             h1 { class: "textXLarge", {recipe_read.name.clone()} }
                             div {
                                 class: "row centerColumn gapMedium",

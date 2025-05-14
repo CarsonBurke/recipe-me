@@ -76,7 +76,8 @@ pub fn Recipes(query: Query) -> Element {
                         diet_id: query.diet_id,
                         ingredient_id: query.ingredient_id,
                         meal_id: query.meal_id,
-                        limit: query.limit
+                        limit: query.limit,
+                        ..Default::default()
                     }
                 }
             }

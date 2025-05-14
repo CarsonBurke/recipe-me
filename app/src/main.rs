@@ -8,7 +8,7 @@ mod views;
 // #[cfg(feature = "server")]
 // mod server;
 
-use views::{recipe::{recipes::{self, RecipeFilterParams}, RecipePage, Recipes}, Blog, Home};
+use views::{recipe::{recipes::{self, RecipeFilterParams}, RecipePage, Recipes}, Home, login::Login, signup::Signup};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
@@ -29,14 +29,16 @@ pub enum Route {
     #[layout(WebNavbar)]
     #[route("/")]
     Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
     #[route("/recipes?:..query")]
     Recipes {
         query: recipes::Query,
      },
     #[route("/recipe/:id")]
     RecipePage { id: i32 },
+    #[route("/login")]
+    Login {},
+    #[route("/signup")]
+    Signup {},
 }
 
 #[component]
@@ -67,11 +69,6 @@ fn WebNavbar() -> Element {
                 class: "buttonBg3 button",
                 to: Route::Recipes { query: recipes::Query::default() },
                 "Recipes"
-            }
-            Link {
-                class: "buttonBg3 button",
-                to: Route::Blog { id: 1 },
-                "Blog"
             }
         }
 

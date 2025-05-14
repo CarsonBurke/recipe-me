@@ -1,11 +1,17 @@
 use dioxus::prelude::*;
 
-use crate::{components::RatingStatic, Route};
+use crate::{Route, components::RatingStatic};
 
 const CSS: Asset = asset!("/assets/styling/recipe_preview.css");
 
 #[component]
-pub fn RecipePreview(id: i32, name: String, summary: String, source: Option<String>, rating: f32) -> Element {
+pub fn RecipePreview(
+    id: i32,
+    name: String,
+    summary: String,
+    source: Option<String>,
+    rating: f32,
+) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: CSS }
 
@@ -20,7 +26,7 @@ pub fn RecipePreview(id: i32, name: String, summary: String, source: Option<Stri
                         class: "textMedium",
                         "{name}"
                     }
-                    RatingStatic { 
+                    RatingStatic {
                         rating
                     }
                 }
