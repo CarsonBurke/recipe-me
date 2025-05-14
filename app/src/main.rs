@@ -59,18 +59,7 @@ pub fn App() -> Element {
 #[component]
 fn WebNavbar() -> Element {
     rsx! {
-        Navbar {
-            Link {
-                class: "buttonBg3 button",
-                to: Route::Home {},
-                "Home"
-            }
-            Link {
-                class: "buttonBg3 button",
-                to: Route::Recipes { query: recipes::Query::default() },
-                "Recipes"
-            }
-        }
+        Navbar {}
 
         Outlet::<Route> {}
     }

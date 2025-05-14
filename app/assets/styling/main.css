@@ -198,7 +198,7 @@ body {
     background-color: var(--bg1);
 }
 
-.buttonBg1:hover {
+.buttonBg1:hover, .buttonBg1:active, .buttonBg1:focus {
     background-color: var(--bg2);
 }
 
@@ -246,4 +246,11 @@ body {
 
 .widthFit {
     width: "fit-content";
+}
+
+.input {
+    padding: var(--spacingSmall);
+    border-radius: var(--defaultBorderRadius);
+    width: fit-content;
+    min-width: 300px;
 }

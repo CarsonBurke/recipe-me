@@ -1,11 +1,11 @@
 use dioxus::prelude::*;
 
-use crate::Route;
+use crate::{views::recipe::recipes, Route};
 
 const CSS: Asset = asset!("/assets/styling/navbar.css");
 
 #[component]
-pub fn Navbar(children: Element) -> Element {
+pub fn Navbar() -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: CSS }
 
@@ -21,7 +21,26 @@ pub fn Navbar(children: Element) -> Element {
             }
             div {
                 class: "row centerColumn gapMedium",
-                {children}
+                Link {
+                    class: "buttonBg3 button",
+                    to: Route::Home {},
+                    "Home"
+                }
+                Link {
+                    class: "buttonBg3 button",
+                    to: Route::Recipes { query: recipes::Query::default() },
+                    "Recipes"
+                }
+                Link {
+                    class: "buttonBg3 button",
+                    to: Route::Login {  },
+                    "Login"
+                }
+                Link {
+                    class: "buttonBg3 button",
+                    to: Route::Signup {  },
+                    "Create an account"
+                }
             }
         }
     }
