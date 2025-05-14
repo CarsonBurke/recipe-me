@@ -6,7 +6,8 @@ use data::{
 };
 use dioxus::{html::g::offset, prelude::*};
 use entities::{
-    comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
+    comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken,
+    recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user,
 };
 use hmac::{Hmac, Mac};
 use lettre::{
@@ -15,7 +16,12 @@ use lettre::{
     transport::smtp::authentication::Credentials,
 };
 use sea_orm::{
-    prelude::Expr, sea_query::{IntoCondition, Query}, sqlx::types::chrono::Utc, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, ConnectOptions, Database, DatabaseConnection, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect, QueryTrait, RelationTrait
+    ActiveModelTrait, ActiveValue, ColumnTrait, Condition, ConnectOptions, Database,
+    DatabaseConnection, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect,
+    QueryTrait, RelationTrait,
+    prelude::Expr,
+    sea_query::{IntoCondition, Query},
+    sqlx::types::chrono::Utc,
 };
 // use sqlx::{postgres::{PgConnectOptions, PgPool, PgPoolOptions, PgRow}, Connection, PgConnection};
 use db::db_conn;
@@ -253,13 +259,6 @@ pub async fn create_user(
 }
 
 #[server]
-pub async fn login(username_or_email: String, password: String) -> Result<String, ServerFnError> {
-    let db = db_conn().await.unwrap();
-    let user = User::login(&db, username_or_email, password).await.unwrap();
-    Ok(user.username)
-}
-
-#[server]
 pub async fn delete_user(
     username_or_email: String,
     password: String,
@@ -270,6 +269,62 @@ pub async fn delete_user(
         .unwrap();
     Ok(user.username)
 } */
+
+#[server]
+pub async fn login(username_or_email: String, password: String) -> Result<String, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let user: Option<user::Model> = user::Entity::find()
+        .filter(user::Column::Username.eq(username_or_email.clone()))
+        .filter(user::Column::Email.eq(username_or_email.clone()))
+        .one(&db)
+        .await?;
+
+    let Some(user) = user else {
+        return Err(ServerFnError::ServerError("User not found".to_string()));
+    };
+
+    let id = user.id;
+
+    Ok(create_login_token(user.id).await)
+}
+
+#[server]
+pub async fn create_account(
+    username: String,
+    email: String,
+    password: String,
+) -> Result<String, ServerFnError> {
+    let db = db_conn().await.unwrap();
+
+    // Make sure no users already exist with this email
+
+    let existing_user = user::Entity::find()
+        .filter(user::Column::Email.eq(email.clone()))
+        .one(&db)
+        .await
+        .unwrap();
+    if existing_user.is_some() {
+        return Err(ServerFnError::ServerError(
+            "User already exists".to_string(),
+        ));
+    }
+
+    // Create the user
+
+    let user = user::ActiveModel {
+        id: ActiveValue::NotSet,
+        username: ActiveValue::Set(username.clone()),
+        email: ActiveValue::Set(email.clone()),
+        password: ActiveValue::Set(password.clone()),
+    };
+    let result = user.insert(&db).await.unwrap();
+    let user_id = result.id;
+
+    // Generate a token using the user id to allow for quick "login"
+
+    let token = create_login_token(user_id).await;
+    Ok(token)
+}
 
 /* type HmacSha256 = Hmac<Sha256>; */
 
@@ -285,7 +340,7 @@ pub async fn create_login_token(user_id: i32) -> String {
     let code = result.into_bytes();
 
     "".to_string() */
-    
+
     let random_bytes: [u8; 16] = rand::random();
     let token = hex::encode(random_bytes);
 
@@ -301,8 +356,9 @@ pub async fn create_login_token(user_id: i32) -> String {
     token
 }
 
-pub fn login_confirm_email(username: String, email: String) -> () {
-    let html = format!(r#"<!DOCTYPE html>
+pub fn signup_confirm_email(username: String, email: String) -> () {
+    let html = format!(
+        r#"<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Welcome to Recipe Me</title>
@@ -313,7 +369,9 @@ pub fn login_confirm_email(username: String, email: String) -> () {
         <a href="{}" style="background-color: #4CAF50; border-radius: 6px; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">Verify Login</a>
         <p>Why are we asking you to verify your login? It allows us to ensure that your accountis safe and secure.</p>
     </body>
-</html>"#, email);
+</html>"#,
+        email
+    );
 
     let email = Message::builder()
         .from("Recipe Me <carsonburke22@gmail.com>".parse().unwrap())
@@ -349,11 +407,14 @@ pub fn login_confirm_email(username: String, email: String) -> () {
 
 #[cfg(test)]
 mod test {
-    use crate::{create_login_token, login_confirm_email};
+    use crate::{create_login_token, signup_confirm_email};
 
     #[test]
-    fn test_login_confirm_email() {
-        login_confirm_email("marvin22".to_string(), "carsonburke22@gmail.com".to_string());
+    fn test_signup_confirm_email() {
+        signup_confirm_email(
+            "marvin22".to_string(),
+            "carsonburke22@gmail.com".to_string(),
+        );
     }
 
     #[tokio::test]
