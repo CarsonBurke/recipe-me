@@ -9,7 +9,18 @@ mod views;
 // mod server;
 
 use dioxus_toast::ToastManager;
-use views::{recipe::{recipes::{self, RecipeFilterParams}, RecipePage, Recipes}, Home, login::Login, signup::Signup};
+use views::{
+    Home,
+    login::Login,
+    account::{
+        dashboard::AccountDashboard,
+    },
+    recipe::{
+        RecipePage, Recipes,
+        recipes::{self, RecipeFilterParams},
+    },
+    signup::Signup,
+};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
@@ -19,7 +30,7 @@ fn main() {
     // tokio::runtime::Runtime::new()
     //     .unwrap()
     //     .block_on(server::launch_server());
-    
+
     // #[cfg(not(feature = "server"))]
     dioxus::launch(App);
 }
@@ -40,11 +51,12 @@ pub enum Route {
     Login {},
     #[route("/signup")]
     Signup {},
+    #[route("/dashboard")]
+    AccountDashboard {}
 }
 
 #[component]
 pub fn App() -> Element {
-
     rsx! {
         // Global app resources
         document::Link { rel: "icon", href: FAVICON }
@@ -59,7 +71,6 @@ pub fn App() -> Element {
 /// which allows us to use the web-specific `Route` enum.
 #[component]
 fn WebNavbar() -> Element {
-
     let toast = use_context_provider(|| Signal::new(ToastManager::default()));
 
     rsx! {

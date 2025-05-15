@@ -35,7 +35,7 @@ pub fn Signup() -> Element {
             class: "main",
             section {
                 class: "section",
-                div {
+                form {
                     class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
                     h1 { class: "textLarge", "Create an account" },
                     div {
@@ -116,6 +116,7 @@ pub fn Signup() -> Element {
                     },
                     button {
                         class: "button buttonBg3",
+                        type: "submit",
                         disabled: !soft_can_create_account(username(), email(), password(), confirm_password()),
                         onclick: move |_| async move {
                             println!("Username: {}", username());

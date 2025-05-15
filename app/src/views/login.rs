@@ -1,5 +1,7 @@
+use api::auth::ServerLoginToken;
 use dioxus::prelude::*;
 use dioxus_toast::{ToastInfo, ToastManager};
+use gloo_storage::{LocalStorage, Storage};
 
 #[component]
 pub fn Login() -> Element {
@@ -22,7 +24,7 @@ pub fn Login() -> Element {
             class: "main",
             section {
                 class: "section",
-                div {
+                form {
                     class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
                     h1 { class: "textLarge", "Login" },
                     div {
@@ -54,6 +56,7 @@ pub fn Login() -> Element {
                     },
                     button {
                         class: "button buttonBg3",
+                        type: "submit",
                         disabled: !soft_can_login(email(), password()),
                         onclick: move |_| async move {
                             if !soft_can_login(email(), password()) {
@@ -63,9 +66,19 @@ pub fn Login() -> Element {
                             let login_result = api::auth::login(email(), password()).await;
                             println!("login result {:#?}", login_result);
 
-                            if let Ok(login_result) = login_result {
-                                let _ = toast.write().popup(ToastInfo::simple("Login successful"));
-                            }
+                            let Ok(login_result) = login_result else {
+                                return
+                            };
+
+                            let _ = toast.write().popup(ToastInfo::simple("Login successful"));
+
+                            /* let window = web_sys::window().unwrap();
+                            let local_storage = window.local_storage().unwrap().unwrap();
+                            local_storage.set_item("token", &login_result.token).unwrap(); */
+
+                            /* LocalStorage::set("login_token", &login_result.token).unwrap();
+                            let token_check: ServerLoginToken = LocalStorage::get("login_token").unwrap();
+                            println!("Token check: {:#?}", token_check); */
                         },
                         "Login"
                     },
