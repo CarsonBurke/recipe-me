@@ -36,8 +36,23 @@ use crate::secrets::EMAIL_SECRET;
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerLoginToken {
+    pub user_id: i32,
+    pub token: String,
+}
+
+impl From<login_token::Model> for ServerLoginToken {
+    fn from(value: login_token::Model) -> Self {
+        ServerLoginToken {
+            user_id: value.user_id,
+            token: value.token,
+        }
+    }
+}
+
 #[server]
-pub async fn login(email: String, password: String) -> Result<String, ServerFnError> {
+pub async fn login(email: String, password: String) -> Result<ServerLoginToken, ServerFnError> {
     println!("Try to login");
     let db = db_conn().await.unwrap();
     let user: Option<user::Model> = user::Entity::find()
@@ -65,7 +80,7 @@ pub async fn create_account(
     username: String,
     email: String,
     password: String,
-) -> Result<String, ServerFnError> {
+) -> Result<ServerLoginToken, ServerFnError> {
     println!("try to create account");
     let db = db_conn().await.unwrap();
 
@@ -102,13 +117,13 @@ pub async fn create_account(
     // Generate a token using the user id to allow for quick "login"
 
     let token = create_login_token(user_id).await;
-    println!("created token {}", token);
+    
     Ok(token)
 }
 
 /* type HmacSha256 = Hmac<Sha256>; */
 
-pub async fn create_or_update_login_token(user_id: i32) -> String {
+pub async fn create_or_update_login_token(user_id: i32) -> ServerLoginToken {
     // Check if there is an existing token
 
     let db = db_conn().await.unwrap();
@@ -123,7 +138,7 @@ pub async fn create_or_update_login_token(user_id: i32) -> String {
         // if it is valid, return it
 
         if is_token_valid(token.created_epoch) {
-            return token.token;
+            return token.into();
         }
 
         // The current token is invalid, delete it so we can make a new one
@@ -139,7 +154,7 @@ pub async fn create_or_update_login_token(user_id: i32) -> String {
     create_login_token(user_id).await
 }
 
-pub async fn create_login_token(user_id: i32) -> String {
+pub async fn create_login_token(user_id: i32) -> ServerLoginToken {
     let db = db_conn().await.unwrap();
     let existing_token = login_token::Entity::find_by_id(user_id)
         .one(&db)
@@ -147,7 +162,7 @@ pub async fn create_login_token(user_id: i32) -> String {
         .unwrap();
     if let Some(existing_token) = existing_token {
         if is_token_valid(existing_token.created_epoch) {
-            return existing_token.token;
+            return existing_token.into();
         }
     }
 
@@ -161,18 +176,20 @@ pub async fn create_login_token(user_id: i32) -> String {
     };
     let _ = server_token.insert(&db).await.unwrap();
 
-    token
+    ServerLoginToken {
+        user_id,
+        token,
+    }
 }
 
 #[server]
-pub async fn server_is_logged_in(token: String) -> Result<bool, ServerFnError> {
+pub async fn server_is_logged_in(token: ServerLoginToken) -> Result<bool, ServerFnError> {
     Ok(is_logged_in(token).await)
 }
 
-pub async fn is_logged_in(token: String) -> bool {
+pub async fn is_logged_in(token: ServerLoginToken) -> bool {
     let db = db_conn().await.unwrap();
-    let token = login_token::Entity::find()
-        .filter(login_token::Column::Token.eq(token))
+    let token = login_token::Entity::find_by_id(token.user_id)
         .one(&db)
         .await
         .unwrap();
@@ -241,4 +258,12 @@ pub fn signup_confirm_email(username: String, email: String, token: String) -> (
 
     let res = mailer.send(&email);
     println!("res {res:?}");
+}
+
+#[cfg(test)]
+mod test {
+    use super::is_logged_in;
+
+    #[test]
+    fn test_is_logged_in() {}
 }

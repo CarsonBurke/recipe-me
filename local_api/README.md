@@ -1,0 +1,1 @@
+On-device storage. Used for desktop app and mobile app, allowing for usage of a database.

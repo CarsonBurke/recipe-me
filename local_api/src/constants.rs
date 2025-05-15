@@ -1,0 +1,1 @@
+pub const DATABASE_URL: &str = "sqlite://recipes.sqlite?mode=rwc";
