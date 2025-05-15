@@ -8,6 +8,7 @@ mod views;
 // #[cfg(feature = "server")]
 // mod server;
 
+use dioxus_toast::ToastManager;
 use views::{recipe::{recipes::{self, RecipeFilterParams}, RecipePage, Recipes}, Home, login::Login, signup::Signup};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
@@ -58,8 +59,15 @@ pub fn App() -> Element {
 /// which allows us to use the web-specific `Route` enum.
 #[component]
 fn WebNavbar() -> Element {
+
+    let toast = use_context_provider(|| Signal::new(ToastManager::default()));
+
     rsx! {
         Navbar {}
+
+        dioxus_toast::ToastFrame {
+            manager: toast,
+        }
 
         Outlet::<Route> {}
     }

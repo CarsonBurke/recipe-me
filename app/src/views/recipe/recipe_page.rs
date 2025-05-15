@@ -7,7 +7,7 @@ use dioxus::{logger::tracing::info, prelude::*};
 use crate::{
     Route,
     components::{
-        RatingStatic, RecipePreview,
+        RatingStatic,
         filtered_recipes::{self, FilteredRecipes},
         recipe::comments::RecipeComments,
     },

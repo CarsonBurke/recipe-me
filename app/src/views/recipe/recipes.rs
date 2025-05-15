@@ -2,7 +2,7 @@ use api::{FilteredRecipesParams, get_filtered_recipes, get_recipes};
 use dioxus::{logger::tracing::info, prelude::*};
 use serde::{Deserialize, Serialize};
 
-use crate::{components::{filtered_recipes::{self, FilteredRecipes}, RecipePreview}, Route};
+use crate::{components::{filtered_recipes::{self, FilteredRecipes}}, Route};
 
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct RecipeFilterParams {

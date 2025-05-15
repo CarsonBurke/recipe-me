@@ -1,5 +1,6 @@
 use api::auth::create_account;
 use dioxus::prelude::*;
+use dioxus_toast::{ToastInfo, ToastManager};
 
 #[component]
 pub fn Signup() -> Element {
@@ -26,6 +27,8 @@ pub fn Signup() -> Element {
 
         true
     }
+
+    let mut toast: Signal<ToastManager> = use_context();
 
     rsx! {
         main {
@@ -125,6 +128,10 @@ pub fn Signup() -> Element {
                             println!("client side account create");
                             let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
                             println!("Potential login token {:?}", token);
+
+                            if let Ok(token) = token {
+                                let _ = toast.write().popup(ToastInfo::simple("Successfully created account"));
+                            }
                         },
                         "Create new account"
                     },

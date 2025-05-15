@@ -1,7 +1,7 @@
 use api::{FilteredRecipesParams, get_filtered_recipes};
 use dioxus::prelude::*;
 
-use crate::components::RecipePreview;
+use crate::components::recipe::preview::RecipePreview;
 
 #[derive(Clone, Debug, Copy, PartialEq, Default)]
 pub struct Params {}

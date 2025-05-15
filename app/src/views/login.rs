@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use dioxus_toast::{ToastInfo, ToastManager};
 
 #[component]
 pub fn Login() -> Element {
@@ -13,6 +14,8 @@ pub fn Login() -> Element {
 
         true
     }
+
+    let mut toast: Signal<ToastManager> = use_context();
 
     rsx! {
         main {
@@ -59,6 +62,10 @@ pub fn Login() -> Element {
 
                             let login_result = api::auth::login(email(), password()).await;
                             println!("login result {:#?}", login_result);
+
+                            if let Ok(login_result) = login_result {
+                                let _ = toast.write().popup(ToastInfo::simple("Login successful"));
+                            }
                         },
                         "Login"
                     },
