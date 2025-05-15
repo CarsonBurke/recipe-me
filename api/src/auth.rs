@@ -36,7 +36,7 @@ use crate::secrets::EMAIL_SECRET;
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ServerLoginToken {
     pub user_id: i32,
     pub token: String,
@@ -48,6 +48,12 @@ impl From<login_token::Model> for ServerLoginToken {
             user_id: value.user_id,
             token: value.token,
         }
+    }
+}
+
+impl ToString for ServerLoginToken {
+    fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
     }
 }
 
@@ -117,7 +123,7 @@ pub async fn create_account(
     // Generate a token using the user id to allow for quick "login"
 
     let token = create_login_token(user_id).await;
-    
+
     Ok(token)
 }
 
@@ -176,26 +182,31 @@ pub async fn create_login_token(user_id: i32) -> ServerLoginToken {
     };
     let _ = server_token.insert(&db).await.unwrap();
 
-    ServerLoginToken {
-        user_id,
-        token,
-    }
+    ServerLoginToken { user_id, token }
 }
 
 #[server]
 pub async fn server_is_logged_in(token: ServerLoginToken) -> Result<bool, ServerFnError> {
+    println!("server is logged in check");
     Ok(is_logged_in(token).await)
 }
 
 pub async fn is_logged_in(token: ServerLoginToken) -> bool {
+    println!("is logged in check");
+
     let db = db_conn().await.unwrap();
     let token = login_token::Entity::find_by_id(token.user_id)
         .one(&db)
         .await
         .unwrap();
 
+    println!("Tried to find existing token");
+
     // Check if the token exists
-    let Some(token) = token else { return false };
+    let Some(token) = token else {
+        println!("Token does not exist");
+        return false;
+    };
 
     is_token_valid(token.created_epoch)
 }
@@ -206,9 +217,10 @@ pub fn is_token_valid(created_epoch: i32) -> bool {
 
     // Check if the token is expired
     if diff > LOGIN_TOKEN_MAX_AGE {
+        println!("Token is expired");
         return false;
     }
-
+    println!("token is valid");
     true
 }
 

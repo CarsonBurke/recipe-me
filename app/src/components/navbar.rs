@@ -1,11 +1,16 @@
 use dioxus::prelude::*;
 
-use crate::{views::recipe::recipes, Route};
+use crate::{utils, views::recipe::recipes, Route, LOGIN_TOKEN_GLOBAL};
 
 const CSS: Asset = asset!("/assets/styling/navbar.css");
 
 #[component]
 pub fn Navbar() -> Element {
+
+    let is_logged_in = utils::is_logged_in().unwrap_or(false);
+    /* let login_token = LOGIN_TOKEN_GLOBAL(); */
+    println!("is logged in: {:#?}", is_logged_in);
+
     rsx! {
         document::Link { rel: "stylesheet", href: CSS }
 
@@ -31,15 +36,34 @@ pub fn Navbar() -> Element {
                     to: Route::Recipes { query: recipes::Query::default() },
                     "Recipes"
                 }
-                Link {
-                    class: "buttonBg3 button",
-                    to: Route::Login {  },
-                    "Login"
+                if is_logged_in {
+                    Link {
+                        class: "buttonBg3 button",
+                        to: Route::AccountDashboard {  },
+                        "Dashboard"
+                    }
+                    Link {
+                        class: "buttonBg3 button",
+                        to: Route::AccountRecipes {  },
+                        "My Recipes"
+                    }
+                    Link {
+                        class: "buttonBg3 button",
+                        to: Route::Account {  },
+                        "Account"
+                    }
                 }
-                Link {
-                    class: "buttonBg3 button",
-                    to: Route::Signup {  },
-                    "Create an account"
+                if !is_logged_in {
+                    Link {
+                        class: "buttonBg3 button",
+                        to: Route::Login {  },
+                        "Login"
+                    }
+                    Link {
+                        class: "buttonBg3 button",
+                        to: Route::Signup {  },
+                        "Create an account"
+                    }
                 }
             }
         }

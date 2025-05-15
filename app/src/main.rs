@@ -1,21 +1,28 @@
 #![allow(unused)]
 
+use api::{auth::ServerLoginToken, entities::prelude::LoginToken};
 use components::Navbar;
+use constants::LOGIN_TOKEN_KEY;
 use dioxus::prelude::*;
 
 mod components;
 mod views;
 pub mod constants;
+pub mod utils;
 // #[cfg(feature = "server")]
 // mod server;
 
+use dioxus_sdk::storage::{use_synced_storage, LocalStorage};
 use dioxus_toast::ToastManager;
 use views::{
     Home,
     login::Login,
     account::{
         dashboard::AccountDashboard,
+        account_recipes::AccountRecipes,
+        account::Account,
     },
+    fallback::Fallback,
     recipe::{
         RecipePage, Recipes,
         recipes::{self, RecipeFilterParams},
@@ -27,8 +34,14 @@ const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 
 fn main() {
+    // Allows use to use local and session storage
+    dioxus_sdk::set_dir!();
 
-    dioxus_sdk::set_dir!("persist");
+    // Try to assign the cached login token
+    /* let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+    if let Some(cached_login_token) = cached_login_token() {
+        *LOGIN_TOKEN_GLOBAL.write() = Some(cached_login_token);
+    } */
 
     // #[cfg(feature = "server")]
     // tokio::runtime::Runtime::new()
@@ -55,12 +68,24 @@ pub enum Route {
     Login {},
     #[route("/signup")]
     Signup {},
-    #[route("/dashboard")]
-    AccountDashboard {}
+    #[route("/account/dashboard")]
+    AccountDashboard {},
+    #[route("/account/recipes")]
+    AccountRecipes {},
+    #[route("/account")]
+    Account {},
+    #[route("/:..route")]
+    Fallback { route: Vec<String> },
 }
 
 #[component]
 pub fn App() -> Element {
+
+    let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+    if let Some(cached_login_token) = cached_login_token() {
+        *LOGIN_TOKEN_GLOBAL.write() = Some(cached_login_token);
+    }
+
     rsx! {
         // Global app resources
         document::Link { rel: "icon", href: FAVICON }
@@ -87,3 +112,5 @@ fn WebNavbar() -> Element {
         Outlet::<Route> {}
     }
 }
+
+pub static LOGIN_TOKEN_GLOBAL: GlobalSignal<Option<ServerLoginToken>> = Signal::global(|| None);

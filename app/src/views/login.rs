@@ -1,14 +1,17 @@
 use api::auth::ServerLoginToken;
 use dioxus::prelude::*;
-use dioxus_sdk::storage::{use_synced_storage, LocalStorage};
+use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::{ToastInfo, ToastManager};
 
-use crate::constants::LOGIN_TOKEN_KEY;
+use crate::{LOGIN_TOKEN_GLOBAL, Route, constants::LOGIN_TOKEN_KEY};
 
 #[component]
 pub fn Login() -> Element {
     let mut email = use_signal(|| "".to_string());
     let mut password = use_signal(|| "".to_string());
+
+    let mut is_processing = use_signal(|| false);
+    let mut failed_login = use_signal(|| false);
 
     fn soft_can_login(email: String, password: String) -> bool {
         if email.is_empty() || password.is_empty() {
@@ -31,6 +34,49 @@ pub fn Login() -> Element {
             section {
                 class: "section",
                 form {
+                    onsubmit: move |e| async move {
+                        if !soft_can_login(email(), password()) {
+                            return
+                        }
+
+                        is_processing.set(true);
+
+                        let login_token = api::auth::login(email(), password()).await;
+                        println!("login result {:#?}", login_token);
+
+                        let Ok(login_token) = login_token else {
+                            let _ = toast.write().popup(ToastInfo::simple("Login failed"));
+                            failed_login.set(true);
+                            is_processing.set(false);
+                            return
+                        };
+
+                        let _ = toast.write().popup(ToastInfo::simple("Login successful"));
+
+                        /* let window = web_sys::window().unwrap();
+                        let local_storage = window.local_storage().unwrap().unwrap();
+                        local_storage.set_item("token", &login_token.token).unwrap(); */
+
+                        /* LocalStorage::set("login_token", &login_token.token);
+                        let token_check = LocalStorage::get::<ServerLoginToken>("login_token");
+                        println!("Token check: {:#?}", token_check); */
+
+                        let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+                        println!("Local token 1: {:#?}", local_token);
+
+                        *local_token.write() = Some(login_token.clone());
+
+                        println!("Local token 2: {:#?}", local_token);
+
+                        is_processing.set(false);
+
+                        *LOGIN_TOKEN_GLOBAL.write() = Some(login_token);
+
+                        // Send the user to their account dashboard
+
+                        let navigator = navigator();
+                        navigator.push(Route::AccountDashboard {});
+                    },
                     class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
                     h1 { class: "textLarge", "Login" },
                     div {
@@ -60,40 +106,17 @@ pub fn Login() -> Element {
                             },
                         },
                     },
+                    if failed_login() {
+                        p { class: "textSmall textNegative", "Login failed, please try a different username or password" }
+                    }
                     button {
                         class: "button buttonBg3",
                         type: "submit",
-                        disabled: !soft_can_login(email(), password()),
-                        onclick: move |_| async move {
-                            if !soft_can_login(email(), password()) {
-                                return
-                            }
-
-                            let login_token = api::auth::login(email(), password()).await;
-                            println!("login result {:#?}", login_token);
-
-                            let Ok(login_token) = login_token else {
-                                return
-                            };
-
-                            let _ = toast.write().popup(ToastInfo::simple("Login successful"));
-
-                            /* let window = web_sys::window().unwrap();
-                            let local_storage = window.local_storage().unwrap().unwrap();
-                            local_storage.set_item("token", &login_token.token).unwrap(); */
-
-                            /* LocalStorage::set("login_token", &login_token.token);
-                            let token_check = LocalStorage::get::<ServerLoginToken>("login_token");
-                            println!("Token check: {:#?}", token_check); */
-
-                            let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
-                            println!("Local token 1: {:#?}", local_token);
-                            
-                            *local_token.write() = Some(login_token);
-
-                            println!("Local token 2: {:#?}", local_token);
-                        },
-                        "Login"
+                        disabled: !soft_can_login(email(), password()) || is_processing(),
+                        if is_processing() {
+                            p { class: "textSmall", "Trying to log you in..." }
+                        }
+                        else { "Login" }
                     },
                 }
             }

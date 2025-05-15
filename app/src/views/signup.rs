@@ -36,6 +36,22 @@ pub fn Signup() -> Element {
             section {
                 class: "section",
                 form {
+                    onsubmit: move |_| async move {
+                        println!("Username: {}", username());
+
+                        if !soft_can_create_account(username(), email(), password(), confirm_password()) {
+                            return;
+                        }
+                        println!("passed soft checks");
+                        
+                        println!("client side account create");
+                        let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
+                        println!("Potential login token {:?}", token);
+
+                        if let Ok(token) = token {
+                            let _ = toast.write().popup(ToastInfo::simple("Successfully created account"));
+                        }
+                    },
                     class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
                     h1 { class: "textLarge", "Create an account" },
                     div {
@@ -118,22 +134,6 @@ pub fn Signup() -> Element {
                         class: "button buttonBg3",
                         type: "submit",
                         disabled: !soft_can_create_account(username(), email(), password(), confirm_password()),
-                        onclick: move |_| async move {
-                            println!("Username: {}", username());
-
-                            if !soft_can_create_account(username(), email(), password(), confirm_password()) {
-                                return;
-                            }
-                            println!("passed soft checks");
-                            
-                            println!("client side account create");
-                            let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
-                            println!("Potential login token {:?}", token);
-
-                            if let Ok(token) = token {
-                                let _ = toast.write().popup(ToastInfo::simple("Successfully created account"));
-                            }
-                        },
                         "Create new account"
                     },
                 }
