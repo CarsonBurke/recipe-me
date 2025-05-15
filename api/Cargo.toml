@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = "0.8.4"
+bcrypt = "0.17.0"
 dioxus = { workspace = true, features = ["fullstack"] }
 dotenv = "0.15.0"
 # Seem to need this to resolve an issue with webassembly stuff
@@ -24,5 +25,6 @@ tokio = "1.44.2"
 # [dependency.getrandom]
 # features = ["js"]
 
-[features]
-default = ["dioxus/server"]
+# Makes the server run on its own...
+# [features]
+# default = ["dioxus/server"]

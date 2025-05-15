@@ -262,11 +262,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         {format!("{} Recipes", diet.name.clone())},
                     }
                     FilteredRecipes {
-                        params: filtered_recipes::Params {
-                            diet_id: Some(diet.id),
-                            limit: Some(4),
-                            ..Default::default()
-                        }
+                        diet_id: Some(diet.id),
+                        limit: Some(4),
                     }
                 }
                 for cuisine in cuisines_read {
@@ -275,11 +272,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         {format!("{} Recipes", cuisine.name.clone())},
                     }
                     FilteredRecipes {
-                        params: filtered_recipes::Params {
-                            cuisine_id: Some(cuisine.id),
-                            limit: Some(4),
-                            ..Default::default()
-                        }
+                        cuisine_id: Some(cuisine.id),
+                        limit: Some(4),
                     }
                 }
                 for meal in meals_read {
@@ -288,11 +282,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         {format!("{} Recipes", meal.name.clone())},
                     }
                     FilteredRecipes {
-                        params: filtered_recipes::Params {
-                            meal_id: Some(meal.id),
-                            limit: Some(4),
-                            ..Default::default()
-                        }
+                        meal_id: Some(meal.id),
+                        limit: Some(4),
                     }
                 }
             }

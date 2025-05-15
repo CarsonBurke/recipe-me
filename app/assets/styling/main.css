@@ -19,6 +19,9 @@ body {
     --bg2:rgb(29, 34, 46);
     --bg3:rgb(39, 46, 61);
     --bg4:rgb(49, 58, 76);
+
+    --positive: green;
+    --negative: red;
     
     /* Spacing */
     --spacingXSmall: 2px;
@@ -194,11 +197,17 @@ body {
     cursor: pointer;
 }
 
+.button:disabled {
+    opacity: 0.7;
+    cursor: disabled;
+    pointer-events: none;
+}
+
 .buttonBg1 {
     background-color: var(--bg1);
 }
 
-.buttonBg1:hover, .buttonBg1:active, .buttonBg1:focus {
+.buttonBg1:hover, .buttonBg1:focus, .buttonBg1:active {
     background-color: var(--bg2);
 }
 
@@ -206,7 +215,7 @@ body {
     background-color: var(--bg2);
 }
 
-.buttonBg2:hover {
+.buttonBg2:hover, .buttonBg2:focus, .buttonBg2:active {
     background-color: var(--bg3);
 }
 
@@ -214,7 +223,7 @@ body {
     background-color: var(--bg3);
 }
 
-.buttonBg3:hover {
+.buttonBg3:hover, .buttonBg3:focus, .buttonBg3:active {
     background-color: var(--bg4);
 }
 
@@ -253,4 +262,12 @@ body {
     border-radius: var(--defaultBorderRadius);
     width: fit-content;
     min-width: 300px;
+}
+
+.textPositive {
+    color: var(--positive);
+}
+
+.textNegative {
+    color: var(--negative);
 }

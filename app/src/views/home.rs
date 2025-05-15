@@ -16,9 +16,7 @@ pub fn Home() -> Element {
                     class: "textXLarge",
                     "Recipes"
                 }
-                FilteredRecipes {
-                    params: filtered_recipes::Params::default()
-                }
+                FilteredRecipes {}
             }
         }
     }

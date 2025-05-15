@@ -2,8 +2,17 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn Login() -> Element {
-    let mut username_or_email = use_signal(|| "".to_string());
+    let mut email = use_signal(|| "".to_string());
     let mut password = use_signal(|| "".to_string());
+
+    fn soft_can_login(email: String, password: String) -> bool {
+        if email.is_empty() || password.is_empty() {
+            println!("empty fields");
+            return false;
+        }
+
+        true
+    }
 
     rsx! {
         main {
@@ -17,13 +26,13 @@ pub fn Login() -> Element {
                         class: "column gapMedium",
                         div {
                             class: "column gapSmall",
-                            label { class: "textSmall", "Enter your username or email" },
+                            label { class: "textSmall", "Enter your email" },
                             input {
                                 class: "input bg3 borderBg4",
-                                placeholder: "Username or email",
-                                type: "text/email",
+                                placeholder: "Your email",
+                                type: "email",
                                 oninput: move |e| {
-                                    username_or_email.set(e.value().clone())
+                                    email.set(e.value().clone())
                                 },
                             },
                         },
@@ -32,7 +41,7 @@ pub fn Login() -> Element {
                             label { class: "textSmall", "Enter your password" },
                             input {
                                 class: "input bg3 borderBg4",
-                                placeholder: "Password",
+                                placeholder: "Your password",
                                 type: "password",
                                 oninput: move |e| {
                                     password.set(e.value().clone())
@@ -42,11 +51,14 @@ pub fn Login() -> Element {
                     },
                     button {
                         class: "button buttonBg3",
-                        onclick: move |_| {
-                            async move {
-                                let login_result = api::login(username_or_email(), password());
-                                println!("login result {:#?}", login_result.await);
+                        disabled: !soft_can_login(email(), password()),
+                        onclick: move |_| async move {
+                            if !soft_can_login(email(), password()) {
+                                return
                             }
+
+                            let login_result = api::auth::login(email(), password()).await;
+                            println!("login result {:#?}", login_result);
                         },
                         "Login"
                     },

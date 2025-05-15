@@ -1,4 +1,4 @@
-use api::create_account;
+use api::auth::create_account;
 use dioxus::prelude::*;
 
 #[component]
@@ -7,6 +7,25 @@ pub fn Signup() -> Element {
     let mut email = use_signal(|| "".to_string());
     let mut password = use_signal(|| "".to_string());
     let mut confirm_password = use_signal(|| "".to_string());
+
+    fn soft_can_create_account(username: String, email: String, password: String, confirm_password: String) -> bool {
+        if username.is_empty() || email.is_empty() || password.is_empty() || confirm_password.is_empty() {
+            println!("empty fields");
+            return false;
+        }
+
+        if password != confirm_password {
+            println!("passwords do not match");
+            return false;
+        }
+
+        if password.len() < 6 {
+            println!("Password is too short");
+            return false;
+        }
+
+        true
+    }
 
     rsx! {
         main {
@@ -62,7 +81,7 @@ pub fn Signup() -> Element {
                                 placeholder: "Repeat password",
                                 type: "password",
                                 oninput: move |e| {
-                                    password.set(e.value().clone())
+                                    confirm_password.set(e.value().clone())
                                 },
                             },
                         },
@@ -73,7 +92,7 @@ pub fn Signup() -> Element {
                                 if password != confirm_password {
                                     rsx!{
                                         p {
-                                            class: "textSmall",
+                                            class: "textSmall textNegative",
                                             "Passwords don't match"
                                         }
                                     }
@@ -81,7 +100,7 @@ pub fn Signup() -> Element {
                                 else {
                                     rsx!{
                                         p {
-                                            class: "textSmall",
+                                            class: "textSmall textPositive",
                                             "Passwords match"
                                         }
                                     }
@@ -94,19 +113,18 @@ pub fn Signup() -> Element {
                     },
                     button {
                         class: "button buttonBg3",
-                        onclick: move |_| {
-                            if password() != confirm_password() {
+                        disabled: !soft_can_create_account(username(), email(), password(), confirm_password()),
+                        onclick: move |_| async move {
+                            println!("Username: {}", username());
+
+                            if !soft_can_create_account(username(), email(), password(), confirm_password()) {
                                 return;
                             }
-
-                            if password().len() < 6 {
-                                return;
-                            }
-
-                            async move {
-                                let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
-                                println!("Potential login token {:?}", token);
-                            };
+                            println!("passed soft checks");
+                            
+                            println!("client side account create");
+                            let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
+                            println!("Potential login token {:?}", token);
                         },
                         "Create new account"
                     },
@@ -115,3 +133,4 @@ pub fn Signup() -> Element {
         }
     }
 }
+

@@ -4,23 +4,23 @@ use dioxus::prelude::*;
 use crate::components::RecipePreview;
 
 #[derive(Clone, Debug, Copy, PartialEq, Default)]
-pub struct Params {
-    pub cuisine_id: Option<i32>,
-    pub diet_id: Option<i32>,
-    pub meal_id: Option<i32>,
-    pub ingredient_id: Option<i32>,
-    pub limit: Option<u64>,
-}
+pub struct Params {}
 
 #[component]
-pub fn FilteredRecipes(params: Params) -> Element {
+pub fn FilteredRecipes(
+    cuisine_id: Option<i32>,
+    diet_id: Option<i32>,
+    meal_id: Option<i32>,
+    ingredient_id: Option<i32>,
+    limit: Option<u64>,
+) -> Element {
     let recipes = use_server_future(move || {
         let params = FilteredRecipesParams {
-            cuisine_id: params.cuisine_id.clone(),
-            diet_id: params.diet_id.clone(),
-            ingredient_id: params.ingredient_id.clone(),
-            meal_id: params.meal_id.clone(),
-            limit: params.limit.clone().unwrap_or(50),
+            cuisine_id: cuisine_id.clone(),
+            diet_id: diet_id.clone(),
+            ingredient_id: ingredient_id.clone(),
+            meal_id: meal_id.clone(),
+            limit: limit.clone().unwrap_or(50),
             ..Default::default()
         };
         async move { get_filtered_recipes(params).await.unwrap() }
