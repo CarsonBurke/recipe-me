@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-dioxus = { workspace = true, features = ["router", "fullstack", "web"] }
+dioxus = { workspace = true, features = ["router", "fullstack"] }
 tokio = { version = "1", features = ["full"], optional = true }
 axum = { version = "0.8.4", optional = true }
 api = { workspace = true }
@@ -13,10 +13,12 @@ serde = "1.0.219"
 web-sys = "0.3.77"
 dioxus-toast = "0.6.0"
 gloo-storage = "0.3.0"
+dioxus-sdk = { version = "0.6.0", features = ["storage"]}
 
 [features]
 default = []
 web = ["dioxus/web"]
 mobile = ["dioxus/mobile"]
 desktop = ["dioxus/desktop"]
+fullstack = ["dioxus/fullstack"]
 server = ["dioxus/server", "dep:tokio", "dep:axum"]

@@ -5,6 +5,7 @@ use dioxus::prelude::*;
 
 mod components;
 mod views;
+pub mod constants;
 // #[cfg(feature = "server")]
 // mod server;
 
@@ -26,6 +27,9 @@ const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 
 fn main() {
+
+    dioxus_sdk::set_dir!("persist");
+
     // #[cfg(feature = "server")]
     // tokio::runtime::Runtime::new()
     //     .unwrap()

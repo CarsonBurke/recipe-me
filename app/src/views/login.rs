@@ -1,7 +1,9 @@
 use api::auth::ServerLoginToken;
 use dioxus::prelude::*;
+use dioxus_sdk::storage::{use_synced_storage, LocalStorage};
 use dioxus_toast::{ToastInfo, ToastManager};
-use gloo_storage::{LocalStorage, Storage};
+
+use crate::constants::LOGIN_TOKEN_KEY;
 
 #[component]
 pub fn Login() -> Element {
@@ -18,6 +20,10 @@ pub fn Login() -> Element {
     }
 
     let mut toast: Signal<ToastManager> = use_context();
+
+    /* let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>("placeholder".to_string(), || None); */
+    /* let mut count_local = use_synced_storage::<LocalStorage, i32>("synced".to_string(), || 0);
+    println!("Local token 1: {:#?}", count_local); */
 
     rsx! {
         main {
@@ -63,10 +69,10 @@ pub fn Login() -> Element {
                                 return
                             }
 
-                            let login_result = api::auth::login(email(), password()).await;
-                            println!("login result {:#?}", login_result);
+                            let login_token = api::auth::login(email(), password()).await;
+                            println!("login result {:#?}", login_token);
 
-                            let Ok(login_result) = login_result else {
+                            let Ok(login_token) = login_token else {
                                 return
                             };
 
@@ -74,11 +80,18 @@ pub fn Login() -> Element {
 
                             /* let window = web_sys::window().unwrap();
                             let local_storage = window.local_storage().unwrap().unwrap();
-                            local_storage.set_item("token", &login_result.token).unwrap(); */
+                            local_storage.set_item("token", &login_token.token).unwrap(); */
 
-                            /* LocalStorage::set("login_token", &login_result.token).unwrap();
-                            let token_check: ServerLoginToken = LocalStorage::get("login_token").unwrap();
+                            /* LocalStorage::set("login_token", &login_token.token);
+                            let token_check = LocalStorage::get::<ServerLoginToken>("login_token");
                             println!("Token check: {:#?}", token_check); */
+
+                            let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+                            println!("Local token 1: {:#?}", local_token);
+                            
+                            *local_token.write() = Some(login_token);
+
+                            println!("Local token 2: {:#?}", local_token);
                         },
                         "Login"
                     },
