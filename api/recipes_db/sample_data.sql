@@ -42,75 +42,65 @@ INSERT INTO "IngredientName" (name, affiliate_link) VALUES
     ('spinach', NULL);
 
 -- Insert recipes
-INSERT INTO "Recipe" (name, summary, description, instructions, ingredients, views, ratings, total_rating) VALUES
+INSERT INTO "Recipe" (name, summary, description, instructions, views, ratings, total_rating) VALUES
     ('Classic Spaghetti Bolognese', 
      'Spaghetti with meat sauce', 
      'A rich and hearty Italian pasta dish with a meaty sauce.', 
      'Start by sautéing onions and garlic. Add ground beef and cook until browned. Add tomatoes and simmer for 30 minutes. Serve over cooked pasta.', 
-     'Ground beef, Onion, Garlic, Tomatoes, Pasta, Olive oil, Salt, Pepper, Oregano', 
      1205, 42, 189),
     
     ('Chicken Alfredo', 
      'Creamy pasta with grilled chicken and parmesan cheese', 
      'Creamy pasta with grilled chicken and parmesan cheese.', 
      'Cook pasta according to package directions. In a separate pan, sauté chicken until cooked through. Make a cream sauce with butter, cream, and parmesan. Combine all ingredients.', 
-     'Chicken breast, Fettuccine pasta, Heavy cream, Butter, Parmesan cheese, Garlic, Salt, Pepper', 
      980, 35, 158),
     
     ('Vegetable Stir Fry', 
      'Quick and healthy vegetable stir fry with a savory sauce', 
      'Quick and healthy vegetable stir fry with a savory sauce.', 
      'Heat oil in a wok. Add vegetables and stir fry for 5 minutes. Add sauce ingredients and cook for another 2 minutes. Serve over rice.', 
-     'Bell pepper, Carrot, Broccoli, Soy sauce, Ginger, Garlic, Sesame oil, Rice', 
      654, 28, 126),
     
     ('Chocolate Chip Cookies', 
      'Classic homemade chocolate chip cookies', 
      'Classic homemade chocolate chip cookies - soft, chewy, and delicious.', 
      'Cream butter and sugars. Add eggs and vanilla. Mix in dry ingredients. Fold in chocolate chips. Bake at 350°F for 10-12 minutes.', 
-     'Butter, Sugar, Brown sugar, Eggs, Vanilla extract, Flour, Baking soda, Salt, Chocolate chips', 
      1458, 61, 295),
     
     ('Chicken Curry', 
      'Aromatic Indian curry with tender chicken pieces', 
      'Aromatic Indian curry with tender chicken pieces.', 
      'Sauté onions, garlic, and ginger. Add curry powder and cook briefly. Add chicken and cook until browned. Add tomatoes and coconut milk. Simmer until chicken is cooked through.', 
-     'Chicken thighs, Onion, Garlic, Ginger, Curry powder, Tomatoes, Coconut milk, Salt, Cilantro', 
      876, 33, 152),
     
     ('Greek Salad', 
      'Fresh and vibrant salad with Mediterranean flavors', 
      'Fresh and vibrant salad with Mediterranean flavors.', 
      'Combine chopped cucumbers, tomatoes, red onion, and olives. Add cubed feta cheese. Dress with olive oil, lemon juice, oregano, salt, and pepper.', 
-     'Cucumber, Tomato, Red onion, Kalamata olives, Feta cheese, Olive oil, Lemon juice, Oregano, Salt, Pepper', 
      432, 19, 86),
     
     ('Beef Tacos', 
      'Easy and delicious Mexican-style beef tacos', 
      'Easy and delicious Mexican-style beef tacos.', 
      'Brown ground beef with taco seasoning. Warm tortillas. Assemble tacos with beef, lettuce, tomato, cheese, and sour cream.', 
-     'Ground beef, Taco seasoning, Corn tortillas, Lettuce, Tomato, Cheddar cheese, Sour cream, Lime', 
      1023, 47, 211),
     
     ('Banana Bread', 
      'Moist and flavorful banana bread with a hint of cinnamon', 
      'Moist and flavorful banana bread with a hint of cinnamon.', 
      'Mash ripe bananas. Mix with melted butter, sugar, eggs, and vanilla. Fold in flour, baking soda, and salt. Bake at 350°F for 60 minutes.', 
-     'Ripe bananas, Butter, Sugar, Eggs, Vanilla extract, Flour, Baking soda, Salt, Cinnamon', 
      765, 31, 140),
     
     ('Mushroom Risotto', 
      'Creamy Italian rice dish with sautéed mushrooms', 
      'Creamy Italian rice dish with sautéed mushrooms.', 
      'Sauté mushrooms and set aside. In the same pan, sauté onions. Add rice and toast briefly. Add white wine. Gradually add hot broth, stirring constantly. Finish with butter and parmesan.', 
-     'Arborio rice, Mushrooms, Onion, Garlic, White wine, Vegetable broth, Butter, Parmesan cheese, Salt, Pepper', 
      543, 22, 99),
     
     ('Apple Pie', 
      'Classic American dessert with a flaky crust and cinnamon-spiced apple filling', 
      'Classic American dessert with a flaky crust and cinnamon-spiced apple filling.', 
      'Make pie dough and chill. Slice apples and mix with sugar, cinnamon, and lemon juice. Assemble pie with bottom crust, filling, and top crust. Bake at 375°F for 45-55 minutes.', 
-     'Flour, Butter, Sugar, Salt, Apples, Cinnamon, Lemon juice, Egg (for wash)', 
      892, 37, 169);
 
 -- Link recipes to ingredients with quantities

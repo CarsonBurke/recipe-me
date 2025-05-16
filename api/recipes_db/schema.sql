@@ -102,12 +102,12 @@ CREATE TABLE IF NOT EXISTS RecipeSource (
     source_url VARCHAR(255) NOT NULL,
     source_id INTEGER NOT NULL REFERENCES Source(id),
     PRIMARY KEY (recipe_id, source_id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS Source (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
     home_url VARCHAR(255) NOT NULL,
     -- How good of a source we consider them to be. This should be an average, so if they have some good recipes and some bad, their score should be like 2.5. If they only have good recipes, this should be 5
-    rating: INTEGER NOT NULL
+    rating INTEGER NOT NULL
 );
