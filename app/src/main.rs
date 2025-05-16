@@ -4,25 +4,26 @@ use api::{auth::ServerLoginToken, entities::prelude::LoginToken};
 use components::Navbar;
 use constants::LOGIN_TOKEN_KEY;
 use dioxus::prelude::*;
+use dioxus_motion::prelude::*;
 
 mod components;
-mod views;
 pub mod constants;
 pub mod utils;
+mod views;
 // #[cfg(feature = "server")]
 // mod server;
 
-use dioxus_sdk::storage::{use_synced_storage, LocalStorage};
+use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::ToastManager;
 use views::{
     Home,
-    login::Login,
     account::{
+        account::Account, account_recipes::AccountRecipes, collections::AccountCollections,
         dashboard::AccountDashboard,
-        account_recipes::AccountRecipes,
-        account::Account,
     },
+    collection::collection::CollectionPage,
     fallback::Fallback,
+    login::Login,
     recipe::{
         RecipePage, Recipes,
         recipes::{self, RecipeFilterParams},
@@ -32,6 +33,7 @@ use views::{
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
+const ANIMATIONS_CSS: Asset = asset!("/assets/styling/animations.css");
 
 fn main() {
     // Allows use to use local and session storage
@@ -52,36 +54,53 @@ fn main() {
     dioxus::launch(App);
 }
 
-#[derive(Debug, Clone, Routable, PartialEq)]
+#[derive(Debug, Clone, Routable, PartialEq, MotionTransitions)]
 #[rustfmt::skip]
 pub enum Route {
     #[layout(WebNavbar)]
     #[route("/")]
+    #[transition(Fade)]
     Home {},
     #[route("/recipes?:..query")]
+    #[transition(Fade)]
     Recipes {
         query: recipes::Query,
      },
     #[route("/recipe/:id")]
+    #[transition(Fade)]
     RecipePage { id: i32 },
+    #[route("/collection/:id")]
+    #[transition(Fade)]
+    CollectionPage { id: i32 },
     #[route("/login")]
+    #[transition(Fade)]
     Login {},
     #[route("/signup")]
+    #[transition(Fade)]
     Signup {},
     #[route("/account/dashboard")]
+    #[transition(Fade)]
     AccountDashboard {},
     #[route("/account/recipes")]
+    #[transition(Fade)]
     AccountRecipes {},
+    #[route("/account/collections")]
+    #[transition(Fade)]
+    AccountCollections {},
     #[route("/account")]
+    #[transition(Fade)]
     Account {},
     #[route("/:..route")]
+    #[transition(Fade)]
     Fallback { route: Vec<String> },
 }
 
 #[component]
 pub fn App() -> Element {
-
-    let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+    let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(
+        LOGIN_TOKEN_KEY.to_string(),
+        || None,
+    );
     if let Some(cached_login_token) = cached_login_token() {
         *LOGIN_TOKEN_GLOBAL.write() = Some(cached_login_token);
     }
@@ -91,6 +110,8 @@ pub fn App() -> Element {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS },
         style { "{MAIN_CSS}" }
+        style { "{ANIMATIONS_CSS}" }
+
 
         Router::<Route> {}
     }

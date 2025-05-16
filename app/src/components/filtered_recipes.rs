@@ -28,12 +28,9 @@ pub fn FilteredRecipes(
     let recipes_read = recipes.read();
 
     rsx! {
-        div {
-            class: "row gapMedium centerRow flexWrap",
-            for recipe in recipes_read.as_ref().unwrap().iter() {
+        for recipe in recipes_read.as_ref().unwrap().iter() {
 
-                RecipePreview { id: recipe.id, name: recipe.name.clone(), summary: recipe.summary.clone(), source: recipe.source.clone(), rating: (recipe.total_rating / recipe.ratings) as f32 }
-            }
+            RecipePreview { id: recipe.id, name: recipe.name.clone(), summary: recipe.summary.clone(), source: recipe.source.clone(), rating: (recipe.total_rating / recipe.ratings) as f32 }
         }
     }
 }

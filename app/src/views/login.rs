@@ -1,5 +1,6 @@
 use api::auth::ServerLoginToken;
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::ld_icons;
 use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::{ToastInfo, ToastManager};
 
@@ -114,9 +115,10 @@ pub fn Login() -> Element {
                         type: "submit",
                         disabled: !soft_can_login(email(), password()) || is_processing(),
                         if is_processing() {
-                            p { class: "textSmall", "Trying to log you in..." }
+                            dioxus_free_icons::Icon { icon: dioxus_free_icons::icons::ld_icons::LdLoader}
+                            "Trying to log you in..."
                         }
-                        else { "Login" }
+                        else { dioxus_free_icons::Icon { icon: ld_icons::LdLogIn }, "Login" }
                     },
                 }
             }

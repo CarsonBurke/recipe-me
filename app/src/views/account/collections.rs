@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
 #[component]
-pub fn AccountRecipes() -> Element {
+pub fn AccountCollections() -> Element {
     rsx! {
         main {
             class: "main",
@@ -10,16 +10,16 @@ pub fn AccountRecipes() -> Element {
                 class: "section column gapLarge",
                 div {
                     class: "row gapMedium centerColumn",
-                    h1 { class: "textLarge", "My recipes" }
+                    h1 { class: "textLarge", "My collections" }
                     button {
                         class: "button buttonBg2",
                         dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
-                        "New recipe"
-                    }
+                        "New collection"
+                    }   
                 }
                 div {
                     class: "column gapMedium centerColumn",
-                    p { class: "textMedium", "You have no recipes" }
+                    p { class: "textMedium", "You have no collections" }
                 }
             }
         }

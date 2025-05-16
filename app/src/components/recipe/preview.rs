@@ -16,7 +16,7 @@ pub fn RecipePreview(
         document::Link { rel: "stylesheet", href: CSS }
 
         Link {
-            class: "recipe_preview column round borderBg2 button buttonBg1 gapMedium",
+            class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium",
             to: Route::RecipePage { id, },
             div {
                 class: "column gapSmall paddingSmall",

@@ -70,12 +70,15 @@ pub fn Recipes(query: Query) -> Element {
                 class: "section column",
                 h1 { class: "textXLarge", "Recipes" }
 
-                FilteredRecipes {  
-                    cuisine_id: query.cuisine_id,
-                    diet_id: query.diet_id,
-                    ingredient_id: query.ingredient_id,
-                    meal_id: query.meal_id,
-                    limit: query.limit,
+                div {
+                    class: "row gapMedium centerRow flexWrap",
+                    FilteredRecipes {  
+                        cuisine_id: query.cuisine_id,
+                        diet_id: query.diet_id,
+                        ingredient_id: query.ingredient_id,
+                        meal_id: query.meal_id,
+                        limit: query.limit,
+                    }
                 }
             }
         }

@@ -12,7 +12,7 @@ pub fn Account() -> Element {
                 div {
                     class: "column round gapMedium bg2 paddingMedium",
                     h1 {
-                        class: "textLarge",
+                        class: "textLarge textCenter",
                         "Account"
                     }
                     button {

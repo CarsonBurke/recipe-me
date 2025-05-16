@@ -261,9 +261,12 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         class: "textLarge",
                         {format!("{} Recipes", diet.name.clone())},
                     }
-                    FilteredRecipes {
-                        diet_id: Some(diet.id),
-                        limit: Some(4),
+                    div {
+                        class: "row overflowHorizontal gapMedium",
+                        FilteredRecipes {
+                            diet_id: Some(diet.id),
+                            limit: Some(8),
+                        }
                     }
                 }
                 for cuisine in cuisines_read {
@@ -271,9 +274,12 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         class: "textLarge",
                         {format!("{} Recipes", cuisine.name.clone())},
                     }
-                    FilteredRecipes {
-                        cuisine_id: Some(cuisine.id),
-                        limit: Some(4),
+                    div {
+                        class: "row overflowHorizontal gapMedium",
+                        FilteredRecipes {
+                            cuisine_id: Some(cuisine.id),
+                            limit: Some(8),
+                        }
                     }
                 }
                 for meal in meals_read {
@@ -281,9 +287,12 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         class: "textLarge",
                         {format!("{} Recipes", meal.name.clone())},
                     }
-                    FilteredRecipes {
-                        meal_id: Some(meal.id),
-                        limit: Some(4),
+                    div {
+                        class: "row overflowHorizontal gapMedium",
+                        FilteredRecipes {
+                            meal_id: Some(meal.id),
+                            limit: Some(8),
+                        }
                     }
                 }
             }

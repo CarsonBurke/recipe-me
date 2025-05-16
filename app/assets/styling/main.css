@@ -190,11 +190,19 @@ body {
     font-size: var(--textXXLarge);
 }
 
+.textCenter {
+    text-align: center;
+}
+
 .button {
     padding: var(--spacingMedium) var(--spacingLarge);
     border-radius: var(--defaultBorderRadius);
     transition: all var(--defaultTransitionTime);
     cursor: pointer;
+    display: flex;
+    gap: var(--spacingSmall);
+    align-items: center;
+    white-space: nowrap;
 }
 
 .button:disabled {
@@ -270,4 +278,16 @@ body {
 
 .textNegative {
     color: var(--negative);
+}
+
+.overflowHorizontal {
+    overflow-x: scroll;
+}
+
+.square {
+    aspect-ratio: 1/1;
+}
+
+.defaultTransition {
+    transition: all var(--defaultTransitionTime);
 }

@@ -16,7 +16,10 @@ CREATE TABLE IF NOT EXISTS Recipe (
     ratings INTEGER DEFAULT 0 NOT NULL,
     total_rating INTEGER DEFAULT 0 NOT NULL,
     -- The URL where the recipe came from. May not have a source
-    source TEXT
+    source TEXT,
+    -- Some recipes don't have an author - they are auto-generated
+    author: INTEGER REFERENCES User(id),
+    public: BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS RecipeMeal (
@@ -76,7 +79,8 @@ CREATE TABLE IF NOT EXISTS RecipeCollection (
 CREATE TABLE IF NOT EXISTS RecipeCollectionRecipe (
     recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
     collection_id INTEGER NOT NULL REFERENCES RecipeCollection(id),
-    PRIMARY KEY (recipe_id, collection_id)
+    PRIMARY KEY (recipe_id, collection_id),
+    public: BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS RecipeDiet (

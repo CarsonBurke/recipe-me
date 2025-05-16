@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::ld_icons;
 
 use crate::{utils, views::recipe::recipes, Route, LOGIN_TOKEN_GLOBAL};
 
@@ -50,7 +51,7 @@ pub fn Navbar() -> Element {
                     Link {
                         class: "buttonBg3 button",
                         to: Route::Account {  },
-                        "Account"
+                        dioxus_free_icons::Icon { icon: ld_icons::LdUserRound }
                     }
                 }
                 if !is_logged_in {

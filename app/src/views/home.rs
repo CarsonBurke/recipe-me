@@ -16,7 +16,10 @@ pub fn Home() -> Element {
                     class: "textXLarge",
                     "Recipes"
                 }
-                FilteredRecipes {}
+                div {
+                    class: "row gapMedium centerRow flexWrap",
+                    FilteredRecipes {}
+                }
             }
         }
     }

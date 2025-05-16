@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 #[component]
-pub fn NewRecipe() -> Element {
+pub fn CollectionPage(id: ReadOnlySignal<i32>) -> Element {
     rsx! {
         main {
             class: "main",
