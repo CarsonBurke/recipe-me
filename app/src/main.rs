@@ -16,21 +16,11 @@ mod views;
 use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::ToastManager;
 use views::{
-    Home,
     account::{
-        account::Account, account_recipes::AccountRecipes, collections::AccountCollections,
-        dashboard::AccountDashboard,
-        new_recipe::NewRecipe,
-        new_collection::NewCollection,
-    },
-    collection::collection::CollectionPage,
-    fallback::Fallback,
-    login::Login,
-    recipe::{
-        RecipePage, Recipes,
-        recipes::{self, RecipeFilterParams},
-    },
-    signup::Signup,
+        account::Account, account_recipes::{self, AccountRecipes}, collections::AccountCollections, dashboard::AccountDashboard, new_collection::NewCollection, new_recipe::NewRecipe
+    }, collection::collection::CollectionPage, fallback::Fallback, login::Login, recipe::{
+        recipes::{self, RecipeFilterParams}, RecipePage, Recipes
+    }, signup::Signup, Home
 };
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
@@ -83,9 +73,11 @@ pub enum Route {
     #[route("/account/dashboard")]
     #[transition(Fade)]
     AccountDashboard {},
-    #[route("/account/recipes")]
+    #[route("/account/recipes?:..query")]
     #[transition(Fade)]
-    AccountRecipes {},
+    AccountRecipes {
+        query: account_recipes::Query,
+    },
     #[route("/account/collections")]
     #[transition(Fade)]
     AccountCollections {},

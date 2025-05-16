@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{LOGIN_TOKEN_GLOBAL, Route, utils, views::recipe::recipes};
+use crate::{utils, views::{account::account_recipes, recipe::recipes}, Route, LOGIN_TOKEN_GLOBAL};
 
 const CSS: Asset = asset!("/assets/styling/navbar.css");
 
@@ -43,7 +43,7 @@ pub fn Navbar() -> Element {
                     }
                     Link {
                         class: "buttonBg3 button",
-                        to: Route::AccountRecipes {  },
+                        to: Route::AccountRecipes { query: account_recipes::Query::default() },
                         "My Recipes"
                     }
                     Link {

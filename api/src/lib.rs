@@ -86,6 +86,7 @@ pub struct FilteredRecipesParams {
     pub meal_id: Option<i32>,
     pub limit: u64,
     pub page_offset: Option<u64>,
+    pub author_id: Option<i32>,
 }
 
 #[server]
@@ -150,6 +151,12 @@ pub async fn get_filtered_recipes(
                             .to_owned(),
                     ),
                 ),
+            )
+        })
+        // Author
+        .apply_if(params.author_id, |mut query, v| {
+            query.filter(
+                recipe::Column::AuthorId.eq(v),
             )
         })
         .limit(params.limit)
