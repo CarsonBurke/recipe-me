@@ -1,6 +1,9 @@
-use api::auth::create_account;
+use api::auth::{ServerLoginToken, create_account};
 use dioxus::prelude::*;
+use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::{ToastInfo, ToastManager};
+
+use crate::{LOGIN_TOKEN_GLOBAL, Route, constants::LOGIN_TOKEN_KEY};
 
 #[component]
 pub fn Signup() -> Element {
@@ -9,8 +12,20 @@ pub fn Signup() -> Element {
     let mut password = use_signal(|| "".to_string());
     let mut confirm_password = use_signal(|| "".to_string());
 
-    fn soft_can_create_account(username: String, email: String, password: String, confirm_password: String) -> bool {
-        if username.is_empty() || email.is_empty() || password.is_empty() || confirm_password.is_empty() {
+    let mut failed = use_signal(|| false);
+    let mut is_processing = use_signal(|| false);
+
+    fn soft_can_create_account(
+        username: String,
+        email: String,
+        password: String,
+        confirm_password: String,
+    ) -> bool {
+        if username.is_empty()
+            || email.is_empty()
+            || password.is_empty()
+            || confirm_password.is_empty()
+        {
             println!("empty fields");
             return false;
         }
@@ -34,7 +49,7 @@ pub fn Signup() -> Element {
         main {
             class: "main",
             section {
-                class: "section",
+                class: "section column centerColumn",
                 form {
                     onsubmit: move |_| async move {
                         println!("Username: {}", username());
@@ -43,16 +58,39 @@ pub fn Signup() -> Element {
                             return;
                         }
                         println!("passed soft checks");
-                        
-                        println!("client side account create");
-                        let token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
-                        println!("Potential login token {:?}", token);
 
-                        if let Ok(token) = token {
-                            let _ = toast.write().popup(ToastInfo::simple("Successfully created account"));
-                        }
+                        is_processing.set(true);
+
+                        println!("client side account create");
+                        let login_token = create_account(username.to_string(), email.to_string(), password.to_string()).await;
+                        println!("Potential login token {:?}", login_token);
+
+                        let Ok(login_token) = login_token else {
+                            let _ = toast.write().popup(ToastInfo::simple("Signup failed"));
+                            failed.set(true);
+                            is_processing.set(false);
+                            return
+                        };
+
+                        let _ = toast.write().popup(ToastInfo::simple("Successfully created account"));
+
+                        let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
+                        println!("Local token 1: {:#?}", local_token);
+
+                        *local_token.write() = Some(login_token.clone());
+
+                        println!("Local token 2: {:#?}", local_token);
+
+                        *LOGIN_TOKEN_GLOBAL.write() = Some(login_token);
+
+                        is_processing.set(false);
+
+                        // Send the user to their account dashboard
+
+                        let navigator = navigator();
+                        navigator.push(Route::AccountDashboard {});
                     },
-                    class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
+                    class: "gapLarge column centerColumn bg2 round paddingLarge widthFit",
                     h1 { class: "textLarge", "Create an account" },
                     div {
                         class: "column gapMedium centerColumn",
@@ -82,7 +120,12 @@ pub fn Signup() -> Element {
                         },
                         div {
                             class: "column gapSmall",
-                            label { class: "textSmall", "Enter a password" },
+                            div { 
+                                class: "row gapMedium", label { class: "textSmall", "Enter a password" }, 
+                                if !password().is_empty() { 
+                                    p { class: "textSmall", {format!("{}/6", password().len())} } 
+                                }
+                        },
                             input {
                                 class: "input bg3 borderBg4",
                                 placeholder: "Password",
@@ -130,15 +173,21 @@ pub fn Signup() -> Element {
                             }
                         }
                     },
+                    if failed() {
+                        p { class: "textSmall textNegative", "Signup failed, please try a different email" }
+                    }
                     button {
                         class: "button buttonBg3",
                         type: "submit",
-                        disabled: !soft_can_create_account(username(), email(), password(), confirm_password()),
-                        "Create new account"
+                        disabled: !soft_can_create_account(username(), email(), password(), confirm_password()) || is_processing(),
+                        if is_processing() {
+                            dioxus_free_icons::Icon { icon: dioxus_free_icons::icons::ld_icons::LdLoader}
+                            "Trying to create your account..."
+                        }
+                        else { "Create new account" }
                     },
                 }
             }
         }
     }
 }
-

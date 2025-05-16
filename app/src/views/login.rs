@@ -33,7 +33,7 @@ pub fn Login() -> Element {
         main {
             class: "main",
             section {
-                class: "section",
+                class: "section column centerColumn",
                 form {
                     onsubmit: move |e| async move {
                         if !soft_can_login(email(), password()) {
@@ -69,16 +69,16 @@ pub fn Login() -> Element {
 
                         println!("Local token 2: {:#?}", local_token);
 
-                        is_processing.set(false);
-
                         *LOGIN_TOKEN_GLOBAL.write() = Some(login_token);
+
+                        is_processing.set(false);
 
                         // Send the user to their account dashboard
 
                         let navigator = navigator();
                         navigator.push(Route::AccountDashboard {});
                     },
-                    class: "gapLarge column centerColumn bg2 round paddingMedium widthFit",
+                    class: "gapLarge column centerColumn bg2 round paddingLarge widthFit",
                     h1 { class: "textLarge", "Login" },
                     div {
                         class: "column gapMedium",
@@ -118,7 +118,7 @@ pub fn Login() -> Element {
                             dioxus_free_icons::Icon { icon: dioxus_free_icons::icons::ld_icons::LdLoader}
                             "Trying to log you in..."
                         }
-                        else { dioxus_free_icons::Icon { icon: ld_icons::LdLogIn }, "Login" }
+                        else { "Login" }
                     },
                 }
             }
