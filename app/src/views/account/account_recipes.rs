@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
+use crate::Route;
+
 #[component]
 pub fn AccountRecipes() -> Element {
     rsx! {
@@ -11,8 +13,9 @@ pub fn AccountRecipes() -> Element {
                 div {
                     class: "row gapMedium centerColumn",
                     h1 { class: "textLarge", "My recipes" }
-                    button {
+                    Link {
                         class: "button buttonBg2",
+                        to: Route::NewRecipe {},
                         dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                         "New recipe"
                     }

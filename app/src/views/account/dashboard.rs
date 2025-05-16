@@ -24,13 +24,13 @@ pub fn AccountDashboard() -> Element {
                             "My recipes"
                         }
                         Link {
-                            class: "button buttonBg2 round square",
+                            class: "button buttonBg2 round",
                             to: Route::AccountRecipes {},
                             dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
                             "Favourite recipes"
                         }
                         Link {
-                            class: "button buttonBg2 round square",
+                            class: "button buttonBg2 round",
                             to: Route::AccountCollections {},
                             dioxus_free_icons::Icon { icon: ld_icons::LdSquareLibrary }
                             "My collections"
@@ -48,7 +48,7 @@ pub fn AccountDashboard() -> Element {
                             "Import recipe"
                         }
                         button {
-                            class: "button buttonBg2 round square",
+                            class: "button buttonBg2 round",
                             dioxus_free_icons::Icon { icon: ld_icons::LdCalendar }
                             "Meal plan"
                         }

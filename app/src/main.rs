@@ -20,6 +20,8 @@ use views::{
     account::{
         account::Account, account_recipes::AccountRecipes, collections::AccountCollections,
         dashboard::AccountDashboard,
+        new_recipe::NewRecipe,
+        new_collection::NewCollection,
     },
     collection::collection::CollectionPage,
     fallback::Fallback,
@@ -90,6 +92,10 @@ pub enum Route {
     #[route("/account")]
     #[transition(Fade)]
     Account {},
+    #[route("/account/new_recipe")]
+    NewRecipe {},
+    #[route("/account/new_collection")]
+    NewCollection {},
     #[route("/:..route")]
     #[transition(Fade)]
     Fallback { route: Vec<String> },

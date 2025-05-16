@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
+use crate::Route;
+
 #[component]
 pub fn AccountCollections() -> Element {
     rsx! {
@@ -11,8 +13,9 @@ pub fn AccountCollections() -> Element {
                 div {
                     class: "row gapMedium centerColumn",
                     h1 { class: "textLarge", "My collections" }
-                    button {
+                    Link {
                         class: "button buttonBg2",
+                        to: Route::NewCollection {},
                         dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                         "New collection"
                     }   

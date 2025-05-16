@@ -261,15 +261,27 @@ body {
     padding: var(--spacingSmall) var(--spacingLarge);
 }
 
-.widthFit {
-    width: "fit-content";
-}
-
 .input {
     padding: var(--spacingSmall);
     border-radius: var(--defaultBorderRadius);
     width: fit-content;
     min-width: 300px;
+}
+
+.inputShort {
+    padding: var(--spacingSmall);
+    border-radius: var(--defaultBorderRadius);
+    min-width: 50px;
+    width: min-content;
+    field-sizing: content;
+}
+
+.widthFit {
+    width: fit-content;
+}
+
+.widthMin {
+    width: min-content;
 }
 
 .textPositive {

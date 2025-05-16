@@ -1,13 +1,12 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{utils, views::recipe::recipes, Route, LOGIN_TOKEN_GLOBAL};
+use crate::{LOGIN_TOKEN_GLOBAL, Route, utils, views::recipe::recipes};
 
 const CSS: Asset = asset!("/assets/styling/navbar.css");
 
 #[component]
 pub fn Navbar() -> Element {
-
     let is_logged_in = utils::is_logged_in().unwrap_or(false);
     /* let login_token = LOGIN_TOKEN_GLOBAL(); */
     println!("is logged in: {:#?}", is_logged_in);
@@ -18,24 +17,23 @@ pub fn Navbar() -> Element {
         nav {
             id: "navbar",
             class: "navbar paddingSectionSide row bg3 gapSmall",
-            Link {
-                to: Route::Home {},
-                h1 {
-                    class: "textLarge button buttonBg3",
-                    "Recipe Me"
+            div {
+                class: "row centerColumn gapMedium paddingSmall",
+                Link {
+                    to: Route::Home {},
+                    h1 {
+                        class: "textLarge button buttonBg3",
+                        "Recipe Me"
+                    }
                 }
             }
             div {
-                class: "row centerColumn gapMedium",
-                Link {
-                    class: "buttonBg3 button",
-                    to: Route::Home {},
-                    "Home"
-                }
+                class: "row centerColumn gapMedium paddingSmall",
+
                 Link {
                     class: "buttonBg3 button",
                     to: Route::Recipes { query: recipes::Query::default() },
-                    "Recipes"
+                    "Find recipes"
                 }
                 if is_logged_in {
                     Link {
@@ -61,11 +59,12 @@ pub fn Navbar() -> Element {
                         "Login"
                     }
                     Link {
-                        class: "buttonBg3 button",
+                        class: "buttonBg3 button borderBg4",
                         to: Route::Signup {  },
                         "Create an account"
                     }
                 }
+                
             }
         }
     }

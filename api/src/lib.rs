@@ -39,6 +39,7 @@ pub mod entities;
 mod sample;
 pub mod secrets;
 pub mod auth;
+pub mod user_actions;
 
 /// Echo the user input on the server.
 #[server(Echo)]
