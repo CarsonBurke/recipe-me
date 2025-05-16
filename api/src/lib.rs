@@ -1,10 +1,10 @@
 //! This crate contains all shared fullstack server functions.
-use std::time::Duration;
+use std::{fmt::Display, time::Duration};
 
 use data::{
     PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal,
 };
-use dioxus::{html::g::offset, prelude::*};
+use dioxus::{html::g::offset, prelude::{server_fn::error::NoCustomError, *}};
 use entities::{
     comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken,
     recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user,
@@ -53,13 +53,29 @@ pub async fn echo(input: String) -> Result<String, ServerFnError> {
 //     db
 // }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub enum CustomServerError {
+    NotAuthorized,
+}
+
+impl std::error::Error for CustomServerError {
+    
+}
+
+impl Display for CustomServerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CustomServerError::NotAuthorized => write!(f, "Not Authorized"),
+            _ => write!(f, "Custom server error - unknown"),
+        }
+    }
+}
+
 #[server(Recipes)]
 pub async fn get_recipes() -> Result<Vec<recipe::Model>, ServerFnError> {
     let db = db_conn().await.unwrap();
     let recipes = recipe::Entity::find().all(&db).await.unwrap();
     Ok(recipes)
-
-    // Ok(vec![])
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]

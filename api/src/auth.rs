@@ -18,6 +18,8 @@ use lettre::{
     message::{MultiPart, SinglePart, header::ContentType},
     transport::smtp::authentication::Credentials,
 };
+use scrypt::password_hash::rand_core::{CryptoRngCore, RngCore};
+use scrypt::password_hash::Salt;
 use scrypt::{
     Scrypt,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
@@ -103,7 +105,10 @@ pub async fn create_account(
         ));
     }
 
-    let salt = SaltString::generate(&mut OsRng);
+    let mut bytes = [0u8; 8];
+    OsRng.fill_bytes(&mut bytes);
+    let salt = SaltString::encode_b64(&bytes).expect("Failed to generate salt");
+
     println!("going to hash password {password} with salt {salt}");
     let hashed_password = Scrypt
         .hash_password(password.as_bytes(), &salt)?
@@ -188,10 +193,10 @@ pub async fn create_login_token(user_id: i32) -> ServerLoginToken {
 #[server]
 pub async fn server_is_logged_in(token: ServerLoginToken) -> Result<bool, ServerFnError> {
     println!("server is logged in check");
-    Ok(is_logged_in(token).await)
+    Ok(is_logged_in(&token).await)
 }
 
-pub async fn is_logged_in(token: ServerLoginToken) -> bool {
+pub async fn is_logged_in(token: &ServerLoginToken) -> bool {
     println!("is logged in check");
 
     let db = db_conn().await.unwrap();

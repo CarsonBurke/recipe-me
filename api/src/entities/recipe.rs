@@ -14,13 +14,13 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub instructions: String,
     pub summary: String,
-    #[sea_orm(column_type = "Text")]
-    pub ingredients: String,
     pub views: i32,
     pub ratings: i32,
     pub total_rating: i32,
     #[sea_orm(column_type = "Text", nullable)]
     pub source: Option<String>,
+    pub author_id: Option<i32>,
+    pub public: Option<bool>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -37,6 +37,14 @@ pub enum Relation {
     RecipeIngredient,
     #[sea_orm(has_many = "super::recipe_meal::Entity")]
     RecipeMeal,
+    #[sea_orm(
+        belongs_to = "super::user::Entity",
+        from = "Column::AuthorId",
+        to = "super::user::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    User,
 }
 
 impl Related<super::comment::Entity> for Entity {

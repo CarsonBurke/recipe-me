@@ -10,9 +10,8 @@ pub struct Model {
     pub recipe_id: i32,
     #[sea_orm(primary_key, auto_increment = false)]
     pub ingredient_id: i32,
-    pub ingredient_count: Option<i32>,
-    pub amount: Option<i32>,
-    pub description: Option<String>,
+    pub amount: Decimal,
+    pub description: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

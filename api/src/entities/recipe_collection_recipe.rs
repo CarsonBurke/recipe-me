@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "RecipeCollectionRecipe")]
 pub struct Model {
+    pub public: Option<bool>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub recipe_id: i32,
     #[sea_orm(primary_key, auto_increment = false)]

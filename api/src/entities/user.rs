@@ -19,6 +19,8 @@ pub enum Relation {
     Comment,
     #[sea_orm(has_one = "super::login_token::Entity")]
     LoginToken,
+    #[sea_orm(has_many = "super::recipe::Entity")]
+    Recipe,
     #[sea_orm(has_many = "super::recipe_collection::Entity")]
     RecipeCollection,
 }
