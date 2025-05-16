@@ -15,4 +15,6 @@ pub mod recipe_cuisine;
 pub mod recipe_diet;
 pub mod recipe_ingredient;
 pub mod recipe_meal;
+pub mod recipe_source;
+pub mod source;
 pub mod user;

@@ -223,7 +223,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                             for ingredient in ingredients_read {
                                 p {
                                     class: "textSmall",
-                                    {format!("{} {} {}", (ingredient.amount.clone() * ingredients_mult()).to_string(), ingredient.description.clone(), ingredient.name.clone())}
+                                    {format!("{} {} {}", (ingredient.amount.clone() * ingredients_mult() as f32).to_string(), ingredient.description.clone(), ingredient.name.clone())}
                                 }
                             }
                         }

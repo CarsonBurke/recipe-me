@@ -14,8 +14,8 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub instructions: String,
     pub summary: String,
-    pub views: i32,
     pub ratings: i32,
+    pub views: Option<i32>,
     pub total_rating: i32,
     #[sea_orm(column_type = "Text", nullable)]
     pub source: Option<String>,
@@ -37,6 +37,8 @@ pub enum Relation {
     RecipeIngredient,
     #[sea_orm(has_many = "super::recipe_meal::Entity")]
     RecipeMeal,
+    #[sea_orm(has_many = "super::recipe_source::Entity")]
+    RecipeSource,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::AuthorId",
@@ -80,6 +82,12 @@ impl Related<super::recipe_ingredient::Entity> for Entity {
 impl Related<super::recipe_meal::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::RecipeMeal.def()
+    }
+}
+
+impl Related<super::recipe_source::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::RecipeSource.def()
     }
 }
 
@@ -129,6 +137,15 @@ impl Related<super::recipe_collection::Entity> for Entity {
                 .def()
                 .rev(),
         )
+    }
+}
+
+impl Related<super::source::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::recipe_source::Relation::Source.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::recipe_source::Relation::Recipe.def().rev())
     }
 }
 

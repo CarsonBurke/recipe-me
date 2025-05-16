@@ -13,4 +13,6 @@ pub use super::recipe_cuisine::Entity as RecipeCuisine;
 pub use super::recipe_diet::Entity as RecipeDiet;
 pub use super::recipe_ingredient::Entity as RecipeIngredient;
 pub use super::recipe_meal::Entity as RecipeMeal;
+pub use super::recipe_source::Entity as RecipeSource;
+pub use super::source::Entity as Source;
 pub use super::user::Entity as User;

@@ -32,7 +32,7 @@ pub async fn create_recipe(login_token: ServerLoginToken, name: String, descript
         }),
         instructions: ActiveValue::Set(instructions),
         author_id: ActiveValue::Set(Some(login_token.user_id)),
-        views: ActiveValue::Set(0),
+        views: ActiveValue::Set(Some(0)),
         ratings: ActiveValue::Set(0),
         total_rating: ActiveValue::Set(0),
         source: ActiveValue::NotSet,
