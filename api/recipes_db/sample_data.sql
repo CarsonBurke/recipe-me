@@ -114,65 +114,65 @@ INSERT INTO "Recipe" (name, summary, description, instructions, ingredients, vie
      892, 37, 169);
 
 -- Link recipes to ingredients with quantities
-INSERT INTO "RecipeIngredient" (recipe_id, ingredient_id, ingredient_count, amount, description) VALUES
+INSERT INTO "RecipeIngredient" (recipe_id, ingredient_id, amount, description) VALUES
     -- Spaghetti Bolognese
-    (1, 8, 1, 500, 'grams, ground'),  -- Beef
-    (1, 5, 1, 1, 'large, diced'),     -- Onion
-    (1, 4, 3, 3, 'cloves, minced'),   -- Garlic
-    (1, 6, 4, 400, 'grams, crushed'), -- Tomatoes
-    (1, 10, 1, 500, 'grams'),         -- Pasta
-    (1, 3, 1, 2, 'tablespoons'),      -- Olive oil
-    (1, 1, 1, 1, 'teaspoon'),         -- Salt
-    (1, 2, 1, 1, 'teaspoon'),         -- Pepper
-    (1, 18, 1, 1, 'tablespoon'),      -- Oregano
+    (1, 8, 500, 'grams, ground'),  -- Beef
+    (1, 5, 1, 'large, diced'),     -- Onion
+    (1, 4, 3, 'cloves, minced'),   -- Garlic
+    (1, 6, 400, 'grams, crushed'), -- Tomatoes
+    (1, 10, 500, 'grams'),         -- Pasta
+    (1, 3, 2, 'tablespoons'),      -- Olive oil
+    (1, 1, 1, 'teaspoon'),         -- Salt
+    (1, 2, 1, 'teaspoon'),         -- Pepper
+    (1, 18, 1, 'tablespoon'),      -- Oregano
     
     -- Chicken Alfredo
-    (2, 7, 2, 500, 'grams, sliced'),  -- Chicken breast
-    (2, 10, 1, 500, 'grams'),         -- Pasta
-    (2, 15, 1, 250, 'ml, heavy'),     -- Milk (heavy cream)
-    (2, 13, 1, 50, 'grams'),          -- Butter
-    (2, 16, 1, 100, 'grams, grated'), -- Cheese (parmesan)
-    (2, 4, 2, 2, 'cloves, minced'),   -- Garlic
-    (2, 1, 1, 1, 'teaspoon'),         -- Salt
-    (2, 2, 1, 1, 'teaspoon'),         -- Pepper
+    (2, 7, 500, 'grams, sliced'),  -- Chicken breast
+    (2, 10, 500, 'grams'),         -- Pasta
+    (2, 15, 250, 'ml, heavy'),     -- Milk (heavy cream)
+    (2, 13, 50, 'grams'),          -- Butter
+    (2, 16, 100, 'grams, grated'), -- Cheese (parmesan)
+    (2, 4, 2, 'cloves, minced'),   -- Garlic
+    (2, 1, 1, 'teaspoon'),         -- Salt
+    (2, 2, 1, 'teaspoon'),         -- Pepper
     
     -- Vegetable Stir Fry
-    (3, 21, 1, 1, 'large, sliced'),   -- Bell pepper
-    (3, 22, 2, 2, 'medium, julienned'), -- Carrot
-    (3, 26, 1, 3, 'tablespoons'),     -- Soy sauce
-    (3, 25, 1, 1, 'tablespoon, grated'), -- Ginger
-    (3, 4, 2, 2, 'cloves, minced'),   -- Garlic
-    (3, 3, 1, 2, 'tablespoons'),      -- Olive oil (using for sesame oil)
-    (3, 9, 1, 2, 'cups, cooked'),     -- Rice
+    (3, 21, 1, 'large, sliced'),   -- Bell pepper
+    (3, 22, 2, 'medium, julienned'), -- Carrot
+    (3, 26, 3, 'tablespoons'),     -- Soy sauce
+    (3, 25, 1, 'tablespoon, grated'), -- Ginger
+    (3, 4, 2, 'cloves, minced'),   -- Garlic
+    (3, 3, 2, 'tablespoons'),      -- Olive oil (using for sesame oil)
+    (3, 9, 2, 'cups, cooked'),     -- Rice
     
     -- Add more recipe ingredients for other recipes...
     -- Chocolate Chip Cookies
-    (4, 13, 1, 115, 'grams, softened'), -- Butter
-    (4, 12, 1, 150, 'grams'),         -- Sugar
-    (4, 14, 2, 2, 'large'),           -- Eggs
-    (4, 20, 1, 1, 'teaspoon'),        -- Vanilla extract
-    (4, 11, 1, 250, 'grams'),         -- Flour
-    (4, 1, 1, 1, 'teaspoon'),         -- Salt
-    (4, 28, 1, 200, 'grams, chips'),  -- Chocolate
+    (4, 13, 115, 'grams, softened'), -- Butter
+    (4, 12, 150, 'grams'),         -- Sugar
+    (4, 14, 2, 'large'),           -- Eggs
+    (4, 20, 1, 'teaspoon'),        -- Vanilla extract
+    (4, 11, 250, 'grams'),         -- Flour
+    (4, 1, 1, 'teaspoon'),         -- Salt
+    (4, 28, 200, 'grams, chips'),  -- Chocolate
     
     -- Chicken Curry
-    (5, 7, 4, 500, 'grams, cubed'),   -- Chicken (thighs)
-    (5, 5, 1, 1, 'large, diced'),     -- Onion
-    (5, 4, 3, 3, 'cloves, minced'),   -- Garlic
-    (5, 25, 1, 1, 'tablespoon, grated'), -- Ginger
-    (5, 6, 2, 2, 'medium, diced'),    -- Tomatoes
-    (5, 15, 1, 400, 'ml, coconut'),   -- Milk (coconut)
-    (5, 1, 1, 1, 'teaspoon'),         -- Salt
+    (5, 7, 500, 'grams, cubed'),   -- Chicken (thighs)
+    (5, 5, 1, 'large, diced'),     -- Onion
+    (5, 4, 3, 'cloves, minced'),   -- Garlic
+    (5, 25, 1, 'tablespoon, grated'), -- Ginger
+    (5, 6, 2, 'medium, diced'),    -- Tomatoes
+    (5, 15, 400, 'ml, coconut'),   -- Milk (coconut)
+    (5, 1, 1, 'teaspoon'),         -- Salt
     
     -- Greek Salad
-    (6, 6, 2, 2, 'medium, diced'),    -- Tomatoes
-    (6, 5, 1, 1, 'small, sliced'),    -- Onion (red)
-    (6, 16, 1, 100, 'grams, cubed'),  -- Cheese (feta)
-    (6, 3, 1, 3, 'tablespoons'),      -- Olive oil
-    (6, 24, 1, 1, 'juiced'),          -- Lemon
-    (6, 18, 1, 1, 'teaspoon'),        -- Oregano
-    (6, 1, 1, 1, 'teaspoon'),         -- Salt
-    (6, 2, 1, 1, 'teaspoon');         -- Pepper
+    (6, 6, 2, 'medium, diced'),    -- Tomatoes
+    (6, 5, 1, 'small, sliced'),    -- Onion (red)
+    (6, 16, 100, 'grams, cubed'),  -- Cheese (feta)
+    (6, 3, 3, 'tablespoons'),      -- Olive oil
+    (6, 24, 1, 'juiced'),          -- Lemon
+    (6, 18, 1, 'teaspoon'),        -- Oregano
+    (6, 1, 1, 'teaspoon'),         -- Salt
+    (6, 2, 1, 'teaspoon');         -- Pepper
 
 -- Link recipes to recipe meal
 INSERT INTO "RecipeMeal" (recipe_id, meal_id) VALUES
