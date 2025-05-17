@@ -10,13 +10,13 @@ pub fn Account() -> Element {
             section {
                 class: "section column gapMedium",
                 div {
-                    class: "column round gapMedium bg2 paddingMedium",
+                    class: "column round gapMedium bg2 paddingLarge centerColumn",
                     h1 {
                         class: "textLarge textCenter",
                         "Account"
                     }
                     button {
-                        class: "buttonBg3 button",
+                        class: "buttonBg3 button widthFit",
                         onclick: move |_| {
                             logout();
                             navigator().push(Route::Home {});

@@ -1,5 +1,11 @@
 .navbar {
   justify-content: space-between;
+  height: var(--navbarHeight);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
 }
 
 .navbar a {

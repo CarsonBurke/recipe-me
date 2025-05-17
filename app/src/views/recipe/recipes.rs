@@ -4,23 +4,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{components::{filtered_recipes::{self, FilteredRecipes}}, Route};
 
-#[derive(Clone, PartialEq, Debug, Default)]
-pub struct RecipeFilterParams {
-    pub cuisine_id: Option<i32>,
-    pub limit: Option<u64>,
-    pub page_offset: u64,
-}
-
-impl RecipeFilterParams {
-    pub fn into_filtered_recipes_params(self) -> FilteredRecipesParams {
-        FilteredRecipesParams {
-            cuisine_id: self.cuisine_id,
-            limit: self.limit.unwrap_or(50),
-            ..Default::default()
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Query {
     pub cuisine_id: Option<i32>,
@@ -78,6 +61,7 @@ pub fn Recipes(query: Query) -> Element {
                         ingredient_id: query.ingredient_id,
                         meal_id: query.meal_id,
                         limit: query.limit,
+                        public: Some(true),
                     }
                 }
             }

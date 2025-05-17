@@ -11,7 +11,7 @@ use crate::{
         filtered_recipes::{self, FilteredRecipes},
         recipe::comments::RecipeComments,
     },
-    views::recipe::recipes::{self, RecipeFilterParams},
+    views::recipe::recipes::{self},
 };
 
 #[component]

@@ -16,6 +16,7 @@ pub fn FilteredRecipes(
     ingredient_id: Option<i32>,
     limit: Option<u64>,
     author_id: Option<i32>,
+    public: Option<bool>,
 ) -> Element {
     let recipes = use_server_future(move || {
         let params = FilteredRecipesParams {
@@ -25,6 +26,7 @@ pub fn FilteredRecipes(
             meal_id: meal_id.clone(),
             limit: limit.clone().unwrap_or(50),
             author_id: author_id.clone(),
+            public: public.clone(),
             ..Default::default()
         };
         async move { get_filtered_recipes(params).await.unwrap() }

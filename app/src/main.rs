@@ -19,8 +19,8 @@ use views::{
     account::{
         account::Account, account_recipes::{self, AccountRecipes}, collections::AccountCollections, dashboard::AccountDashboard, new_collection::NewCollection, new_recipe::NewRecipe
     }, collection::collection::CollectionPage, fallback::Fallback, login::Login, recipe::{
-        recipes::{self, RecipeFilterParams}, RecipePage, Recipes
-    }, signup::Signup, Home
+        recipes::{self}, RecipePage, Recipes
+    }, signup::Signup, Home, download::DownloadPage
 };
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
@@ -70,6 +70,8 @@ pub enum Route {
     #[route("/signup")]
     #[transition(Fade)]
     Signup {},
+    #[route("/download")]
+    DownloadPage {},
     #[route("/account/dashboard")]
     #[transition(Fade)]
     AccountDashboard {},
@@ -107,8 +109,8 @@ pub fn App() -> Element {
         // Global app resources
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS },
-        style { "{MAIN_CSS}" }
-        style { "{ANIMATIONS_CSS}" }
+        style { "{MAIN_CSS} {ANIMATIONS_CSS}" }
+        /* style { "{ANIMATIONS_CSS}" } */
 
 
         Router::<Route> {}

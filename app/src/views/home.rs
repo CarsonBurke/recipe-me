@@ -9,16 +9,17 @@ use crate::components::{
 pub fn Home() -> Element {
     rsx! {
         main {
-            class: "main",
+            class: "column gapLarge",
+            Hero {}
             section {
-                class: "section column gapMedium",
+                class: "section column gapLarge",
                 h1 {
-                    class: "textXLarge",
-                    "Recipes"
+                    class: "textLarge",
+                    "Popular recipes"
                 }
                 div {
                     class: "row gapMedium centerRow flexWrap",
-                    FilteredRecipes {}
+                    FilteredRecipes { public: Some(true) }
                 }
             }
         }

@@ -42,7 +42,7 @@ body {
     --defaultTransitionTime: 0.2s;
 
     /* Specifics */
-    --navbarHeight: 60px;
+    --navbarHeight: 55px;
 
     /*  */
     background-color: var(--bg1);
@@ -238,7 +238,7 @@ body {
 .main {
     display: flex;
     flex-direction: column;
-    padding: var(--navbarHeight) 0;
+    padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
     gap: var(--spacingLarge);
 }
 
@@ -280,8 +280,16 @@ body {
     width: fit-content;
 }
 
+.widthMax {
+    width: max-content;
+}
+
 .widthMin {
     width: min-content;
+}
+
+.width100 {
+    width: 100%;
 }
 
 .textPositive {
@@ -302,4 +310,22 @@ body {
 
 .defaultTransition {
     transition: all var(--defaultTransitionTime);
+}
+
+@keyframes floatUpDown {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(8px);
+        background-color: var(--bg3);
+    }
+    100% {
+        transform: translateY(0);
+        background-color: var(--bg2);
+    }
+}
+
+.animateFloatUpDown {
+    animation: 2s ease-in infinite floatUpDown;
 }

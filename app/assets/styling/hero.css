@@ -1,34 +1,22 @@
-#hero {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.hero {
+  min-height: 80vh;
+  padding: var(--spacingLarge);
+  padding-top: var(--navbarHeight);
+  justify-content: space-between;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.7) 0 0 0 10000px inset;
+  overflow: hidden;
 }
 
-#links {
-  width: 400px;
-  text-align: left;
-  font-size: x-large;
-  color: white;
-  display: flex;
-  flex-direction: column;
+.heroHeader {
+  margin-top: 25vh;
 }
 
-#links a {
-  color: white;
-  text-decoration: none;
-  margin-top: 20px;
-  margin: 10px 0px;
-  border: white 1px solid;
-  border-radius: 5px;
-  padding: 10px;
-}
-
-#links a:hover {
-  cursor: pointer;
-}
-
-#header {
-  max-width: 1200px;
+.heroBg {
+  position: absolute;
+  object-fit: contain;
+  z-index: -1;
+  margin: auto;
+  left: 0;
+  right: 0;
 }

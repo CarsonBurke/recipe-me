@@ -6,3 +6,7 @@
         transform: rotate(360deg);
     }
 }
+
+.animateRotate {
+    animation: rotate 2s infinite;
+}

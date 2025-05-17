@@ -7,3 +7,4 @@ pub mod signup;
 pub mod account;
 pub mod fallback;
 pub mod collection;
+pub mod download;
