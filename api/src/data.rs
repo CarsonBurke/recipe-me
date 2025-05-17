@@ -34,3 +34,9 @@ pub struct PartialComment {
     pub comment: String,
     pub rating: i32,
 }
+
+#[derive(FromQueryResult, Serialize, Deserialize, Debug)]
+pub struct PartialCollection {
+    pub name: String,
+    pub id: i32,
+}

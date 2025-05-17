@@ -1,6 +1,7 @@
 //! This crate contains all shared fullstack server functions.
 use std::time::Duration;
 
+use crate::entities::recipe_collection;
 use crate::entities::{
     comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken,
     recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user,
@@ -114,6 +115,7 @@ pub async fn create_account(
         .hash_password(password.as_bytes(), &salt)?
         .to_string();
     println!("Hashed password: {}", hashed_password);
+
     // Create the user
 
     let user = user::ActiveModel {
@@ -125,9 +127,19 @@ pub async fn create_account(
     let result = user.insert(&db).await.unwrap();
     let user_id = result.id;
     println!("Created user with id {}", user_id);
+
     // Generate a token using the user id to allow for quick "login"
 
     let token = create_login_token(user_id).await;
+
+    // Create a favorites collection for the user
+
+    let collection = recipe_collection::ActiveModel {
+        id: ActiveValue::NotSet,
+        user_id: ActiveValue::Set(user_id),
+        collection_name: ActiveValue::Set("Favorites".to_string()),
+    };
+    let _ = collection.insert(&db).await.unwrap();
 
     Ok(token)
 }

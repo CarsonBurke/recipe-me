@@ -2,12 +2,11 @@
 use std::{fmt::Display, time::Duration};
 
 use data::{
-    PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal,
+    PartialCollection, PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal
 };
 use dioxus::{html::g::offset, prelude::{server_fn::error::NoCustomError, *}};
 use entities::{
-    comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken,
-    recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user,
+    comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken, recipe_collection, recipe_collection_recipe, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
 };
 use hmac::{Hmac, Mac};
 use lettre::{
@@ -88,6 +87,7 @@ pub struct FilteredRecipesParams {
     pub page_offset: Option<u64>,
     pub author_id: Option<i32>,
     pub public: Option<bool>,
+    pub collection_id: Option<i32>,
 }
 
 #[server]
@@ -149,6 +149,20 @@ pub async fn get_filtered_recipes(
                             .column(recipe_ingredient::Column::RecipeId)
                             .and_where(recipe_ingredient::Column::IngredientId.eq(v))
                             .from(recipe_ingredient::Entity)
+                            .to_owned(),
+                    ),
+                ),
+            )
+        })
+        // Collection id
+        .apply_if(params.collection_id, |mut query, v| {
+            query.filter(
+                Condition::any().add(
+                    recipe::Column::Id.in_subquery(
+                        Query::select()
+                            .column(recipe_collection_recipe::Column::RecipeId)
+                            .and_where(recipe_collection_recipe::Column::CollectionId.eq(v))
+                            .from(recipe_collection_recipe::Entity)
                             .to_owned(),
                     ),
                 ),
@@ -278,6 +292,13 @@ pub async fn get_recipe_comments(recipe_id: i32) -> Result<Vec<PartialComment>, 
         .await
         .unwrap();
     Ok(recipe_comments)
+}
+
+#[server]
+pub async fn get_collection(collection_id: i32) -> Result<recipe_collection::Model, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let collection = recipe_collection::Entity::find_by_id(collection_id).one(&db).await.unwrap();
+    Ok(collection.unwrap())
 }
 
 /* #[server]

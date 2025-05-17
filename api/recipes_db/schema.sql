@@ -68,11 +68,11 @@ CREATE TABLE IF NOT EXISTS Comment (
 
 CREATE TABLE IF NOT EXISTS RecipeCollection (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    user_id INTEGER REFERENCES User(id),
+    user_id INTEGER REFERENCES User(id) NOT NULL,
     collection_name VARCHAR(255) NOT NULL
 );
 
--- Map many recipes to one collection
+-- Map recipes to one collection
 CREATE TABLE IF NOT EXISTS RecipeCollectionRecipe (
     public BOOLEAN DEFAULT TRUE,
     recipe_id INTEGER NOT NULL REFERENCES Recipe(id),
