@@ -1,6 +1,7 @@
 //! This crate contains all shared fullstack server functions.
 use std::{fmt::Display, time::Duration};
 
+use auth::ServerLoginToken;
 use data::{
     PartialCollection, PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal
 };

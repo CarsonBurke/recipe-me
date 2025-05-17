@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{utils::is_logged_in, views::account::account_recipes, Route};
+use crate::{utils::is_logged_in, views::account::recipes, Route};
 
 #[component]
 pub fn AccountDashboard() -> Element {
@@ -19,13 +19,13 @@ pub fn AccountDashboard() -> Element {
                         class: "row overflowHorizontal gapMedium paddingLarge",
                         Link {
                             class: "button buttonBg2 round square",
-                            to: Route::AccountRecipes { query: account_recipes::Query::default() },
+                            to: Route::AccountRecipes { query: recipes::Query::default() },
                             dioxus_free_icons::Icon { icon: ld_icons::LdBook }
                             "My recipes"
                         }
                         Link {
                             class: "button buttonBg2 round",
-                            to: Route::AccountRecipes { query: account_recipes::Query::default() },
+                            to: Route::AccountRecipes { query: recipes::Query::default() },
                             dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
                             "Favourite recipes"
                         }

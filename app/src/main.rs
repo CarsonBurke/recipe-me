@@ -17,10 +17,10 @@ use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::ToastManager;
 use views::{
     account::{
-        account::Account, account_recipes::{self, AccountRecipes}, collections::AccountCollections, dashboard::AccountDashboard, new_collection::NewCollection, new_recipe::NewRecipe
-    }, collection::collection::CollectionPage, fallback::Fallback, login::Login, recipe::{
-        recipes::{self}, RecipePage, Recipes
-    }, signup::Signup, Home, download::DownloadPage
+        self, account::Account, collections::AccountCollections, dashboard::AccountDashboard, new_collection::NewCollection, new_recipe::NewRecipe, recipes::AccountRecipes,
+    }, collection::collection::CollectionPage, download::DownloadPage, fallback::Fallback, login::Login, recipe::{
+        recipes::{self, Recipes}, RecipePage,
+    }, signup::Signup, Home,
 };
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
@@ -57,7 +57,7 @@ pub enum Route {
     #[transition(Fade)]
     Recipes {
         query: recipes::Query,
-     },
+    },
     #[route("/recipe/:id")]
     #[transition(Fade)]
     RecipePage { id: i32 },
@@ -78,7 +78,7 @@ pub enum Route {
     #[route("/account/recipes?:..query")]
     #[transition(Fade)]
     AccountRecipes {
-        query: account_recipes::Query,
+        query: account::recipes::Query,
     },
     #[route("/account/collections")]
     #[transition(Fade)]
