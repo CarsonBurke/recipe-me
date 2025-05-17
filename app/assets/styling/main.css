@@ -205,6 +205,17 @@ body {
     white-space: nowrap;
 }
 
+.buttonSmall {
+    padding: var(--spacingSmall) var(--spacingMedium);
+    border-radius: var(--defaultBorderRadius);
+    transition: all var(--defaultTransitionTime);
+    cursor: pointer;
+    display: flex;
+    gap: var(--spacingSmall);
+    align-items: center;
+    white-space: nowrap;
+}
+
 .button:disabled {
     opacity: 0.7;
     cursor: disabled;
@@ -239,6 +250,7 @@ body {
     display: flex;
     flex-direction: column;
     padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
+    padding-bottom: calc(var(--navbarHeight) + var(--spacingLarge));
     gap: var(--spacingLarge);
 }
 

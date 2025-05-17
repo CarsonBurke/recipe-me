@@ -2,7 +2,7 @@ use api::user_actions::{self, NewIngredient};
 use dioxus::{html::textarea, prelude::*};
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::LOGIN_TOKEN_GLOBAL;
+use crate::{views::account, Route, LOGIN_TOKEN_GLOBAL};
 
 #[component]
 pub fn NewRecipe() -> Element {
@@ -40,6 +40,8 @@ pub fn NewRecipe() -> Element {
                         };
 
                         println!("created recipe with id {}", recipe_id);
+
+                        navigator().push(Route::AccountRecipes { query: account::recipes::Query::default() });
                     },
                     class: "column gapLarge paddingLarge round bg2 centerColumn",
                     h1 {class: "textLarge", "New recipe" },

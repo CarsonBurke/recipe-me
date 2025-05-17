@@ -15,6 +15,7 @@ dioxus-toast = "0.6.0"
 dioxus-sdk = { version = "0.6.0", features = ["storage"]}
 dioxus-free-icons = { version = "0.9", features = ["lucide", "ionicons"] }
 dioxus-motion = { version = "0.3.1", features = ["transitions"] }
+num-traits = "0.2.19"
 
 [features]
 default = []

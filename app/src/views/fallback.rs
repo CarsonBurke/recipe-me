@@ -23,7 +23,7 @@ pub fn Fallback(route: Vec<String>) -> Element {
                                 let navigator = navigator();
                                 navigator.go_back();
                             },
-                            "Login"
+                            "Back"
                         }
                         Link {
                             class: "buttonBg3 button",

@@ -63,7 +63,7 @@ pub fn AccountRecipes(query: Query) -> Element {
                     }
                 }
                 div {
-                    class: "column gapMedium centerColumn",
+                    class: "row centerRow flexWrap gapMedium centerColumn",
                     if let Some(login_token) = login_token {
                         FilteredRecipes { author_id: login_token.user_id }
                     }

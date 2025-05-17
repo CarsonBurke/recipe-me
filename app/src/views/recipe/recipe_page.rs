@@ -1,17 +1,16 @@
+use std::f32::EPSILON;
+
 use api::{
     get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals,
     get_recipes,
 };
 use dioxus::{logger::tracing::info, prelude::*};
+use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
-    Route,
     components::{
-        RatingStatic,
-        filtered_recipes::{self, FilteredRecipes},
-        recipe::comments::RecipeComments,
-    },
-    views::recipe::recipes::{self},
+        filtered_recipes::{self, FilteredRecipes}, recipe::comments::RecipeComments, RatingStatic
+    }, utils::round_to_decimals, views::recipe::recipes::{self}, Route
 };
 
 #[component]
@@ -75,13 +74,13 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
     let diets_read = &*diets.read();
     // let diets_ref = diets_read.as_ref().unwrap();
 
-    let rating = recipe_read.total_rating as f32 / recipe_read.ratings as f32;
+    let rating = recipe_read.total_rating as f32 / (recipe_read.ratings as f32 + EPSILON);
 
-    let mut ingredients_mult = use_signal(|| 1);
+    let mut ingredients_mult = use_signal(|| 1.);
 
-    use_effect(move || {
+    /* use_effect(move || {
         let mult = ingredients_mult();
-    });
+    }); */
 
     /* use_effect(move || {
         let id = id();
@@ -118,15 +117,21 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                             h1 { class: "textXLarge", {recipe_read.name.clone()} }
                             div {
                                 class: "row centerColumn gapMedium",
-                                RatingStatic {
-                                    rating
+                                if recipe_read.ratings == 0 {
+                                    p { class: "textSmall textWeak", "No ratings" }
                                 }
-                                p { class: "textSmall textWeak", {format!("{rating:.1} / 5")} }
+                                else {
+                                    RatingStatic {
+                                        rating
+                                    }
+                                    p { class: "textSmall textWeak", {format!("{rating:.1} / 5")} }
+                                }
                             }
                         }
-
-                        p {
-                            {recipe_read.summary.clone()},
+                        if recipe_read.summary.len() != recipe_read.description.len() {
+                            p {
+                                {recipe_read.summary.clone()},
+                            }
                         }
                     }
                     div {
@@ -200,22 +205,36 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         h2 { class: "textLarge",  "Ingredients"}
                         div {
                             class: "row gapLarge centerColumn widthFit",
-                            h3 {
-                                class: "textSmall",
-                                {format!("{} Servings", ingredients_mult())}
-                            }
                             div {
-                                class: "row gapSmall round bg2",
+                                class: "row round bg2",
                                 button {
-                                    class: "button buttonBg2",
-                                    onclick: move |_| ingredients_mult.set((ingredients_mult() + 1).min(20)),
+                                    class: "buttonSmall buttonBg2",
+                                    onclick: move |_| {
+                                        if ingredients_mult() < 1. {
+                                            ingredients_mult.set((ingredients_mult() + 0.25));
+                                            return
+                                        }
+
+                                        ingredients_mult.set((ingredients_mult() as f32 + 1.).min(20.))
+                                    },
                                     "+"
                                 }
                                 button {
-                                    class: "button buttonBg2",
-                                    onclick: move |_| ingredients_mult.set((ingredients_mult() - 1).max(1)),
+                                    class: "buttonSmall buttonBg2",
+                                    onclick: move |_| {
+                                        if ingredients_mult() <= 1. {
+                                            ingredients_mult.set((ingredients_mult() - 0.25).max(0.25));
+                                            return
+                                        }
+
+                                        ingredients_mult.set((ingredients_mult() - 1.).max(1.))
+                                    },
                                     "-"
                                 }
+                            }
+                            h3 {
+                                class: "textSmall",
+                                {format!("{} Servings", ingredients_mult())}
                             }
                         }
                         div {
@@ -223,7 +242,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                             for ingredient in ingredients_read {
                                 p {
                                     class: "textSmall",
-                                    {format!("{} {} {}", (ingredient.amount.clone() * ingredients_mult() as f32).to_string(), ingredient.description.clone(), ingredient.name.clone())}
+                                    {format!("{} {} {}", round_to_decimals(ingredient.amount.clone() * ingredients_mult() as f32, 2), ingredient.description.clone(), ingredient.name.clone())}
                                 }
                             }
                         }
@@ -293,6 +312,17 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                             meal_id: Some(meal.id),
                             limit: Some(8),
                         }
+                    }
+                }
+                div {
+                    class: "row centerRow",
+                    button {
+                        class: "buttonBg2 button",
+                        onclick: move |_| {
+                            navigator().go_back();
+                        },
+                        dioxus_free_icons::Icon { icon: ld_icons::LdArrowLeft }
+                        "Back"
                     }
                 }
             }

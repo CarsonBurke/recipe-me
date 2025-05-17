@@ -42,3 +42,10 @@ pub fn logout() {
     *LOGIN_TOKEN_GLOBAL.write() = None;
     
 }
+
+pub fn round_to_decimals(num: f32, decimals: i32) -> f32 
+{
+    let factor = 10.0_f32.powi(decimals);
+    let result = (num * factor).round() / factor;
+    result
+}

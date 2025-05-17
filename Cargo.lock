@@ -110,6 +110,7 @@ dependencies = [
  "dioxus-motion",
  "dioxus-sdk",
  "dioxus-toast",
+ "num-traits",
  "serde",
  "serde_json",
  "tokio",
