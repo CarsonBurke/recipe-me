@@ -10,7 +10,7 @@ use dioxus_free_icons::icons::ld_icons;
 use crate::{
     components::{
         filtered_recipes::{self, FilteredRecipes}, recipe::comments::RecipeComments, RatingStatic
-    }, utils::round_to_decimals, views::recipe::recipes::{self}, Route
+    }, utils::round_to_decimals, views::recipe::recipes::{self}, Route, LOGIN_TOKEN_GLOBAL
 };
 
 #[component]
@@ -18,6 +18,8 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
     info!("RecipePage: {id}");
 
     info!("Second check {}", id());
+
+    let login_token = LOGIN_TOKEN_GLOBAL();
 
     /* web_sys::window().and_then(|win| Some(win.scroll_to_with_x_and_y(0.0, 0.0))); */
 
@@ -112,7 +114,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                     div {
                         class: "column centerRow gapSmall",
                         div {
-                            class: "row gapLarge",
+                            class: "row gapLarge flexWrap",
 
                             h1 { class: "textXLarge", {recipe_read.name.clone()} }
                             div {
@@ -124,7 +126,34 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                     RatingStatic {
                                         rating
                                     }
-                                    p { class: "textSmall textWeak", {format!("{rating:.1} / 5")} }
+                                    p { class: "row textSmall textWeak", {format!("{} / 5", round_to_decimals(rating, 1))} }
+                                }
+                            }
+                            {
+                                if let Some(login_token) = login_token {
+                                    rsx! {
+                                        div {
+                                            class: "row gapSmall",
+                                            button {
+                                                onclick: move |_| async move {
+
+                                                },
+                                                class: "buttonBg3 button",
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
+                                            }
+                                            button {
+                                                onclick: move |_| async move {
+                                                    
+                                                },
+                                                class: "buttonBg3 button",
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdListPlus }
+                                                // Spawn modal with options
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    rsx! {}
                                 }
                             }
                         }
