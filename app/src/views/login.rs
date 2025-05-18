@@ -4,7 +4,7 @@ use dioxus_free_icons::icons::ld_icons;
 use dioxus_sdk::storage::{LocalStorage, use_synced_storage};
 use dioxus_toast::{ToastInfo, ToastManager};
 
-use crate::{LOGIN_TOKEN_GLOBAL, Route, constants::LOGIN_TOKEN_KEY};
+use crate::{constants::LOGIN_TOKEN_KEY, utils, Route, LOGIN_TOKEN_GLOBAL};
 
 #[component]
 pub fn Login() -> Element {
@@ -24,6 +24,12 @@ pub fn Login() -> Element {
     }
 
     let mut toast: Signal<ToastManager> = use_context();
+
+    let is_logged_in = utils::is_logged_in().unwrap_or(false);
+
+    if is_logged_in {
+        navigator().push(Route::Account {  });
+    }
 
     /* let mut local_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>("placeholder".to_string(), || None); */
     /* let mut count_local = use_synced_storage::<LocalStorage, i32>("synced".to_string(), || 0);

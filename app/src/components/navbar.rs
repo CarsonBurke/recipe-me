@@ -11,6 +11,8 @@ pub fn Navbar() -> Element {
     /* let login_token = LOGIN_TOKEN_GLOBAL(); */
     println!("is logged in: {:#?}", is_logged_in);
 
+    let navigator  = navigator();
+
     rsx! {
         document::Link { rel: "stylesheet", href: CSS }
 
@@ -19,6 +21,19 @@ pub fn Navbar() -> Element {
             class: "navbar paddingSectionSide row bg3 gapSmall",
             div {
                 class: "row centerColumn gapMedium paddingSmall",
+                {
+                    #[cfg(any(feature = "mobile", feature = "desktop"))]
+                    rsx! {
+                        button {
+                            onclick: move |_| {
+                                navigator.go_back();
+                            },
+                            /* disabled: !navigator.can_go_back(), */
+                            class: "button buttonBg3 square",
+                            dioxus_free_icons::Icon { icon: ld_icons::LdArrowLeft }
+                        }
+                    }
+                }
                 Link {
                     to: Route::Home {},
                     h1 {
