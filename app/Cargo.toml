@@ -16,6 +16,8 @@ dioxus-sdk = { version = "0.6.0", features = ["storage"]}
 dioxus-free-icons = { version = "0.9", features = ["lucide", "ionicons"] }
 dioxus-motion = { version = "0.3.1", features = ["transitions"] }
 num-traits = "0.2.19"
+[target.'cfg(target_os = "android")'.dependencies]
+openssl = { version = "0.10", features = ["vendored"] }
 
 [features]
 default = []
@@ -24,3 +26,15 @@ mobile = ["dioxus/mobile"]
 desktop = ["dioxus/desktop"]
 fullstack = ["dioxus/fullstack"]
 server = ["dioxus/server", "dep:tokio", "dep:axum"]
+
+[target.aarch64-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang"
+
+[target.armv7-linux-androideabi]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi29-clang"
+
+[target.i686-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android29-clang"
+
+[target.x86_64-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android29-clang"

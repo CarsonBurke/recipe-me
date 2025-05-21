@@ -1,0 +1,15 @@
+[bundle]
+identifier = "com.recipeme.app"
+publisher = "recipe me"
+icon = ["app/assets/icon.png"]
+
+[application]
+name = "recipe me"
+out_dir = "dist"
+asset_dir = "app/assets"
+
+[web.app]
+title = "recipe me"
+
+[[web.proxy]]
+backend = "http://localhost:8000/api/"
