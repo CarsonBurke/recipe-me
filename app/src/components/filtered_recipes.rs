@@ -19,7 +19,7 @@ pub fn FilteredRecipes(
     public: Option<bool>,
     collection_id: Option<i32>,
 ) -> Element {
-    let recipes = use_server_future(move || {
+    let recipes = use_resource(move || {
         let params = FilteredRecipesParams {
             cuisine_id: cuisine_id.clone(),
             diet_id: diet_id.clone(),
@@ -29,21 +29,19 @@ pub fn FilteredRecipes(
             author_id: author_id.clone(),
             public: public.clone(),
             collection_id: collection_id.clone(),
-            ..Default::default()
+            page_offset: Some(0),
         };
         async move { get_filtered_recipes(params).await.unwrap() }
-    })?;
-    let recipes_read = recipes.read();
-    let recipes_ref = recipes_read.as_ref().unwrap();
+    }).suspend()?;
 
-    if recipes_ref.is_empty() {
+    if recipes().is_empty() {
         return rsx! {
             p { class: "textMedium", "No recipes found" }
         };
     }
 
     rsx! {
-        for recipe in recipes_read.as_ref().unwrap().iter() {
+        for recipe in recipes().iter() {
 
             RecipePreview { id: recipe.id, name: recipe.name.clone(), summary: recipe.summary.clone(), source: recipe.source.clone(), rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON ) }
         }

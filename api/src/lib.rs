@@ -5,7 +5,7 @@ use auth::ServerLoginToken;
 use data::{
     PartialCollection, PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal
 };
-use dioxus::{html::g::offset, prelude::{server_fn::error::NoCustomError, *}};
+use dioxus::{html::g::offset, logger::tracing::info, prelude::{server_fn::error::NoCustomError, *}};
 use entities::{
     comment, cuisine_name, diet_name, ingredient_name, login_token, meal_name, prelude::LoginToken, recipe_collection, recipe_collection_recipe, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user
 };
@@ -95,7 +95,8 @@ pub struct FilteredRecipesParams {
 pub async fn get_filtered_recipes(
     params: FilteredRecipesParams,
 ) -> Result<Vec<recipe::Model>, ServerFnError> {
-    println!("Server side params {:#?}", params);
+    println!("Start get filtered recipes");
+    info!("Start get filtered recipes");
 
     let db = db_conn().await.unwrap();
     let recipes = recipe::Entity::find()
@@ -156,7 +157,7 @@ pub async fn get_filtered_recipes(
             )
         })
         // Collection id
-        .apply_if(params.collection_id, |mut query, v| {
+        /* .apply_if(params.collection_id, |mut query, v| {
             query.filter(
                 Condition::any().add(
                     recipe::Column::Id.in_subquery(
@@ -180,7 +181,7 @@ pub async fn get_filtered_recipes(
             query.filter(
                 recipe::Column::Public.eq(v),
             )
-        })
+        }) */
         .limit(params.limit)
         /* .apply_if(Some(params.limit), QuerySelect::limit::<Option<u64>>) */
         .apply_if(Some(params.page_offset), QuerySelect::offset::<Option<u64>>)
@@ -188,6 +189,7 @@ pub async fn get_filtered_recipes(
         .await
         .unwrap();
 
+        println!("Got filtered recipes");
     Ok(recipes)
 }
 

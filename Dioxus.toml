@@ -11,5 +11,5 @@ asset_dir = "app/assets"
 [web.app]
 title = "recipe me"
 
-[[web.proxy]]
-backend = "http://localhost:8000/api/"
+# [[web.proxy]]
+# backend = "http://localhost:8000/api/"
