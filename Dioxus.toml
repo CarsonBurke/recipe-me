@@ -7,9 +7,29 @@ icon = ["app/assets/icon.png"]
 name = "recipe me"
 out_dir = "dist"
 asset_dir = "app/assets"
+# out_dir = "dist"
+# asset_dir = "app/assets"
+
+# include `assets` in web platform
+[web.resource]
+
+# Additional CSS style files
+style = []
+
+# Additional JavaScript files
+script = []
+
+[web.resource.dev]
+
+# Javascript code file
+# serve: [dev-server] only
+script = []
 
 [web.app]
 title = "recipe me"
+
+[desktop]
+resources = "app/assets"
 
 # [[web.proxy]]
 # backend = "http://localhost:8000/api/"
