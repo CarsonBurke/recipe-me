@@ -4,10 +4,24 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-dioxus = { workspace = true, features = ["router"] }
-ui = { workspace = true }
+dioxus = { workspace = true, features = ["router", "fullstack"] }
+
+[target.'cfg(target_os = "android")'.dependencies]
+openssl = { version = "0.10", features = ["vendored"] }
 
 [features]
-default = []
+default = ["mobile"]
 mobile = ["dioxus/mobile"]
 server = ["dioxus/server"]
+
+[target.aarch64-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang"
+
+[target.armv7-linux-androideabi]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi29-clang"
+
+[target.i686-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android29-clang"
+
+[target.x86_64-linux-android]
+linker = "/home/marvin/Android/Sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android29-clang"

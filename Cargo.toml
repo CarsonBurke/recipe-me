@@ -4,7 +4,8 @@ members = [
     "app",
     "api",
     "backend",
-    "local_api"
+    "local_api",
+    "mobile"
 ]
 
 [workspace.dependencies]

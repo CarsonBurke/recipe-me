@@ -1,6 +1,5 @@
 use dioxus::prelude::*;
 
-use ui::Navbar;
 use views::{Blog, Home};
 
 mod views;
@@ -35,16 +34,7 @@ fn App() -> Element {
 #[component]
 fn MobileNavbar() -> Element {
     rsx! {
-        Navbar {
-            Link {
-                to: Route::Home {},
-                "Home"
-            }
-            Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
-            }
-        }
+        h1 { "Outlet" }
 
         Outlet::<Route> {}
     }
