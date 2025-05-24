@@ -1,0 +1,1 @@
+bundletool build-apks --bundle dist-android/App-aarch64.aab --output dist-android/App-aarch64.apks
