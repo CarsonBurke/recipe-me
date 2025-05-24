@@ -1,0 +1,1 @@
+sudo NO_STRIP=true /home/marvin/.cargo/bin/dx bundle --package app --platform desktop --out-dir dist-linux-desktop

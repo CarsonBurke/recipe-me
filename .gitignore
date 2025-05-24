@@ -8,3 +8,9 @@
 
 .env
 secrets.rs
+
+# dist stuff
+dist
+appimage-extracted
+dist-android
+dist-linux-desktop

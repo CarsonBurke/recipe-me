@@ -1,0 +1,1 @@
+dx bundle --package app --platform android --out-dir dist-android
