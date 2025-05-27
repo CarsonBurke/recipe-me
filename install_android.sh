@@ -1,0 +1,1 @@
+bundletool install-apks --apks dist-android/App-aarch64.apks
