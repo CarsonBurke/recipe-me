@@ -2,7 +2,7 @@ pub mod sample_data;
 
 use sea_orm::{ConnectionTrait, Database, DatabaseBackend, DatabaseConnection, DbBackend, DbErr, Statement};
 
-use api::{constants::DB_NAME, secrets::DATABASE_URL};
+use crate::secrets::DATABASE_URL;
 
 pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(format!("../{DATABASE_URL}")).await;

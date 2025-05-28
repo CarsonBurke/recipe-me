@@ -1,6 +1,6 @@
 use sea_orm::{ConnectionTrait, DbBackend, DbErr, Schema};
 
-use api::entities;
+use crate::entities;
 use super::db_conn;
 
 pub async fn create_tables() -> Result<(), DbErr> {
