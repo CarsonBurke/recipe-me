@@ -1,6 +1,6 @@
 use std::{error::Error, fmt::Display};
 
-use fantoccini::{error::NewSessionError, wd::WebDriverCompatibleCommand, ClientBuilder};
+use fantoccini::{ClientBuilder, error::NewSessionError, wd::WebDriverCompatibleCommand};
 use futures::StreamExt;
 
 #[derive(Debug)]
@@ -31,14 +31,20 @@ impl From<NewSessionError> for ScrapeError {
 }
 
 pub async fn scrape_bbc_food() -> Result<(), ScrapeError> {
-    let root_url = "https://www.bbc.co.uk/food/recipes/a-z/a/1";
+    let root_url = "https://www.bbc.co.uk/";
+    let start_url_relative = "food/recipes/a-z/a/1";
+    let start_url = format!("{root_url}{start_url_relative}");
+
+    let redirect_url = "https://www.bbc.co.uk/food/recipes";
+
     println!("root url");
     let client = ClientBuilder::native()
         .connect("http://localhost:4444")
-        .await.map_err(ScrapeError::from)?;
-
-    client.goto(root_url).await.unwrap();
-    if client.current_url().await.unwrap().as_str() != root_url {
+        .await
+        .map_err(ScrapeError::from)?;
+    println!("connected");
+    client.goto(start_url.as_str()).await.unwrap();
+    if client.current_url().await.unwrap().as_str() != start_url {
         panic!("Failed to navigate to root url");
     }
 
@@ -60,15 +66,25 @@ pub async fn scrape_bbc_food() -> Result<(), ScrapeError> {
     } */
 
     let path_links = client
-        .find_all(fantoccini::Locator::Css("az-keyboard__link"))
-        .await.unwrap();
+        .find_all(fantoccini::Locator::Css(".az-keyboard__link"))
+        .await
+        .unwrap();
 
     println!("path links count {}", path_links.len());
 
     let mut path_hrefs = Vec::new();
 
     for le in path_links.iter() {
-        path_hrefs.push(le.attr("href").await.unwrap().unwrap());
+        let attr = le.attr("href").await.unwrap();
+
+        let Some(href) = attr else {
+            println!("no href for text content {}", le.text().await.unwrap());
+            continue;
+        };
+
+        println!("found href for path link");
+
+        path_hrefs.push(href);
     }
 
     println!("path hrefs count {}", path_hrefs.len());
@@ -83,34 +99,38 @@ pub async fn scrape_bbc_food() -> Result<(), ScrapeError> {
 
         // So long as we are still matching the og path, we can keep going
 
+        let mut moving_href = href; 
+
         loop {
-            let url = client.current_url().await.unwrap();
-            let url_split = url
-                .as_str()
-                .split("/")
-                .collect::<Vec<&str>>();
-            let url_pagination_str = url_split.last().unwrap();
+            let url_split = moving_href.split("/").collect::<Vec<&str>>();
+            println!("url split {url_split:?}");
+            let url_end = url_split.last().unwrap();
+            let url_pagination_str = url_end.split("#").collect::<Vec<&str>>()[0];
             let url_pagination = url_pagination_str.parse::<u32>().unwrap();
 
-            let new_url =
-                url_split[0..url_split.len() - 2].join("/") + &format!("/{}", url_pagination + 1);
+            let pre_url = url_split[0..url_split.len() - 1].join("/");
+            println!("pre url {pre_url}");
+            let new_url = pre_url + &format!("/{}", url_pagination + 1);
+            moving_href = new_url.clone();
+
+            println!("new url: {}", new_url);
 
             client.goto(new_url.as_str()).await;
             let client_url = client.current_url().await.unwrap();
 
-            if client_url.as_str() == root_url {
+            // If we get sent to the redirect url we know that we hit the pagination limit
+            if client_url.as_str() == redirect_url {
                 break;
             }
 
-            let promos = client.find_all(fantoccini::Locator::Css(".promo")).await.unwrap();
+            let promos = client
+                .find_all(fantoccini::Locator::Css(".promo"))
+                .await
+                .unwrap();
 
             let mut promos_hrefs = Vec::new();
 
-            for el in client
-                .find_all(fantoccini::Locator::Css(".promo"))
-                .await
-                .unwrap()
-                .iter()
+            for el in promos
             {
                 let href = el.attr("href").await.unwrap();
                 if let Some(href) = href {
