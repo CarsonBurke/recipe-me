@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = "0.8.4"
-sea-orm = "1.1.10"
+sea-orm = {version = "1.1.10", features=["sqlx-sqlite", "runtime-tokio", "macros"]}
 tokio = { version = "1.44.2", features = ["full"] }
 serde = { version = "1.0.219", features = ["derive"] }
 fantoccini = "0.21.5"

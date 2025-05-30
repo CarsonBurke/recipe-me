@@ -5,7 +5,7 @@ use sea_orm::{ConnectionTrait, Database, DatabaseBackend, DatabaseConnection, Db
 use crate::secrets::DATABASE_URL;
 
 pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
-    let db = Database::connect(format!("../{DATABASE_URL}")).await;
+    let db = Database::connect(DATABASE_URL).await;
     db
     /* let conn = match db.get_database_backend() {
         /* DbBackend::Postgres => {
