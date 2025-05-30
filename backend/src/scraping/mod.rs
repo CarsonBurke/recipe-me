@@ -3,10 +3,12 @@ use std::{error::Error, fmt::Display};
 use fantoccini::{ClientBuilder, Locator, error::NewSessionError, wd::WebDriverCompatibleCommand};
 use futures::StreamExt;
 use ollama_rs::{Ollama, generation::completion::request::GenerationRequest};
-use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{
+    prelude::Decimal, ActiveModelTrait, ActiveValue, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter
+};
 use tokio::fs;
 
-use crate::{db::db_conn, entities::recipe};
+use crate::{db::db_conn, entities::{ingredient_name, recipe, recipe_ingredient}};
 
 #[derive(Debug)]
 pub enum ScrapeError {
@@ -50,16 +52,16 @@ pub async fn scrape() {
 }
 
 #[derive(Debug)]
-pub struct Ingredient {
+pub struct ScrapedIngredient {
     name: String,
     description: String,
     amount: f32,
 }
 
-fn ingredients_from_response(response: &String) -> Vec<Ingredient> {
+fn ingredients_from_response(response: &String) -> Vec<ScrapedIngredient> {
     let items = response.split("; ").collect::<Vec<&str>>();
 
-    let mut ingredients: Vec<Ingredient> = Vec::new();
+    let mut ingredients: Vec<ScrapedIngredient> = Vec::new();
 
     for item in items {
         println!("item {item}");
@@ -73,14 +75,23 @@ fn ingredients_from_response(response: &String) -> Vec<Ingredient> {
         let Ok(amount) = amount_str.parse::<f32>() else {
             continue;
         };
+        if amount == 0. {
+            continue;
+        }
         let Some(description) = components.get(1) else {
             continue;
         };
+        if description.is_empty() {
+            continue;
+        }
         let Some(name) = components.get(2) else {
             continue;
         };
+        if name.is_empty() {
+            continue;
+        }
 
-        let ingredient = Ingredient {
+        let ingredient = ScrapedIngredient {
             name: name.to_string(),
             description: description.to_string(),
             amount,
@@ -94,7 +105,7 @@ fn ingredients_from_response(response: &String) -> Vec<Ingredient> {
 #[derive(Debug)]
 pub struct ScrapedRecipe {
     title: String,
-    ingredients: Vec<Ingredient>,
+    ingredients: Vec<ScrapedIngredient>,
     description: String,
     instructions: String,
     ratings_count: u32,
@@ -116,7 +127,6 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
     let db_conn = db_conn().await.unwrap();
 
     for (i, recipe_href) in recipe_hrefs.iter().enumerate() {
-
         let recipe_url = format!("{root_url}{recipe_href}");
 
         if does_recipe_exist(&db_conn, &recipe_url).await {
@@ -222,7 +232,7 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
 
         let ingredients_vec = ingredients_from_response(&ingredients);
 
-        let prompt_instructions = "Generate a single short description of the recipe based on the following provided title and ingredients. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Apply to the following title:".to_string();
+        let prompt_instructions = "Generate a single short description of the recipe based on the following provided title and list of ingredients. Don't repeat the title. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Apply to the following title:".to_string();
         let prompt = format!(
             "{prompt_instructions} '{}' with ingredients: '{}'",
             title_gen, ingredients
@@ -432,7 +442,7 @@ async fn get_bbc_food_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeErr
 fn write_relative_hrefs(site: &Site, hrefs: Vec<String>) {}
 
 async fn write_scraped_recipe(db_conn: &DatabaseConnection, recipe: ScrapedRecipe) {
-    let recipe = recipe::ActiveModel {
+    let instance = recipe::ActiveModel {
         id: ActiveValue::NotSet,
         name: ActiveValue::Set(recipe.title),
         description: ActiveValue::Set(recipe.description.clone()),
@@ -452,19 +462,57 @@ async fn write_scraped_recipe(db_conn: &DatabaseConnection, recipe: ScrapedRecip
         public: ActiveValue::Set(Some(false)),
     };
 
-    let result = recipe.insert(db_conn).await;
+    let result = instance.insert(db_conn).await;
 
     if let Ok(result) = result {
         println!("inserted recipe with id {}", result.id);
+
+        write_scraped_recipe_ingredients(db_conn, recipe.ingredients, result.id).await;
     } else {
         println!("failed to insert recipe");
+    }
+}
+
+async fn write_scraped_recipe_ingredients(
+    db_conn: &DatabaseConnection,
+    ingredients: Vec<ScrapedIngredient>,
+    recipe_id: i32,
+) {
+    for ingredient in ingredients {
+        let ingredient_name = ingredient_name::ActiveModel {
+            id: ActiveValue::NotSet,
+            name: ActiveValue::Set(ingredient.name),
+            affiliate_link: ActiveValue::NotSet,
+        };
+        let Ok(ingredient_name_result) = ingredient_name.insert(db_conn).await else{
+            continue;
+        };
+
+        let recipe_ingredient = recipe_ingredient::ActiveModel {
+            ingredient_id: ActiveValue::Set(ingredient_name_result.id),
+            description: ActiveValue::Set(ingredient.description),
+            amount: ActiveValue::Set(
+                Decimal::from_f32_retain(ingredient.amount).expect("Invalid amount"),
+            ),
+            recipe_id: ActiveValue::Set(recipe_id),
+        };
+
+        if let Ok(recipe_ingredient) = recipe_ingredient.insert(db_conn).await {
+            println!(
+                "inserted recipe ingredient with id {}",
+                recipe_ingredient.ingredient_id
+            );
+        } else {
+            println!("failed to insert recipe ingredient");
+        }
     }
 }
 
 async fn does_recipe_exist(db_conn: &DatabaseConnection, url: &String) -> bool {
     recipe::Entity::find()
         .filter(recipe::Column::Source.eq(url))
-        .one(db_conn).await
+        .one(db_conn)
+        .await
         .unwrap()
         .is_some()
 }
