@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS Recipe (
     source TEXT,
     -- Some recipes don't have an author - they are auto-generated
     author_id INTEGER REFERENCES User(id),
-    public BOOLEAN DEFAULT TRUE
+    public BOOLEAN DEFAULT TRUE,
+    image_url VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS RecipeMeal (
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS RecipeIngredient (
 CREATE TABLE IF NOT EXISTS IngredientName (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     affiliate_link VARCHAR(255),
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS RecipeCuisine (

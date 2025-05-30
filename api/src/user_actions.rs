@@ -55,6 +55,7 @@ pub async fn create_recipe(
     let recipe_result = recipe.insert(&db).await.unwrap();
 
     for ingredient in ingredients {
+        // Refer to backend for fix: need to check if there is an existing name and use that id if so
         let ingredient_name = ingredient_name::ActiveModel {
             id: ActiveValue::NotSet,
             name: ActiveValue::Set(ingredient.name),
