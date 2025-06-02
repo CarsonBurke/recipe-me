@@ -19,7 +19,8 @@ mod all_recipes;
 mod bbc_food;
 mod generate;
 
-static DRIVER_ADDRESS: &str = "http://localhost:44379";
+/// Listen to either the address of (run) `chromedriver` or `geckodriver`
+static DRIVER_ADDRESS: &str = "http://localhost:35425";
 
 #[derive(Debug)]
 pub enum ScrapeError {
@@ -50,10 +51,10 @@ impl From<NewSessionError> for ScrapeError {
 
 pub async fn scrape() {
     let sites = vec![
-        Site::new(
+        /* Site::new(
             "bbc_food".to_string(),
             "https://www.bbc.co.uk/food/".to_string(),
-        ),
+        ), */
         Site::new(
             "all_recipes".to_string(),
             "https://www.allrecipes.com/".to_string(),

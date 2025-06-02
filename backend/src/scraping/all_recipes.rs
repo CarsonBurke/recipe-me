@@ -1,4 +1,4 @@
-use fantoccini::{ClientBuilder, Locator};
+use fantoccini::{Client, ClientBuilder, Locator};
 
 use crate::db::db_conn;
 
@@ -20,10 +20,7 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
 
     let root_url = "https://www.allrecipes.com/";
 
-    for recipe_href in recipe_hrefs {
-
-        
-    }
+    for recipe_href in recipe_hrefs {}
 
     Ok(())
 }
@@ -42,27 +39,34 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
         .await
         .map_err(ScrapeError::from)?;
 
-    client.goto(root_url).await.unwrap();
-    if client.current_url().await.unwrap().as_str() != root_url {
+    client.goto(start_url.as_str()).await.unwrap();
+    if client.current_url().await.unwrap().as_str() != start_url {
         panic!("Failed to navigate to root url");
     }
 
+    println!("Navigated to url {}", start_url);
+
     let mut category_hrefs = Vec::new();
 
-    let category_els = client.find_all(Locator::Css("l-link-list__item")).await.unwrap();
-
+    let category_els = client
+        .find_all(Locator::Css(".mntl-link-list__link"))
+        .await
+        .unwrap();
+    println!("found category els {}", category_els.len());
     for el in category_els {
         let Some(href) = el.attr("href").await.unwrap() else {
+            println!("No href for el");
             continue;
         };
 
         category_hrefs.push(href);
     }
 
+    println!("found category hrefs {}", category_hrefs.len());
+
     let mut recipe_hrefs = Vec::new();
 
     for category_href in category_hrefs {
-
         client.goto(category_href.as_str()).await.unwrap();
         if client.current_url().await.unwrap().as_str() != category_href {
             panic!("Failed to navigate to category href");
@@ -71,8 +75,9 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
         let mut internal_categories_href = Vec::new();
 
         let internal_category_els = client
-            .find_all(Locator::Css("mntl-taxonomy-nodes__link"))
-            .await.unwrap();
+            .find_all(Locator::Css(".mntl-taxonomy-nodes__link"))
+            .await
+            .unwrap();
 
         for el in internal_category_els {
             let Some(href) = el.attr("href").await.unwrap() else {
@@ -82,25 +87,50 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
             internal_categories_href.push(href);
         }
 
+        println!(
+            "Found {} internal categories",
+            internal_categories_href.len()
+        );
+
+        if internal_categories_href.is_empty() {
+            recipe_hrefs.extend(get_recipe_hrefs_on_current_page(&client).await);
+            continue;
+        }
+
         for internal_category_href in internal_categories_href {
             client.goto(internal_category_href.as_str()).await.unwrap();
             if client.current_url().await.unwrap().as_str() != internal_category_href {
                 panic!("Failed to navigate to internal category href");
             }
 
-            let recipe_els = client.find_all(Locator::Css(".card__a")).await.unwrap();
-
-            for el in recipe_els {
-                let Some(href) = el.attr("href").await.unwrap() else {
-                    continue;
-                };
-
-                recipe_hrefs.push(href);
-            }
+            recipe_hrefs.extend(get_recipe_hrefs_on_current_page(&client).await);
         }
     }
+
+    println!("Found total of {} recipes", recipe_hrefs.len());
 
     site.write_relative_hrefs(&recipe_hrefs).await;
 
     Ok(recipe_hrefs)
+}
+
+async fn get_recipe_hrefs_on_current_page(client: &Client) -> Vec<String> {
+    let recipe_els = client
+        .find_all(Locator::Css(".mntl-document-card"))
+        .await
+        .unwrap();
+
+    let mut recipe_hrefs = Vec::new();
+
+    for el in recipe_els {
+        let Some(href) = el.attr("href").await.unwrap() else {
+            continue;
+        };
+
+        recipe_hrefs.push(href);
+    }
+
+    println!("Found {} recipes on page", recipe_hrefs.len());
+
+    recipe_hrefs
 }
