@@ -21,7 +21,7 @@ mod bbc_food;
 mod generate;
 
 /// Listen to either the address of (run) `chromedriver` or `geckodriver`
-static DRIVER_ADDRESS: &str = "http://localhost:35425";
+static DRIVER_ADDRESS: &str = "http://localhost:35763";
 
 #[derive(Debug)]
 pub enum ScrapeError {
@@ -110,6 +110,7 @@ pub struct ScrapedRecipe {
 
 impl ScrapedRecipe {
     pub async fn try_write(&self, db_conn: &DatabaseConnection) {
+        println!("Trying to write recipe");
         let instance = recipe::ActiveModel {
             id: ActiveValue::NotSet,
             name: ActiveValue::Set(self.title.clone()),

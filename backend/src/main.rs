@@ -180,3 +180,7 @@ async fn get_filtered_recipes(Json(params): Json<FilteredRecipesParams>) -> (Sta
         println!("Got filtered recipes");
     (StatusCode::OK, axum::Json(recipes))
 }
+
+async fn ping() {
+
+}

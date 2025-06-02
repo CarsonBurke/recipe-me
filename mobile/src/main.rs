@@ -3,6 +3,7 @@ use dioxus::prelude::*;
 use views::{Blog, Home};
 
 mod views;
+mod server;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
