@@ -4,7 +4,7 @@ use fantoccini::{ClientBuilder, Locator};
 use ollama_rs::Ollama;
 
 use crate::{db::db_conn, scraping::{
-    does_recipe_exist, generate::{generate_description, generate_ingredients, generate_instructions, generate_title}, write_scraped_recipe, ScrapeError, ScrapedRecipe, DRIVER_ADDRESS
+    is_recipe_url_in_db, generate::{generate_description, generate_ingredients, generate_instructions, generate_title}, ScrapeError, ScrapedRecipe, DRIVER_ADDRESS
 }};
 
 use super::Site;
@@ -24,7 +24,7 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
     for (i, recipe_href) in recipe_hrefs.iter().enumerate() {
         let recipe_url = format!("{root_url}{recipe_href}");
 
-        if does_recipe_exist(&db_conn, &recipe_url).await {
+        if is_recipe_url_in_db(&db_conn, &recipe_url).await {
             println!("recipe with url already in db, skipping");
             continue;
         }
@@ -152,7 +152,7 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
 
         println!("Scraped recipe: {:#?}", scraped_recipe);
 
-        write_scraped_recipe(&db_conn, scraped_recipe).await
+        scraped_recipe.try_write(&db_conn).await
     }
 
     Ok(())
@@ -253,7 +253,7 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
 
             println!("new url: {}", new_url);
 
-            client.goto(new_url.as_str()).await;
+            let _  = client.goto(new_url.as_str()).await;
             let client_url = client.current_url().await.unwrap();
 
             // If we get sent to the redirect url we know that we hit the pagination limit

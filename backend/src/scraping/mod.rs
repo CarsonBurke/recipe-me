@@ -12,7 +12,8 @@ use tokio::{fs, time::error::Elapsed};
 
 use crate::{
     db::db_conn,
-    entities::{ingredient_name, recipe, recipe_ingredient}, scraping::bbc_food::scrape_bbc_food,
+    entities::{ingredient_name, recipe, recipe_ingredient},
+    scraping::bbc_food::scrape_bbc_food,
 };
 
 mod all_recipes;
@@ -77,6 +78,23 @@ pub struct ScrapedIngredient {
     amount: f32,
 }
 
+impl ScrapedIngredient {
+    pub async fn find_in_db_by_name(&self, db_conn: &DatabaseConnection) -> Option<i32> {
+        let ingredient = ingredient_name::Entity::find()
+            .filter(ingredient_name::Column::Name.eq(self.name.clone()))
+            .one(db_conn)
+            .await
+            .unwrap();
+
+        if let Some(ingredient) = ingredient {
+            println!("Found ingredient with id: {}", ingredient.id);
+            return Some(ingredient.id);
+        }
+
+        None
+    }
+}
+
 #[derive(Debug)]
 pub struct ScrapedRecipe {
     title: String,
@@ -90,104 +108,87 @@ pub struct ScrapedRecipe {
     image_url: Option<String>,
 }
 
-async fn find_ingredient_by_name(db_conn: &DatabaseConnection, name: &String) -> Option<i32> {
-    let ingredient = ingredient_name::Entity::find()
-        .filter(ingredient_name::Column::Name.eq(name))
-        .one(db_conn)
-        .await
-        .unwrap();
+impl ScrapedRecipe {
+    pub async fn try_write(&self, db_conn: &DatabaseConnection) {
+        let instance = recipe::ActiveModel {
+            id: ActiveValue::NotSet,
+            name: ActiveValue::Set(self.title.clone()),
+            description: ActiveValue::Set(self.description.clone()),
+            source: ActiveValue::Set(Some(self.url.clone())),
+            summary: ActiveValue::Set({
+                let mut cloned_description = self.description.clone();
+                cloned_description.shrink_to(100);
+                cloned_description
+            }),
+            instructions: ActiveValue::Set(self.instructions.clone()),
+            views: ActiveValue::Set(Some(0)),
+            ratings: ActiveValue::Set(self.ratings_count as i32),
+            total_rating: ActiveValue::Set(
+                (self.ratings_count as f32 * self.average_rating) as i32,
+            ),
+            author_id: ActiveValue::NotSet,
+            public: ActiveValue::Set(Some(true)),
+            image_url: ActiveValue::Set(self.image_url.clone()),
+        };
 
-    if let Some(ingredient) = ingredient {
-        println!("Found ingredient with id: {}", ingredient.id);
-        return Some(ingredient.id);
+        let result = instance.insert(db_conn).await;
+
+        if let Ok(result) = result {
+            println!("inserted recipe with id {}", result.id);
+
+            self.try_write_ingredients(db_conn, result.id).await;
+        } else {
+            println!("failed to insert recipe");
+        }
     }
 
-    None
+    pub async fn try_write_ingredients(&self, db_conn: &DatabaseConnection, recipe_id: i32) {
+        for ingredient in &self.ingredients {
+            let existing_ingredient_id = ingredient.find_in_db_by_name(db_conn).await;
+
+            let ingredient_id = if let Some(existing_ingredient_id) = existing_ingredient_id {
+                existing_ingredient_id
+            } else {
+                let ingredient_name = ingredient_name::ActiveModel {
+                    id: ActiveValue::NotSet,
+                    name: ActiveValue::Set(ingredient.name.clone()),
+                    affiliate_link: ActiveValue::NotSet,
+                };
+                let Ok(ingredient_name_result) = ingredient_name.insert(db_conn).await else {
+                    continue;
+                };
+
+                ingredient_name_result.id
+            };
+
+            let recipe_ingredient = recipe_ingredient::ActiveModel {
+                ingredient_id: ActiveValue::Set(ingredient_id),
+                description: ActiveValue::Set(ingredient.description.clone()),
+                amount: ActiveValue::Set(
+                    Decimal::from_f32_retain(ingredient.amount).expect("Invalid amount"),
+                ),
+                recipe_id: ActiveValue::Set(recipe_id),
+            };
+
+            if let Ok(recipe_ingredient) = recipe_ingredient.insert(db_conn).await {
+                println!(
+                    "inserted recipe ingredient with id {}",
+                    recipe_ingredient.ingredient_id
+                );
+            } else {
+                println!("failed to insert recipe ingredient");
+            }
+        }
+    }
 }
 
-async fn does_recipe_exist(db_conn: &DatabaseConnection, url: &String) -> bool {
+async fn is_recipe_url_in_db(db_conn: &DatabaseConnection, url: &String) -> bool {
     recipe::Entity::find()
         .filter(recipe::Column::Source.eq(url))
         .one(db_conn)
         .await
         .unwrap()
         .is_some()
-}
-
-pub async fn write_scraped_recipe(db_conn: &DatabaseConnection, recipe: ScrapedRecipe) {
-    let instance = recipe::ActiveModel {
-        id: ActiveValue::NotSet,
-        name: ActiveValue::Set(recipe.title),
-        description: ActiveValue::Set(recipe.description.clone()),
-        source: ActiveValue::Set(Some(recipe.url)),
-        summary: ActiveValue::Set({
-            let mut cloned_description = recipe.description.clone();
-            cloned_description.shrink_to(100);
-            cloned_description
-        }),
-        instructions: ActiveValue::Set(recipe.instructions),
-        views: ActiveValue::Set(Some(0)),
-        ratings: ActiveValue::Set(recipe.ratings_count as i32),
-        total_rating: ActiveValue::Set(
-            (recipe.ratings_count as f32 * recipe.average_rating) as i32,
-        ),
-        author_id: ActiveValue::NotSet,
-        public: ActiveValue::Set(Some(true)),
-        image_url: ActiveValue::Set(recipe.image_url),
-    };
-
-    let result = instance.insert(db_conn).await;
-
-    if let Ok(result) = result {
-        println!("inserted recipe with id {}", result.id);
-
-        write_scraped_recipe_ingredients(db_conn, recipe.ingredients, result.id).await;
-    } else {
-        println!("failed to insert recipe");
-    }
-}
-
-async fn write_scraped_recipe_ingredients(
-    db_conn: &DatabaseConnection,
-    ingredients: Vec<ScrapedIngredient>,
-    recipe_id: i32,
-) {
-    for ingredient in ingredients {
-        let mut existing_ingredient_id = find_ingredient_by_name(db_conn, &ingredient.name).await;
-
-        let ingredient_id = if let Some(existing_ingredient_id) = existing_ingredient_id {
-            existing_ingredient_id
-        } else {
-            let ingredient_name = ingredient_name::ActiveModel {
-                id: ActiveValue::NotSet,
-                name: ActiveValue::Set(ingredient.name),
-                affiliate_link: ActiveValue::NotSet,
-            };
-            let Ok(ingredient_name_result) = ingredient_name.insert(db_conn).await else {
-                continue;
-            };
-
-            ingredient_name_result.id
-        };
-
-        let recipe_ingredient = recipe_ingredient::ActiveModel {
-            ingredient_id: ActiveValue::Set(ingredient_id),
-            description: ActiveValue::Set(ingredient.description),
-            amount: ActiveValue::Set(
-                Decimal::from_f32_retain(ingredient.amount).expect("Invalid amount"),
-            ),
-            recipe_id: ActiveValue::Set(recipe_id),
-        };
-
-        if let Ok(recipe_ingredient) = recipe_ingredient.insert(db_conn).await {
-            println!(
-                "inserted recipe ingredient with id {}",
-                recipe_ingredient.ingredient_id
-            );
-        } else {
-            println!("failed to insert recipe ingredient");
-        }
-    }
 }
 
 pub struct Site {
@@ -229,4 +230,3 @@ impl Site {
 }
 
 // Would probably be a good idea to use a trait for Site stuff so less templating is required and things can be more streamlined
-
