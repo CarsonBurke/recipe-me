@@ -1,6 +1,11 @@
-use fantoccini::ClientBuilder;
+use std::fs;
 
-use crate::scraping::{write_scraped_recipe, DRIVER_ADDRESS};
+use fantoccini::{ClientBuilder, Locator};
+use ollama_rs::Ollama;
+
+use crate::{db::db_conn, scraping::{
+    does_recipe_exist, generate::{generate_description, generate_ingredients, generate_instructions, generate_title}, write_scraped_recipe, ScrapeError, ScrapedRecipe, DRIVER_ADDRESS
+}};
 
 use super::Site;
 
@@ -31,16 +36,9 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
         }
 
         let title_el = client.find(Locator::Id("main-heading")).await.unwrap();
-        let title = title_el.text().await.unwrap();
+        let title_text = title_el.text().await.unwrap();
 
-        let prompt = format!(
-            "Generate a SINGLE suitable, somewhat SEO and click-friendly but primarily descriptive alternative title for the following recipe title. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Title: {title}"
-        );
-        let title_gen = ollama
-            .generate(GenerationRequest::new("gemma3:latest".to_string(), prompt))
-            .await
-            .unwrap()
-            .response;
+        let title = generate_title(&ollama, title_text).await;
 
         let ratings_count_el = client
             .find(Locator::XPath(
@@ -80,22 +78,15 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
             ))
             .await
             .unwrap();
+        let ingredients_text = instructions_parent.text().await.unwrap();
 
         println!(
             "instruction text {:#?}",
             instructions_parent.text().await.unwrap()
         );
 
-        let prompt_instructions = "Rewrite this recipe's instruction to improve readability, grammer, staying to the point and being professional. Do as as a numbered list of instructions. Keep it to a reasonable length, some detail over brevity where it would benefit a reader. Avoid writing to statically or procedurally: this is not an essay. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Base it on the following instructions:".to_string();
-        let prompt = format!(
-            "{prompt_instructions} '{}'",
-            instructions_parent.text().await.unwrap()
-        );
-        let instructions = ollama
-            .generate(GenerationRequest::new("gemma3:latest".to_string(), prompt))
-            .await
-            .unwrap()
-            .response;
+        let instructions =
+            generate_instructions(&ollama, instructions_parent.text().await.unwrap()).await;
 
         let ingredients_parent = client
             .find(Locator::XPath(
@@ -109,29 +100,10 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
             ingredients_parent.text().await.unwrap()
         );
 
-        let prompt_instructions = "Generate a list of ingredients based on the following provided list. Put all content on one line, seperating each ingredient by a semicolon ';'. For each ingredient, remove uncessary words like 'of', use only one unit of measurement and infer from the text (g for grams, tsp stays as tsp, etc.) and seperate each part of the ingredient into exactly 3 pieces: quantity (unsigned integer), descriptors (string), and name (string); if there is no quantity, use '1'. There must be one quantity, descriptors, and name for each ingredient. Ingredients must be separated from each other by a '|'. For example '300 grams of crushed garlic' should be separated into '300|grams, crushed|garlic'. Or another example: '1 large egg, beaten with 1 tsp whole milk' should turn into two ingredients: '1|large, beaten|egg; 1|tsp|whole milk'. Another example: 'handfull of parsley' should turn into '1|handfull|parsley'. Avoid including ingredients that don't conform to these rules. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Apply to the following ingredients list:".to_string();
-        let prompt = format!(
-            "{prompt_instructions} '{}'",
-            ingredients_parent.text().await.unwrap()
-        );
-        let ingredients = ollama
-            .generate(GenerationRequest::new("gemma3:latest".to_string(), prompt))
-            .await
-            .unwrap()
-            .response;
+        let ingredients_vec = generate_ingredients(&ollama, ingredients_text.clone()).await;
 
-        let ingredients_vec = ingredients_from_response(&ingredients);
-
-        let prompt_instructions = "Generate a single short description of the recipe based on the following provided title and list of ingredients. Don't repeat the title. PROVIDE NO OTHER TEXT IN YOUR ANSWER. Apply to the following title:".to_string();
-        let prompt = format!(
-            "{prompt_instructions} '{}' with ingredients: '{}'",
-            title_gen, ingredients
-        );
-        let description = ollama
-            .generate(GenerationRequest::new("gemma3:latest".to_string(), prompt))
-            .await
-            .unwrap()
-            .response;
+        let description =
+            generate_description(&ollama, title.clone(), ingredients_text.clone()).await;
 
         let mut time_el = client
             .find(Locator::XPath(
@@ -167,7 +139,7 @@ pub async fn scrape_bbc_food(site: &Site) -> Result<(), ScrapeError> {
         };
 
         let scraped_recipe = ScrapedRecipe {
-            title: title_gen,
+            title,
             ingredients: ingredients_vec,
             description,
             instructions,
@@ -251,7 +223,6 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
         "./path_links.json",
         serde_json::to_string(&path_hrefs).unwrap(),
     )
-    .await
     .unwrap();
 
     println!("path hrefs count {}", path_hrefs.len());
@@ -312,7 +283,7 @@ async fn get_recipe_hrefs(site: &Site) -> Result<Vec<String>, ScrapeError> {
     println!("all hrefs of count {}", all_promo_hrefs.len());
     // println!("all hrefs: {:#?}", all_promo_hrefs);
 
-    site.write_relative_hrefs(move || all_promo_hrefs).await;
+    site.write_relative_hrefs(&all_promo_hrefs).await;
 
     Ok(all_promo_hrefs)
 }

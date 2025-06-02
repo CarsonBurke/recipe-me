@@ -3,7 +3,7 @@ use std::{error::Error, fmt::Display};
 use axum::{http::StatusCode, routing::{get, post}, Json, Router};
 use db::{db_conn, sample_data::create_sample_data};
 use entities::{recipe, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal};
-use scraping::{scrape, scrape_bbc_food};
+use scraping::{scrape};
 use sea_orm::{sea_query::Query, ColumnTrait, Condition, EntityTrait, QueryFilter, QuerySelect, QueryTrait};
 use serde::{Deserialize, Serialize};
 

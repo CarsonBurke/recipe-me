@@ -12,11 +12,12 @@ use tokio::{fs, time::error::Elapsed};
 
 use crate::{
     db::db_conn,
-    entities::{ingredient_name, recipe, recipe_ingredient},
+    entities::{ingredient_name, recipe, recipe_ingredient}, scraping::bbc_food::scrape_bbc_food,
 };
 
 mod all_recipes;
 mod bbc_food;
+mod generate;
 
 static DRIVER_ADDRESS: &str = "http://localhost:44379";
 
@@ -73,50 +74,6 @@ pub struct ScrapedIngredient {
     name: String,
     description: String,
     amount: f32,
-}
-
-fn ingredients_from_response(response: &String) -> Vec<ScrapedIngredient> {
-    let items = response.split("; ").collect::<Vec<&str>>();
-
-    let mut ingredients: Vec<ScrapedIngredient> = Vec::new();
-
-    for item in items {
-        println!("item {item}");
-        let components = item.split("|").collect::<Vec<&str>>();
-
-        println!("components: {components:?}");
-
-        let Some(amount_str) = components.get(0) else {
-            continue;
-        };
-        let Ok(amount) = amount_str.parse::<f32>() else {
-            continue;
-        };
-        if amount == 0. {
-            continue;
-        }
-        let Some(description) = components.get(1) else {
-            continue;
-        };
-        if description.is_empty() {
-            continue;
-        }
-        let Some(name) = components.get(2) else {
-            continue;
-        };
-        if name.is_empty() {
-            continue;
-        }
-
-        let ingredient = ScrapedIngredient {
-            name: name.to_string(),
-            description: description.to_string(),
-            amount,
-        };
-        ingredients.push(ingredient);
-    }
-
-    ingredients
 }
 
 #[derive(Debug)]
@@ -251,19 +208,24 @@ impl Site {
     }
 
     pub async fn get_cached_hrefs(&self) -> Option<Vec<String>> {
-        if let Ok(content) = fs::read(site.recipe_hrefs_path()).await {
+        if let Ok(content) = fs::read(self.recipe_hrefs_path()).await {
             let hrefs: Vec<String> = serde_json::from_slice(&content).unwrap();
             println!("Loaded hrefs from file of len {}", hrefs.len());
-            return Ok(hrefs);
+            return Some(hrefs);
         };
+
+        None
     }
 
-    pub async fn write_relative_hrefs(&self, hrefs: Vec<String>) {
+    pub async fn write_relative_hrefs(&self, hrefs: &[String]) {
         fs::write(
-            site.recipe_hrefs_path(),
-            serde_json::to_string(&hrefs).unwrap(),
+            self.recipe_hrefs_path(),
+            serde_json::to_string(hrefs).unwrap(),
         )
         .await
         .unwrap();
     }
 }
+
+// Would probably be a good idea to use a trait for Site stuff so less templating is required and things can be more streamlined
+
