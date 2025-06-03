@@ -1,4 +1,4 @@
-use std::{error::Error, fmt::Display};
+use std::{error::Error, fmt::Display, time::{SystemTime, UNIX_EPOCH}};
 
 use axum::{http::StatusCode, routing::{get, post}, Json, Router};
 use db::{db_conn, sample_data::create_sample_data};
@@ -30,7 +30,8 @@ async fn launch_server() {
         // `GET /` goes to `root`
         .route("/", get(root))
         // `POST /users` goes to `create_user`
-        .route("/filtered_recipes", post(get_filtered_recipes));
+        .route("/filtered_recipes", post(get_filtered_recipes))
+        .route("/ping", get(ping));
 
     tokio::spawn(async {
         // Can spawn an async task here
@@ -181,6 +182,7 @@ async fn get_filtered_recipes(Json(params): Json<FilteredRecipesParams>) -> (Sta
     (StatusCode::OK, axum::Json(recipes))
 }
 
-async fn ping() {
-
+async fn ping() -> String {
+    let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
+    current_time.to_string()
 }

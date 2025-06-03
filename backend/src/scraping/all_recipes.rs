@@ -1,4 +1,5 @@
 use fantoccini::{Client, ClientBuilder, Locator};
+use futures::future::join_all;
 use ollama_rs::Ollama;
 
 use crate::{
@@ -57,6 +58,7 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
 
         if rating_count < 3 {
             println!("Skipping recipe with less than 3 ratings");
+            continue;
         }
 
         let rating_avg_el = client
@@ -78,7 +80,14 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
         let image_url = if let Ok(image_el) = image_el {
             image_el.attr("src").await.unwrap()
         } else {
-            None
+            let alt_image_el = client
+                .find(Locator::XPath("//*[@id='gallery-photo_1-0']/div/img"))
+                .await;
+            if let Ok(alt_image_el) = alt_image_el {
+                alt_image_el.attr("src").await.unwrap()
+            } else {
+                None
+            }
         };
 
         let title_el = client
@@ -92,6 +101,7 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
             .await
             .unwrap();
         let instructions_text = instructions_el.text().await.unwrap();
+
         let instructions = generate_instructions(&ollama, instructions_text).await;
 
         let ingredients_el = client
@@ -99,6 +109,22 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
             .await
             .unwrap();
         let ingredients_text = ingredients_el.text().await.unwrap();
+
+        println!("ingredients test 1 {}", ingredients_text);
+
+        let ingredients_children = instructions_el
+            .find_all(Locator::Css("mm-recipes-structured-ingredients__list-item"))
+            .await
+            .unwrap();
+        let text = join_all(
+            ingredients_children
+                .iter()
+                .map(|el| async { el.text().await.unwrap() }),
+        )
+        .await;
+
+        println!("ingredients test 2 {}", text.join("|"));
+
         println!("ingredients text: {}", ingredients_text);
         let ingredients = generate_ingredients(&ollama, ingredients_text.clone()).await;
         println!("generated ingredients list");
