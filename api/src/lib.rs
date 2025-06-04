@@ -189,7 +189,7 @@ pub async fn get_filtered_recipes(
         .await
         .unwrap();
 
-        println!("Got filtered recipes");
+        println!("Got filtered recipes: {}", recipes.len());
     Ok(recipes)
 }
 

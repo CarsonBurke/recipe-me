@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "app",
     "api",
+    "ui",
     "backend",
     "local_api",
     "mobile",
@@ -12,6 +13,7 @@ members = [
 [workspace.dependencies]
 dioxus = { version = "0.6.1"}
 api = { path = "api" }
+ui = { path = "ui" }
 
 [profile.wasm-dev]
 inherits = "dev"

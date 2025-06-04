@@ -2,10 +2,8 @@ use dioxus::prelude::*;
 
 use crate::components::navbar::Navbar;
 
-use crate::views::home::Home;
+use crate::views::{home::Home};
 use crate::views::blog::Blog;
-use crate::views::recipe::Recipe;
-use crate::views::recipes::Recipes;
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
@@ -18,10 +16,6 @@ pub enum Route {
     Home {},
     #[route("/blog/:id")]
     Blog { id: i32 },
-    #[route("/recipes")]
-    Recipes {},
-    #[route("/recipe/:id")]
-    Recipe { id: i32 },
 }
 
 #[component]

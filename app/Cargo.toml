@@ -16,6 +16,7 @@ dioxus-sdk = { version = "0.6.0", features = ["storage"]}
 dioxus-free-icons = { version = "0.9", features = ["lucide", "ionicons"] }
 dioxus-motion = { version = "0.3.1", features = ["transitions"] }
 num-traits = "0.2.19"
+
 [target.'cfg(target_os = "android")'.dependencies]
 openssl = { version = "0.10", features = ["vendored"] }
 

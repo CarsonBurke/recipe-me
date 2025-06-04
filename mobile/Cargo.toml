@@ -1,10 +1,18 @@
 [package]
 name = "mobile"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 dioxus = { workspace = true, features = ["router", "fullstack"] }
+sea-orm = { version = "1.1.10", features = ["sqlx-postgres", "sqlx-sqlite", "runtime-tokio", "macros"] }
+api = { workspace = true }
+ui = { workspace = true }
+dioxus-free-icons = { version = "0.9", features = ["lucide", "ionicons"] }
+serde_json = "1.0.140"
+serde = "1.0.219"
+dioxus-sdk = { version = "0.6.0", features = ["storage"]}
+dioxus-primitives = "0.0.0"
 
 [target.'cfg(target_os = "android")'.dependencies]
 openssl = { version = "0.10", features = ["vendored"] }

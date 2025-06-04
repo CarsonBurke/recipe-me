@@ -341,3 +341,7 @@ body {
 .animateFloatUpDown {
     animation: 2s ease-in infinite floatUpDown;
 }
+
+.hidden {
+    display: none;
+}

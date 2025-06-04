@@ -1,5 +1,6 @@
 use api::{FilteredRecipesParams, get_filtered_recipes, get_recipes};
 use dioxus::{logger::tracing::info, prelude::*};
+use dioxus_free_icons::icons::ld_icons;
 use serde::{Deserialize, Serialize};
 
 use crate::{components::{filtered_recipes::{self, FilteredRecipes}}, Route};
@@ -50,8 +51,16 @@ pub fn Recipes(query: Query) -> Element {
             class: "main column gapMedium",
             section {
                 class: "section column",
-                h1 { class: "textXLarge", "Recipes" }
-
+                div {
+                    class: "row gapMedium centerColumn",
+                    h1 { class: "textLarge", "My recipes" }
+                    Link {
+                        class: "button buttonBg2",
+                        to: Route::NewRecipe {},
+                        dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
+                        "New recipe"
+                    }
+                }
                 div {
                     class: "row gapMedium centerRow flexWrap",
                     FilteredRecipes {  

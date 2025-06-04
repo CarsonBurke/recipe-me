@@ -29,7 +29,7 @@ const ANIMATIONS_CSS: Asset = asset!("/assets/styling/animations.css");
 
 fn main() {
     // Allows use to use local and session storage
-    dioxus_sdk::set_dir!();
+    /* dioxus_sdk::set_dir!(); */
 
     // Try to assign the cached login token
     /* let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(LOGIN_TOKEN_KEY.to_string(), || None);
@@ -46,64 +46,64 @@ fn main() {
     dioxus::launch(App);
 }
 
-#[derive(Debug, Clone, Routable, PartialEq, MotionTransitions)]
+#[derive(Debug, Clone, Routable, PartialEq/* , MotionTransitions */)]
 #[rustfmt::skip]
 pub enum Route {
     #[layout(WebNavbar)]
     #[route("/")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Home {},
     #[route("/recipes?:..query")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Recipes {
         query: recipes::Query,
     },
     #[route("/recipe/:id")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     RecipePage { id: i32 },
     #[route("/collection/:id")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     CollectionPage { id: i32 },
     #[route("/login")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Login {},
     #[route("/signup")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Signup {},
     #[route("/download")]
     DownloadPage {},
     #[route("/account/dashboard")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     AccountDashboard {},
     #[route("/account/recipes?:..query")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     AccountRecipes {
         query: account::recipes::Query,
     },
     #[route("/account/collections")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     AccountCollections {},
     #[route("/account")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Account {},
     #[route("/account/new_recipe")]
     NewRecipe {},
     #[route("/account/new_collection")]
     NewCollection {},
     #[route("/:..route")]
-    #[transition(Fade)]
+    // #[transition(Fade)]
     Fallback { route: Vec<String> },
 }
 
 #[component]
 pub fn App() -> Element {
-    let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(
+    /* let cached_login_token = use_synced_storage::<LocalStorage, Option<ServerLoginToken>>(
         LOGIN_TOKEN_KEY.to_string(),
         || None,
     );
     if let Some(cached_login_token) = cached_login_token() {
         *LOGIN_TOKEN_GLOBAL.write() = Some(cached_login_token);
-    }
+    } */
 
     rsx! {
         // Global app resources
@@ -111,7 +111,6 @@ pub fn App() -> Element {
         document::Link { rel: "stylesheet", href: MAIN_CSS },
         style { "{MAIN_CSS} {ANIMATIONS_CSS}" }
         /* style { "{ANIMATIONS_CSS}" } */
-
 
         Router::<Route> {}
     }
@@ -121,14 +120,15 @@ pub fn App() -> Element {
 /// which allows us to use the web-specific `Route` enum.
 #[component]
 fn WebNavbar() -> Element {
-    let toast = use_context_provider(|| Signal::new(ToastManager::default()));
+    // let toast = use_context_provider(|| Signal::new(ToastManager::default()));
 
     rsx! {
+        /* h1 { "Home" } */
         Navbar {}
 
-        dioxus_toast::ToastFrame {
+        /* dioxus_toast::ToastFrame {
             manager: toast,
-        }
+        } */
 
         Outlet::<Route> {}
     }

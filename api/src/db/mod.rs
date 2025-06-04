@@ -5,6 +5,7 @@ use sea_orm::{ConnectionTrait, Database, DatabaseBackend, DatabaseConnection, Db
 use crate::{constants::DB_NAME, secrets::DATABASE_URL};
 
 pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
+    println!("establishing db connection");
     let db = Database::connect(DATABASE_URL).await;
     db
     /* let conn = match db.get_database_backend() {

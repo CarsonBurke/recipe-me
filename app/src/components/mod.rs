@@ -16,3 +16,4 @@ pub mod filtered_recipes;
 pub mod select;
 
 pub mod collection;
+pub mod rating_static;

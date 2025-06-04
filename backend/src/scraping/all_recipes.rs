@@ -112,8 +112,8 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
 
         println!("ingredients test 1 {}", ingredients_text);
 
-        let ingredients_children = instructions_el
-            .find_all(Locator::Css("mm-recipes-structured-ingredients__list-item"))
+        /* let ingredients_children = instructions_el
+            .find_all(Locator::Css(".mm-recipes-structured-ingredients__list-item"))
             .await
             .unwrap();
         let text = join_all(
@@ -123,7 +123,7 @@ pub async fn scrape_all_recipes(site: &Site) -> Result<(), ScrapeError> {
         )
         .await;
 
-        println!("ingredients test 2 {}", text.join("|"));
+        println!("ingredients test 2 {}", text.join("|")); */
 
         println!("ingredients text: {}", ingredients_text);
         let ingredients = generate_ingredients(&ollama, ingredients_text.clone()).await;
