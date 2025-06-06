@@ -2,7 +2,11 @@ use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 use dioxus_primitives;
 
-use crate::{components::{dialog::Dialog, filtered_recipes::FilteredRecipes}, views, Route};
+use crate::{
+    Route,
+    components::{dialog::DialogWrapper, filtered_recipes::FilteredRecipes},
+    views,
+};
 
 #[component]
 pub fn Dashboard() -> Element {
@@ -30,28 +34,50 @@ pub fn Dashboard() -> Element {
                             dioxus_free_icons::Icon { icon: ld_icons::LdBook }
                             "My recipes"
                         }
-                        Dialog {
-                            button {
-                                class: "button buttonBg2 round square",
-                                dioxus_free_icons::Icon { icon: ld_icons::LdImport }
-                                "Find recipe"
-                                p { class: "textXSmall", "Import a recipe from online" }
-                            }
-                            button {
-                                class: "button buttonBg2 round square",
-                                dioxus_free_icons::Icon { icon: ld_icons::LdImport }
-                                "Create recipe"
-                                p { class: "textXSmall", "Make recipe from scratch" }
-                            }
-                        }
-                        button {
-                            class: "button buttonBg2 round square",
-                            onclick: {
-                                dioxus_primitives
+                        DialogWrapper {
+                            header: rsx! {
+                                h1 { class: "textLarge", "New Recipe" }
                             },
-                            dioxus_free_icons::Icon { icon: ld_icons::LdImport }
-                            "New recipe"
+                            dialog: rsx! {
+                                div {
+                                    class: "row centerRow bg3 round",
+                                    Link {
+                                        to: Route::NewRecipe {  },
+                                        class: "button buttonBg3 round square",
+                                        div {
+                                            class: "column gapXSmall centerColumn",
+                                            div {
+                                                class: "row centerRow gapSmall",
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdSearch }
+                                                "Find recipe"
+                                            }
+                                            p { class: "textXSmall", "Import a recipe from online" }
+                                        }
+                                    }
+                                    Link {
+                                        to: Route::Recipes { query: views::recipe::recipes::Query::default() },
+                                        class: "button buttonBg3 round square",
+                                        div {
+                                            class: "column gapXSmall centerColumn",
+                                            div {
+                                                class: "row gapSmall centerRow",
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
+                                                "Create recipe"
+                                            }
+                                            p { class: "textXSmall", "Make recipe from scratch" }
+                                        }
+                                    }
+                                }
+                            },
+                            button: rsx! {
+                                button {
+                                    class: "button buttonBg2 round square",
+                                    dioxus_free_icons::Icon { icon: ld_icons::LdBookPlus }
+                                    "New recipe"
+                                }
+                            }
                         }
+
                         /*
                         Link {
                             class: "button buttonBg2 round",

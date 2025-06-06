@@ -48,6 +48,10 @@ body {
     background-color: var(--bg1);
 }
 
+.bgTransparent {
+    background-color: transparent;
+}
+
 .bg1 {
     background-color: var(--bg1);
 }

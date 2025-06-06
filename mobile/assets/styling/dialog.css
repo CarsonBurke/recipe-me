@@ -1,8 +1,22 @@
 .dialog {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+}
+
+.dialogHeader {
+    position: relative;
+}
+
+.dialogClose {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
     margin: auto;
 }
