@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use views::{Blog, Home};
+use views::{Home};
 
 use crate::{components::navbar::Navbar, views::{recipe::{recipes::Recipes, recipe_page::RecipePage, new_recipe::NewRecipe}, dashboard::Dashboard, collection::{collections::Collections, new_collection::NewCollection}}};
 
@@ -15,8 +15,6 @@ enum Route {
     #[layout(MobileNavbar)]
     #[route("/")]
     Dashboard {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
     #[route("/recipes?:..query")]
     Recipes {
         query: views::recipe::recipes::Query,

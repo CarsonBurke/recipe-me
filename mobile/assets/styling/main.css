@@ -1,351 +1,357 @@
 * {
-    margin: unset;
-    padding: unset;
-    box-sizing: content-box;
-    outline: unset;
-    font-size: unset;
-    text-decoration: unset;
-    border: unset;
-    width: unset;
-    color: unset;
+  margin: unset;
+  padding: unset;
+  box-sizing: content-box;
+  outline: unset;
+  font-size: unset;
+  text-decoration: unset;
+  border: unset;
+  width: unset;
+  color: unset;
 }
 
 body {
-    color: #ffffff;
-    font-family: 'sans-serif', Tahoma, Geneva, Verdana, sans-serif;
-    overflow-x: hidden;
-    /* Colors */
-    --bg1:rgb(18, 21, 28);
-    --bg2:rgb(29, 34, 46);
-    --bg3:rgb(39, 46, 61);
-    --bg4:rgb(49, 58, 76);
+  color: #ffffff;
+  font-family: "sans-serif", Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+  /* Colors */
+  --bg1: rgb(18, 21, 28);
+  --bg2: rgb(29, 34, 46);
+  --bg3: rgb(39, 46, 61);
+  --bg4: rgb(49, 58, 76);
 
-    --positive: green;
-    --negative: red;
-    
-    /* Spacing */
-    --spacingXSmall: 2px;
-    --spacingSmall: 4px;
-    --spacingMedium: 8px;
-    --spacingLarge: 16px;
-    --spacingXLarge: 32px;
-    --spacingXXLarge: 64px;
-    /* Font */
-    --textXSmall: 12px;
-    --textSmall: 14px;
-    --textMedium: 16px;
-    --textLarge: 20px;
-    --textXLarge: 24px;
-    --textXXLarge: 32px;
-    /*  */
-    --defaultBorderRadius: 6px;
-    --defaultTransitionTime: 0.2s;
+  --positive: green;
+  --negative: red;
 
-    /* Specifics */
-    --navbarHeight: 55px;
+  /* Spacing */
+  --spacingXSmall: 2px;
+  --spacingSmall: 4px;
+  --spacingMedium: 8px;
+  --spacingLarge: 16px;
+  --spacingXLarge: 32px;
+  --spacingXXLarge: 64px;
+  /* Font */
+  --textXSmall: 12px;
+  --textSmall: 14px;
+  --textMedium: 16px;
+  --textLarge: 20px;
+  --textXLarge: 24px;
+  --textXXLarge: 32px;
+  /*  */
+  --defaultBorderRadius: 6px;
+  --defaultTransitionTime: 0.2s;
 
-    /*  */
-    background-color: var(--bg1);
+  /* Specifics */
+  --navbarHeight: 55px;
+
+  /*  */
+  background-color: var(--bg1);
 }
 
 .bgTransparent {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .bg1 {
-    background-color: var(--bg1);
+  background-color: var(--bg1);
 }
 
 .bg2 {
-    background-color: var(--bg2);
+  background-color: var(--bg2);
 }
 
 .bg3 {
-    background-color: var(--bg3);
+  background-color: var(--bg3);
 }
 
 .bg4 {
-    background-color: var(--bg4);
+  background-color: var(--bg4);
 }
 
 .borderBg1 {
-    border: 2px solid var(--bg1);
+  border: 2px solid var(--bg1);
 }
 
 .borderBg2 {
-    border: 2px solid var(--bg2);
+  border: 2px solid var(--bg2);
 }
 
 .borderBg3 {
-    border: 2px solid var(--bg3);
+  border: 2px solid var(--bg3);
 }
 
 .borderBg4 {
-    border: 2px solid var(--bg4);
+  border: 2px solid var(--bg4);
 }
 
 .round {
-    border-radius: var(--defaultBorderRadius);
+  border-radius: var(--defaultBorderRadius);
 }
 
 .textWeak {
-    color: lightslategray;
+  color: lightslategray;
 }
 
 .flexWrap {
-    flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 .row {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .centerRow {
-    justify-content: center;
+  justify-content: center;
 }
 
 .centerColumn {
-    align-items: center;
+  align-items: center;
 }
 
 .gapXSmall {
-    gap: var(--spacingXSmall)
+  gap: var(--spacingXSmall);
 }
 
 .gapSmall {
-    gap: var(--spacingSmall)
+  gap: var(--spacingSmall);
 }
 
 .gapMedium {
-    gap: var(--spacingMedium)
+  gap: var(--spacingMedium);
 }
 
 .gapLarge {
-    gap: var(--spacingLarge)
+  gap: var(--spacingLarge);
 }
 
 .gapXLarge {
-    gap: var(--spacingXLarge)
+  gap: var(--spacingXLarge);
 }
 
 .gapXXLarge {
-    gap: var(--spacingXXLarge)
+  gap: var(--spacingXXLarge);
 }
 
 .paddingXSmall {
-    padding: var(--spacingXSmall)
+  padding: var(--spacingXSmall);
 }
 
 .paddingSmall {
-    padding: var(--spacingSmall)
+  padding: var(--spacingSmall);
 }
 
 .paddingMedium {
-    padding: var(--spacingMedium)
+  padding: var(--spacingMedium);
 }
 
 .paddingLarge {
-    padding: var(--spacingLarge)
+  padding: var(--spacingLarge);
 }
 
 .paddingXLarge {
-    padding: var(--spacingXLarge)
+  padding: var(--spacingXLarge);
 }
 
 .paddingXXLarge {
-    padding: var(--spacingXXLarge)
+  padding: var(--spacingXXLarge);
 }
 
 .paddingSectionSide {
-    padding: 0 5vw;
+  padding: 0 5vw;
 }
 
 .paddingSection {
-    padding: var(--spacingLarge) 5vw;
+  padding: var(--spacingLarge) 5vw;
 }
 
 .textXSmall {
-    font-size: var(--textXSmall);
+  font-size: var(--textXSmall);
 }
 
 .textSmall {
-    font-size: var(--textSmall);
+  font-size: var(--textSmall);
 }
 
 .textMedium {
-    font-size: var(--textMedium);
+  font-size: var(--textMedium);
 }
 
 .textLarge {
-    font-size: var(--textLarge);
+  font-size: var(--textLarge);
 }
 
 .textXLarge {
-    font-size: var(--textXLarge);
+  font-size: var(--textXLarge);
 }
 
 .textXXLarge {
-    font-size: var(--textXXLarge);
+  font-size: var(--textXXLarge);
 }
 
 .textCenter {
-    text-align: center;
+  text-align: center;
 }
 
 .button {
-    padding: var(--spacingMedium) var(--spacingLarge);
-    border-radius: var(--defaultBorderRadius);
-    transition: all var(--defaultTransitionTime);
-    cursor: pointer;
-    display: flex;
-    gap: var(--spacingSmall);
-    align-items: center;
-    white-space: nowrap;
+  padding: var(--spacingMedium) var(--spacingLarge);
+  border-radius: var(--defaultBorderRadius);
+  transition: all var(--defaultTransitionTime);
+  cursor: pointer;
+  display: flex;
+  gap: var(--spacingSmall);
+  align-items: center;
+  white-space: nowrap;
 }
 
 .buttonSmall {
-    padding: var(--spacingSmall) var(--spacingMedium);
-    border-radius: var(--defaultBorderRadius);
-    transition: all var(--defaultTransitionTime);
-    cursor: pointer;
-    display: flex;
-    gap: var(--spacingSmall);
-    align-items: center;
-    white-space: nowrap;
+  padding: var(--spacingSmall) var(--spacingMedium);
+  border-radius: var(--defaultBorderRadius);
+  transition: all var(--defaultTransitionTime);
+  cursor: pointer;
+  display: flex;
+  gap: var(--spacingSmall);
+  align-items: center;
+  white-space: nowrap;
 }
 
 .button:disabled {
-    opacity: 0.7;
-    cursor: disabled;
-    pointer-events: none;
+  opacity: 0.7;
+  cursor: disabled;
+  pointer-events: none;
 }
 
 .buttonBg1 {
-    background-color: var(--bg1);
+  background-color: var(--bg1);
 }
 
-.buttonBg1:hover, .buttonBg1:focus, .buttonBg1:active {
-    background-color: var(--bg2);
+.buttonBg1:hover,
+.buttonBg1:focus,
+.buttonBg1:active {
+  background-color: var(--bg2);
 }
 
 .buttonBg2 {
-    background-color: var(--bg2);
+  background-color: var(--bg2);
 }
 
-.buttonBg2:hover, .buttonBg2:focus, .buttonBg2:active {
-    background-color: var(--bg3);
+.buttonBg2:hover,
+.buttonBg2:focus,
+.buttonBg2:active {
+  background-color: var(--bg3);
 }
 
 .buttonBg3 {
-    background-color: var(--bg3);
+  background-color: var(--bg3);
 }
 
-.buttonBg3:hover, .buttonBg3:focus, .buttonBg3:active {
-    background-color: var(--bg4);
+.buttonBg3:hover,
+.buttonBg3:focus,
+.buttonBg3:active {
+  background-color: var(--bg4);
 }
 
 .main {
-    display: flex;
-    flex-direction: column;
-    padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
-    padding-bottom: calc(var(--navbarHeight) + var(--spacingLarge));
-    gap: var(--spacingLarge);
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
+  padding-bottom: calc(var(--navbarHeight) + var(--spacingLarge));
+  gap: var(--spacingLarge);
 }
 
 .section {
-    padding-left: 5vw;
-    padding-right: 5vw;
-    gap: var(--spacingLarge);
+  padding-left: 5vw;
+  padding-right: 5vw;
+  gap: var(--spacingLarge);
 }
 
 .sectionImage {
-    width: 70%;
-    min-height: 500px;
-    max-width: 1920px;
-    max-height: 1080px;
-    max-height: 60vh;
+  width: 70%;
+  min-height: 500px;
+  max-width: 1920px;
+  max-height: 1080px;
+  max-height: 60vh;
 }
 
 .pill {
-    border-radius: 1000px;
-    padding: var(--spacingSmall) var(--spacingLarge);
+  border-radius: 1000px;
+  padding: var(--spacingSmall) var(--spacingLarge);
 }
 
 .input {
-    padding: var(--spacingSmall);
-    border-radius: var(--defaultBorderRadius);
-    width: fit-content;
-    min-width: 300px;
+  padding: var(--spacingSmall);
+  border-radius: var(--defaultBorderRadius);
+  width: fit-content;
+  min-width: 300px;
 }
 
 .inputShort {
-    padding: var(--spacingSmall);
-    border-radius: var(--defaultBorderRadius);
-    min-width: 50px;
-    width: min-content;
-    field-sizing: content;
+  padding: var(--spacingSmall);
+  border-radius: var(--defaultBorderRadius);
+  min-width: 50px;
+  width: min-content;
+  field-sizing: content;
 }
 
 .widthFit {
-    width: fit-content;
+  width: fit-content;
 }
 
 .widthMax {
-    width: max-content;
+  width: max-content;
 }
 
 .widthMin {
-    width: min-content;
+  width: min-content;
 }
 
 .width100 {
-    width: 100%;
+  width: 100%;
 }
 
 .textPositive {
-    color: var(--positive);
+  color: var(--positive);
 }
 
 .textNegative {
-    color: var(--negative);
+  color: var(--negative);
 }
 
 .overflowHorizontal {
-    overflow-x: scroll;
+  overflow-x: scroll;
 }
 
 .square {
-    aspect-ratio: 1/1;
+  aspect-ratio: 1/1;
 }
 
 .defaultTransition {
-    transition: all var(--defaultTransitionTime);
+  transition: all var(--defaultTransitionTime);
 }
 
 @keyframes floatUpDown {
-    0% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(8px);
-        background-color: var(--bg3);
-    }
-    100% {
-        transform: translateY(0);
-        background-color: var(--bg2);
-    }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+    background-color: var(--bg3);
+  }
+  100% {
+    transform: translateY(0);
+    background-color: var(--bg2);
+  }
 }
 
 .animateFloatUpDown {
-    animation: 2s ease-in infinite floatUpDown;
+  animation: 2s ease-in infinite floatUpDown;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }

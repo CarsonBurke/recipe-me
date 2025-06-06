@@ -3767,7 +3767,6 @@ dependencies = [
  "sea-orm",
  "serde",
  "serde_json",
- "ui",
 ]
 
 [[package]]
