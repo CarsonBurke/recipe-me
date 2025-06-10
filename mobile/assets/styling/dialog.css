@@ -6,6 +6,7 @@
     bottom: 0;
     margin: auto;
     width: fit-content;
+    max-width: 90vw;
     height: fit-content;
 }
 

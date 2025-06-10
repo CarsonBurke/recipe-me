@@ -1,6 +1,5 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
-use dioxus_primitives;
 
 use crate::{
     Route,

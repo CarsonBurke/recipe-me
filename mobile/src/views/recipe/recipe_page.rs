@@ -9,8 +9,14 @@ use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
     components::{
-        filtered_recipes::{self, FilteredRecipes}, recipe::comments::RecipeComments, rating_static::RatingStatic
-    }, utils::round_to_decimals, views::recipe::recipes::{self}, Route
+        dialog::DialogWrapper,
+        filtered_recipes::{self, FilteredRecipes},
+        rating_static::RatingStatic,
+        recipe::comments::RecipeComments,
+    },
+    utils::round_to_decimals,
+    views::recipe::recipes::{self},
+    Route,
 };
 
 #[component]
@@ -96,13 +102,15 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                 println!("Mounted");
                 main.set(Some(cx.data()));
 
-                match main.cloned() {
-                    Some(main) => {
-                        println!("try to scroll to");
-                        main.scroll_to(ScrollBehavior::Smooth);
-                    }
-                    None => ()
-                };
+                async move {
+                    match main.cloned() {
+                        Some(main) => {
+                            println!("try to scroll to");
+                            let _ = main.scroll_to(ScrollBehavior::Smooth).await;
+                        }
+                        None => ()
+                    };
+                }
             },
             class: "main",
             section {
@@ -135,7 +143,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     div {
-                        class: "row gapLarge flexWrap centerColumn",
+                        class: "row gapSmall flexWrap centerColumn",
                         div {
                             class: "column gapSmall",
                             p { class: "textSmall textWeak", "Meal" },
@@ -190,6 +198,46 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                         class: "pill textSmall button buttonBg2",
                                         {cuisine.name.clone()}
                                     }
+                                }
+                            }
+                        }
+                    }
+                    div {
+                        class: "row gapSmall",
+                        button {
+                            class: "button buttonBg2",
+                            onclick: move |_| {
+                                println!("Favourite recipe")
+                            },
+                            dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
+                        },
+                        DialogWrapper {
+                            header: rsx! {
+                                h1 { class: "textLarge", "Add to collection" }
+                            },
+                            button: rsx! {
+                                button {
+                                    class: "button buttonBg2",
+                                    onclick: move |_| {
+                                        println!("Add to collection")
+                                    },
+                                    dioxus_free_icons::Icon { icon: ld_icons::LdBookPlus }
+                                }
+                            },
+                            dialog: rsx! {
+                                div {
+                                    class: "row overflowHorizontal gapSmall round",
+                                    for i in 0..10 {
+                                        button {
+                                            class: "button buttonBg3 round square",
+                                            onclick: move |_| {
+
+                                            },
+                                            dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
+                                            "Collection name"
+                                        }
+                                    }
+                                    // List each collection
                                 }
                             }
                         }

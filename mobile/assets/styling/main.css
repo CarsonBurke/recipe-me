@@ -106,6 +106,28 @@ body {
   flex-direction: column;
 }
 
+.rowCollapsible {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (min-width: 800px) {
+  .rowCollapsible {
+    flex-direction: column;
+  }
+}
+
+.columnCollapsible {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 800px) {
+  .columnCollapsible {
+    flex-direction: row;
+  }
+}
+
 .centerRow {
   justify-content: center;
 }
@@ -276,6 +298,7 @@ body {
   max-width: 1920px;
   max-height: 1080px;
   max-height: 60vh;
+  aspect-ratio: 3/4;
 }
 
 .pill {

@@ -279,9 +279,10 @@ pub async fn get_recipe_diets(id: i32) -> Result<Vec<PartialDiet>, ServerFnError
 }
 
 #[server]
-pub async fn get_recipe_comments(recipe_id: i32) -> Result<Vec<PartialComment>, ServerFnError> {
+pub async fn get_recipe_comments(recipe_id: i32, limit: u64) -> Result<Vec<PartialComment>, ServerFnError> {
     let db = db_conn().await.unwrap();
     let recipe_comments = comment::Entity::find()
+        .limit(limit)
         .join(JoinType::InnerJoin, comment::Relation::Recipe.def())
         .filter(comment::Column::RecipeId.eq(recipe_id))
         .join(JoinType::InnerJoin, comment::Relation::User.def())

@@ -80,7 +80,6 @@ pub fn NewRecipe() -> Element {
                                         size: "14",
                                         oninput: move |e| new_ingredient.description = e.value(),
                                     }
-                                    p { class: "textMedium", "of" }
                                     input {
                                         placeholder: "garlic",
                                         type: "text",
