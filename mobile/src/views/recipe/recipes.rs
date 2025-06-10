@@ -52,7 +52,7 @@ pub fn Recipes(query: Query) -> Element {
             section {
                 class: "section column",
                 div {
-                    class: "rowCollapsible gapMedium centerColumn",
+                    class: "rowCollapsible gapMedium centerColumn spaceBetween",
                     h1 { class: "textLarge", "My recipes" }
                     div {
                         class: "row flexWrap gapSmall centerRow",

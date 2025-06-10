@@ -118,32 +118,81 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                 div {
                     class: "column gapLarge borderBg2 round paddingLarge",
                     div {
-                        class: "column centerRow gapSmall",
+                        class: "column centerRow gapMedium",
                         div {
-                            class: "row gapLarge flexWrap",
-
-                            h1 { class: "textXLarge", {recipe_read.name.clone()} }
+                            class: "row spaceBetween gapSmall flexWrap",
                             div {
-                                class: "row centerColumn gapMedium",
-                                if recipe_read.ratings == 0 {
-                                    p { class: "textSmall textWeak", "No ratings" }
-                                }
-                                else {
-                                    RatingStatic {
-                                        rating
+                                class: "column gapSmall",
+                                h1 { class: "textXLarge", {recipe_read.name.clone()} }
+                                if recipe_read.summary.len() != recipe_read.description.len() {
+                                    p {
+                                        {recipe_read.summary.clone()},
                                     }
-                                    p { class: "row textSmall textWeak", {format!("{} / 5", round_to_decimals(rating, 1))} }
                                 }
                             }
-                        }
-                        if recipe_read.summary.len() != recipe_read.description.len() {
-                            p {
-                                {recipe_read.summary.clone()},
+                            div {
+                                class: "row centerColumn gapMedium spaceBetween width100",
+                                div {
+                                    class: "row centerColumn gapMedium flexWrap",
+                                    div {
+                                        class: "row centerColumn gapXSmall",
+                                        if recipe_read.ratings == 0 {
+                                            p { class: "textSmall textWeak", "No ratings" }
+                                        }
+                                        else {
+                                            RatingStatic {
+                                                rating
+                                            }
+                                            p { class: "row textSmall textWeak", {format!("{}/5", round_to_decimals(rating, 1))} }
+                                        }
+                                    }
+                                    p { class: "textSmall textWeak", {format!("{} ratings", recipe_read.ratings)} }
+                                }
+                                div {
+                                    class: "row gapSmall",
+                                    button {
+                                        class: "button buttonBg2",
+                                        onclick: move |_| {
+                                            println!("Favourite recipe")
+                                        },
+                                        dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
+                                    },
+                                    DialogWrapper {
+                                        header: rsx! {
+                                            h1 { class: "textLarge", "Add to collection" }
+                                        },
+                                        button: rsx! {
+                                            button {
+                                                class: "button buttonBg2 textXSmall",
+                                                onclick: move |_| {
+                                                    println!("Add to collection")
+                                                },
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdBookPlus }
+                                            }
+                                        },
+                                        dialog: rsx! {
+                                            div {
+                                                class: "row overflowHorizontal gapSmall round",
+                                                for i in 0..10 {
+                                                    button {
+                                                        class: "button buttonBg3 round square",
+                                                        onclick: move |_| {
+
+                                                        },
+                                                        dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
+                                                        "Collection name"
+                                                    }
+                                                }
+                                                // List each collection
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                     div {
-                        class: "row gapSmall flexWrap centerColumn",
+                        class: "row gapSmall centerColumn overflowHorizontal",
                         div {
                             class: "column gapSmall",
                             p { class: "textSmall textWeak", "Meal" },
@@ -198,46 +247,6 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                         class: "pill textSmall button buttonBg2",
                                         {cuisine.name.clone()}
                                     }
-                                }
-                            }
-                        }
-                    }
-                    div {
-                        class: "row gapSmall",
-                        button {
-                            class: "button buttonBg2",
-                            onclick: move |_| {
-                                println!("Favourite recipe")
-                            },
-                            dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
-                        },
-                        DialogWrapper {
-                            header: rsx! {
-                                h1 { class: "textLarge", "Add to collection" }
-                            },
-                            button: rsx! {
-                                button {
-                                    class: "button buttonBg2",
-                                    onclick: move |_| {
-                                        println!("Add to collection")
-                                    },
-                                    dioxus_free_icons::Icon { icon: ld_icons::LdBookPlus }
-                                }
-                            },
-                            dialog: rsx! {
-                                div {
-                                    class: "row overflowHorizontal gapSmall round",
-                                    for i in 0..10 {
-                                        button {
-                                            class: "button buttonBg3 round square",
-                                            onclick: move |_| {
-
-                                            },
-                                            dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
-                                            "Collection name"
-                                        }
-                                    }
-                                    // List each collection
                                 }
                             }
                         }

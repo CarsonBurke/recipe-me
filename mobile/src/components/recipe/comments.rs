@@ -5,9 +5,12 @@ use dioxus_free_icons::icons::ld_icons;
 use crate::components::recipe::comment::RecipeComment;
 
 #[component]
-pub fn RecipeComments(recipe_id: i32) -> Element {
+pub fn RecipeComments(recipe_id: ReadOnlySignal<i32>) -> Element {
+
+    let mut limit = use_signal(move || 3);
+
     let comments =
-        use_server_future(move || async move { get_recipe_comments(recipe_id, 3).await.unwrap() })?;
+        use_server_future(move || async move { get_recipe_comments(recipe_id(), limit()).await.unwrap() })?;
     let comments_read = comments.read();
     let comments_ref = comments_read.as_ref().unwrap();
 
@@ -15,7 +18,7 @@ pub fn RecipeComments(recipe_id: i32) -> Element {
         div {
             class: "recipeComments column gapLarge",
             button {
-                class: "button buttonbg2",
+                class: "button buttonBg2",
                 dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                 "Add a comment"
             }
@@ -26,6 +29,7 @@ pub fn RecipeComments(recipe_id: i32) -> Element {
                 class: "width100 row centerRow",
                 button {
                     class: "button buttonBg2",
+                    onclick: move |_| limit.set(limit() + 8),
                     "Show more"
                 }
             }

@@ -16,7 +16,15 @@ pub fn Dashboard() -> Element {
                 class: "section column gapLarge",
                 div {
                     class: "column gapMedium",
-                    h1 { class: "textLarge", "Your favourites" },
+                    div {
+                        class: "row gapMedium centerColumn spaceBetween",
+                        h1 { class: "textLarge", "Your favourites" },
+                        Link {
+                            to: Route::Recipes { query: views::recipe::recipes::Query::default() },
+                            class: "button buttonBg2",
+                            "See all"
+                        }
+                    }
                     div {
                         class: "row overflowHorizontal gapMedium paddingLarge",
                         FilteredRecipes {}
@@ -39,9 +47,9 @@ pub fn Dashboard() -> Element {
                             },
                             dialog: rsx! {
                                 div {
-                                    class: "row centerRow bg3 round",
+                                    class: "row centerRow gapSmall round",
                                     Link {
-                                        to: Route::NewRecipe {  },
+                                        to: Route::Recipes { query: views::recipe::recipes::Query::default() },
                                         class: "button buttonBg3 round square",
                                         div {
                                             class: "column gapXSmall centerColumn",
@@ -54,7 +62,7 @@ pub fn Dashboard() -> Element {
                                         }
                                     }
                                     Link {
-                                        to: Route::Recipes { query: views::recipe::recipes::Query::default() },
+                                        to: Route::NewRecipe {  },
                                         class: "button buttonBg3 round square",
                                         div {
                                             class: "column gapXSmall centerColumn",

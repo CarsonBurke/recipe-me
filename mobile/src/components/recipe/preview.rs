@@ -21,7 +21,7 @@ pub fn RecipePreview(
             div {
                 class: "column gapSmall paddingSmall",
                 div {
-                    class: "row gapMedium",
+                    class: "rowCollapsible gapMedium",
                     h2 {
                         class: "textMedium",
                         "{name}"

@@ -281,7 +281,8 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
+  // padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
+  padding-top: var(--spacingLarge);
   padding-bottom: calc(var(--navbarHeight) + var(--spacingLarge));
   gap: var(--spacingLarge);
 }
@@ -293,12 +294,11 @@ body {
 }
 
 .sectionImage {
-  width: 70%;
-  min-height: 500px;
-  max-width: 1920px;
-  max-height: 1080px;
-  max-height: 60vh;
+  width: 90%;
   aspect-ratio: 3/4;
+  min-height: 250px;
+  max-width: 1920px;
+  max-height: 60vh;
 }
 
 .pill {
@@ -377,4 +377,8 @@ body {
 
 .hidden {
   display: none;
+}
+
+.spaceBetween {
+  justify-content: space-between;
 }
