@@ -55,7 +55,7 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
             section {
                 class: "section column",
                 div {
-                    class: "rowCollapsible gapMedium centerColumn spaceBetween",
+                    class: "row gapMedium centerColumn spaceBetween",
                     h1 { class: "textLarge", "My recipes" }
                     div {
                         class: "row flexWrap gapSmall centerRow",

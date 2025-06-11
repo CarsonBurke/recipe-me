@@ -15,6 +15,7 @@ body {
   font-family: "sans-serif", Tahoma, Geneva, Verdana, sans-serif;
   overflow-x: hidden;
   /* Colors */
+  --text: white;
   --bg1: rgb(18, 21, 28);
   --bg2: rgb(29, 34, 46);
   --bg3: rgb(39, 46, 61);
@@ -327,6 +328,7 @@ body {
   border-radius: var(--defaultBorderRadius);
   width: fit-content;
   min-width: 300px;
+  min-height: 22px;
 }
 
 .inputShort {

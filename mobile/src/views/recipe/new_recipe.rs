@@ -61,7 +61,7 @@ pub fn NewRecipe() -> Element {
                         div {
                             class: "column gapMedium",
                             p { class: "textSmall", "Enter ingredients" }
-                            for mut new_ingredient in ingredients() {
+                            for (i, mut new_ingredient) in ingredients().into_iter().enumerate() {
                                 div {
                                     class: "row gapSmall centerColumn",
                                     input {
@@ -86,6 +86,14 @@ pub fn NewRecipe() -> Element {
                                         class: "inputShort bg3 borderBg4",
                                         size: "14",
                                         oninput: move |e| new_ingredient.name = e.value(),
+                                    }
+                                    button {
+                                        class: "buttonSmall buttonBg2",
+                                        type: "button",
+                                        onclick: move |_| {
+                                            ingredients.remove(i);
+                                        },
+                                        dioxus_free_icons::Icon { icon: ld_icons::LdTrash },
                                     }
                                 }
                             }

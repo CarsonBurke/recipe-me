@@ -4,7 +4,8 @@ use dioxus::{logger::tracing::info, prelude::*};
 
 use dioxus_sdk::storage::{use_persistent, use_storage, use_synced_storage, LocalStorage};
 use serde::{Deserialize, Serialize};
-use views::Home;
+use dioxus_motion::prelude::*;
+
 
 use crate::{
     components::navbar::Navbar,
@@ -22,29 +23,38 @@ mod server;
 mod utils;
 mod views;
 
-#[derive(Debug, Clone, Routable, PartialEq)]
+#[derive(Debug, Clone, Routable, PartialEq, MotionTransitions)]
 #[rustfmt::skip]
 enum Route {
     #[layout(MobileNavbar)]
     #[route("/")]
+    #[transition(Fade)]
     Dashboard {},
     #[route("/recipes?:..query")]
+    #[transition(Fade)]
     Recipes {
         query: views::recipe::recipes::Query,
     },
     #[route("/recipe/:id")]
+    #[transition(Fade)]
     RecipePage { id: i32 },
     #[route("/collections")]
+    #[transition(Fade)]
     Collections {},
     #[route("/new_recipe")]
+    #[transition(Fade)]
     NewRecipe {},
     #[route("/new_collection")]
+    #[transition(Fade)]
     NewCollection {},
     #[route("/settings")]
+    #[transition(Fade)]
     Settings {},
     #[route("/personalize")]
+    #[transition(Fade)]
     Personalize {},
     #[route("/premium")]
+    #[transition(Fade)]
     Premium {},
 }
 
@@ -160,7 +170,7 @@ fn MobileNavbar() -> Element {
             class: "root theme_midnight",
             Navbar {  }
 
-            Outlet::<Route> {}
+            AnimatedOutlet::<Route> {}
         }
     }
 }

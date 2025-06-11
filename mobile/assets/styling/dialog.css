@@ -8,6 +8,7 @@
     width: fit-content;
     max-width: 90vw;
     height: fit-content;
+    z-index: 1;
 }
 
 .dialogHeader {
