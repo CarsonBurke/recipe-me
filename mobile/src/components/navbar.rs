@@ -38,7 +38,7 @@ pub fn Navbar() -> Element {
                 }
                 Link {
                     class: "width100 button buttonBg3 column centerRow textSmall",
-                    to: Route::Dashboard {},
+                    to: Route::Collections {},
                     div {
                         class: "column centerColumn centerRow",
                         p { class: "textSmall", dioxus_free_icons::Icon { icon: ld_icons::LdBook } }
@@ -47,11 +47,11 @@ pub fn Navbar() -> Element {
                 }
                 Link {
                     class: "width100 button buttonBg3 column centerRow textSmall",
-                    to: Route::Dashboard {},
+                    to: Route::Settings {},
                     div {
                         class: "column centerColumn centerRow",
-                        p { class: "textSmall", dioxus_free_icons::Icon { icon: ld_icons::LdUserRound } }
-                        p { class: "textXSmall", "Account" }
+                        p { class: "textSmall", dioxus_free_icons::Icon { icon: ld_icons::LdSettings } }
+                        p { class: "textXSmall", "Settings" }
                     }
                 }
             }

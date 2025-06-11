@@ -1,0 +1,8 @@
+body {
+  --text: white;
+  --bg1: #0d1117;
+  --bg2: #171b22;
+  --bg3: #21262d;
+  --bg4: #2e3338;
+    background-color: var(--bg1);
+}

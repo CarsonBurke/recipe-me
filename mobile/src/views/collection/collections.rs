@@ -13,7 +13,7 @@ pub fn Collections() -> Element {
             section {
                 class: "section column gapLarge",
                 div {
-                    class: "row gapMedium centerColumn",
+                    class: "row gapMedium centerColumn spaceBetween",
                     h1 { class: "textLarge", "My collections" }
                     Link {
                         class: "button buttonBg2",

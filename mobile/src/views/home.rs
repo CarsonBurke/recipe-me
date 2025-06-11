@@ -22,7 +22,9 @@ pub fn Home() -> Element {
 
         div {
             class: "row overflowHorizontal gapMedium paddingLarge",
-            FilteredRecipes {}
+            FilteredRecipes {
+                recipe_select: false,
+            }
         }
     }
 }

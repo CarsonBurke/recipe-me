@@ -12,6 +12,7 @@ pub struct Query {
     pub ingredient_id: Option<i32>, 
     pub meal_id: Option<i32>,
     pub limit: Option<u64>,
+    pub recipe_select: bool,
 }
 
 impl From<&str> for Query {
@@ -44,7 +45,9 @@ impl std::fmt::Display for Query {
 }
 
 #[component]
-pub fn Recipes(query: Query) -> Element {
+pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
+
+    let query_read = query();
 
     rsx! {
         main {
@@ -67,12 +70,12 @@ pub fn Recipes(query: Query) -> Element {
                 div {
                     class: "row gapMedium centerRow flexWrap",
                     FilteredRecipes {  
-                        cuisine_id: query.cuisine_id,
-                        diet_id: query.diet_id,
-                        ingredient_id: query.ingredient_id,
-                        meal_id: query.meal_id,
-                        limit: query.limit,
-                        public: Some(true),
+                        cuisine_id: query_read.cuisine_id,
+                        diet_id: query_read.diet_id,
+                        ingredient_id: query_read.ingredient_id,
+                        meal_id: query_read.meal_id,
+                        limit: query_read.limit,
+                        recipe_select: query_read.recipe_select,
                     }
                 }
             }

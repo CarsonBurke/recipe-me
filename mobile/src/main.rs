@@ -1,13 +1,26 @@
-use dioxus::prelude::*;
+use std::fmt::{self, Display};
 
-use views::{Home};
+use dioxus::{logger::tracing::info, prelude::*};
 
-use crate::{components::navbar::Navbar, views::{recipe::{recipes::Recipes, recipe_page::RecipePage, new_recipe::NewRecipe}, dashboard::Dashboard, collection::{collections::Collections, new_collection::NewCollection}}};
+use dioxus_sdk::storage::{use_persistent, use_storage, use_synced_storage, LocalStorage};
+use serde::{Deserialize, Serialize};
+use views::Home;
 
-mod views;
-mod server;
+use crate::{
+    components::navbar::Navbar,
+    views::{
+        collection::{collections::Collections, new_collection::NewCollection},
+        dashboard::Dashboard,
+        recipe::{new_recipe::NewRecipe, recipe_page::RecipePage, recipes::Recipes},
+        settings::{personalize::Personalize, premium::Premium, view::Settings},
+    },
+};
+
 mod components;
+mod constants;
+mod server;
 mod utils;
+mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -27,25 +40,112 @@ enum Route {
     NewRecipe {},
     #[route("/new_collection")]
     NewCollection {},
+    #[route("/settings")]
+    Settings {},
+    #[route("/personalize")]
+    Personalize {},
+    #[route("/premium")]
+    Premium {},
 }
 
 fn main() {
     dioxus::launch(App);
 }
 
+#[derive(Debug, Default, Clone, Copy, PartialEq, Serialize, Deserialize, enum_iterator::Sequence)]
+pub enum Theme {
+    #[default]
+    Pastel,
+    Midnight,
+    White,
+}
+
+impl Theme {
+    pub fn file_name(&self) -> String {
+        match self {
+            Theme::Pastel => "pastel".to_string(),
+            Theme::Midnight => "midnight".to_string(),
+            Theme::White => "white".to_string(),
+        }
+    }
+}
+
+impl fmt::Display for Theme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.file_name())
+    }
+}
+
+impl From<String> for Theme {
+    fn from(value: String) -> Self {
+        match value.as_str() {
+            "pastel" => Theme::Pastel,
+            "midnight" => Theme::Midnight,
+            "white" => Theme::White,
+            _ => Theme::default(),
+        }
+    }
+}
+
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 const ANIMATIONS_CSS: Asset = asset!("/assets/styling/animations.css");
+
+// Themes
+/* const THEME_MIDNIGHT: Asset = asset!("/assets/styling/themes/midnight.css");
+const THEME_PASTEL: Asset = asset!("/assets/styling/themes/pastel.css");
+const THEME_WHITE: Asset = asset!("/assets/styling/themes/white.css"); */
 
 #[component]
 fn App() -> Element {
     // Build cool things ✌️
 
+    /* let cached_theme = use_persistent::<Theme>(constants::THEME.to_string(), || Theme::default());
+    println!("cached theme {}", cached_theme());
+    /* let theme_context = use_context_provider(|| use_signal(|| cached_theme()));
+    print!("theme: {}", theme_context()); */
+
+    *THEME_GLOBAL.write() = cached_theme();
+
+    let mut theme: Signal<Asset> = use_signal(|| match cached_theme() {
+        Theme::Pastel => THEME_PASTEL,
+        Theme::Midnight => THEME_MIDNIGHT,
+        Theme::White => THEME_WHITE,
+    });
+
+    let mut x = Theme::default()/* use_signal(|| Theme::default()) */; */
+
+    /* use_effect(move || {
+        /* cached_theme.read();
+        THEME_GLOBAL.read(); */
+
+        let z = THEME_GLOBAL();
+        *&mut x = z.clone();
+
+        println!("read signals");
+
+        /* let read = THEME_GLOBAL.read(); */
+
+        /* theme.set(match x {
+            Theme::Pastel => THEME_PASTEL,
+            Theme::Midnight => THEME_MIDNIGHT,
+            Theme::White => THEME_WHITE,
+        }); */
+    }); */
+
     rsx! {
         // Global app resources
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS },
-        style { "{MAIN_CSS} {ANIMATIONS_CSS}" }
+        /* document::Link { rel: "stylesheet", href: {
+            match x {
+                Theme::Pastel => THEME_PASTEL,
+                Theme::Midnight => THEME_MIDNIGHT,
+                Theme::White => THEME_WHITE,
+            }
+        } },
+        {format!("{}", x)} */
+        document::Link { rel: "stylesheet", href: ANIMATIONS_CSS },
 
         Router::<Route> {}
     }
@@ -56,8 +156,13 @@ fn App() -> Element {
 #[component]
 fn MobileNavbar() -> Element {
     rsx! {
-        Navbar {  }
+        div {
+            class: "root theme_midnight",
+            Navbar {  }
 
-        Outlet::<Route> {}
+            Outlet::<Route> {}
+        }
     }
 }
+
+pub static THEME_GLOBAL: GlobalSignal<Theme> = Signal::global(|| Theme::default());

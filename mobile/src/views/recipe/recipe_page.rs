@@ -120,7 +120,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                     div {
                         class: "column centerRow gapMedium",
                         div {
-                            class: "row spaceBetween gapSmall flexWrap",
+                            class: "row spaceBetween gapMedium flexWrap",
                             div {
                                 class: "column gapSmall",
                                 h1 { class: "textXLarge", {recipe_read.name.clone()} }
@@ -135,7 +135,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                 div {
                                     class: "row centerColumn gapMedium flexWrap",
                                     div {
-                                        class: "row centerColumn gapXSmall",
+                                        class: "row centerColumn gapSmall",
                                         if recipe_read.ratings == 0 {
                                             p { class: "textSmall textWeak", "No ratings" }
                                         }
@@ -192,7 +192,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     div {
-                        class: "row gapSmall centerColumn overflowHorizontal",
+                        class: "row gapSmall centerColumn overflowHorizontal round",
                         div {
                             class: "column gapSmall",
                             p { class: "textSmall textWeak", "Meal" },
@@ -252,7 +252,10 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     div {
-                        class: "sectionImage bg3 round",
+                        class: "row centerRow width100",
+                        div {
+                            class: "sectionImage bg3 round",
+                        }
                     }
                     p {
                         {recipe_read.description.clone()},
@@ -342,6 +345,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         FilteredRecipes {
                             diet_id: Some(diet.id),
                             limit: Some(8),
+                            recipe_select: false,
                         }
                     }
                 }
@@ -355,6 +359,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         FilteredRecipes {
                             cuisine_id: Some(cuisine.id),
                             limit: Some(8),
+                            recipe_select: false,
                         }
                     }
                 }
@@ -368,6 +373,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         FilteredRecipes {
                             meal_id: Some(meal.id),
                             limit: Some(8),
+                            recipe_select: false,
                         }
                     }
                 }

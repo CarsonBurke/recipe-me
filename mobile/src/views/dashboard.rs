@@ -27,7 +27,9 @@ pub fn Dashboard() -> Element {
                     }
                     div {
                         class: "row overflowHorizontal gapMedium paddingLarge",
-                        FilteredRecipes {}
+                        FilteredRecipes {
+                            recipe_select: false,
+                        }
                     }
                 }
                 div {
@@ -49,7 +51,10 @@ pub fn Dashboard() -> Element {
                                 div {
                                     class: "row centerRow gapSmall round",
                                     Link {
-                                        to: Route::Recipes { query: views::recipe::recipes::Query::default() },
+                                        to: Route::Recipes { query: views::recipe::recipes::Query {
+                                            recipe_select: true,
+                                            ..Default::default()
+                                        } },
                                         class: "button buttonBg3 round square",
                                         div {
                                             class: "column gapXSmall centerColumn",
@@ -84,20 +89,12 @@ pub fn Dashboard() -> Element {
                                 }
                             }
                         }
-
-                        /*
                         Link {
                             class: "button buttonBg2 round",
-                            to: Route::AccountRecipes { query: recipes::Query::default() },
-                            dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
-                            "Favourite recipes"
-                        }
-                        Link {
-                            class: "button buttonBg2 round",
-                            to: Route::AccountCollections {},
+                            to: Route::Collections {},
                             dioxus_free_icons::Icon { icon: ld_icons::LdSquareLibrary }
                             "My collections"
-                        } */
+                        }
                     }
                 }
                 div {
