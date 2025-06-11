@@ -21,6 +21,7 @@ pub struct Model {
     pub source: Option<String>,
     pub author_id: Option<i32>,
     pub public: Option<bool>,
+    pub image_url: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

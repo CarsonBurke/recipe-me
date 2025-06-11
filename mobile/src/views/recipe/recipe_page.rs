@@ -9,10 +9,7 @@ use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
     components::{
-        dialog::DialogWrapper,
-        filtered_recipes::{self, FilteredRecipes},
-        rating_static::RatingStatic,
-        recipe::comments::RecipeComments,
+        collection::collections::CollectionPreviews, dialog::DialogWrapper, filtered_recipes::{self, FilteredRecipes}, rating_static::RatingStatic, recipe::comments::RecipeComments
     },
     utils::round_to_decimals,
     views::recipe::recipes::{self},
@@ -173,17 +170,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                         dialog: rsx! {
                                             div {
                                                 class: "row overflowHorizontal gapSmall round",
-                                                for i in 0..10 {
-                                                    button {
-                                                        class: "button buttonBg3 round square",
-                                                        onclick: move |_| {
-
-                                                        },
-                                                        dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
-                                                        "Collection name"
-                                                    }
-                                                }
-                                                // List each collection
+                                                CollectionPreviews {  }
                                             }
                                         }
                                     }
@@ -271,7 +258,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                     class: "buttonSmall buttonBg2",
                                     onclick: move |_| {
                                         if ingredients_mult() < 1. {
-                                            ingredients_mult.set((ingredients_mult() + 0.25));
+                                            ingredients_mult.set(ingredients_mult() + 0.25);
                                             return
                                         }
 

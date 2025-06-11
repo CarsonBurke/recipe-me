@@ -1713,6 +1713,7 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "instant",
+ "tokio",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -3775,6 +3776,7 @@ dependencies = [
  "api",
  "dioxus",
  "dioxus-free-icons",
+ "dioxus-motion",
  "dioxus-sdk",
  "enum-iterator",
  "openssl",

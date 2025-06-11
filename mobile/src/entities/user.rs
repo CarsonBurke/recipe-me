@@ -21,8 +21,6 @@ pub enum Relation {
     LoginToken,
     #[sea_orm(has_many = "super::recipe::Entity")]
     Recipe,
-    #[sea_orm(has_many = "super::recipe_collection::Entity")]
-    RecipeCollection,
 }
 
 impl Related<super::comment::Entity> for Entity {
@@ -34,12 +32,6 @@ impl Related<super::comment::Entity> for Entity {
 impl Related<super::login_token::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::LoginToken.def()
-    }
-}
-
-impl Related<super::recipe_collection::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::RecipeCollection.def()
     }
 }
 

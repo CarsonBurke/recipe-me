@@ -7,14 +7,12 @@ use dioxus_sdk::storage::{use_persistent, use_storage, use_synced_storage, Local
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    components::navbar::Navbar,
-    server::test_find_collection,
-    views::{
-        collection::{collections::Collections, new_collection::NewCollection},
+    components::navbar::Navbar, server::collection::test_find_collection, views::{
+        collection::{collections::Collections, collection::Collection, new_collection::NewCollection},
         dashboard::Dashboard,
         recipe::{new_recipe::NewRecipe, recipe_page::RecipePage, recipes::Recipes},
         settings::{personalize::Personalize, premium::Premium, view::Settings},
-    },
+    }
 };
 
 mod components;
@@ -57,6 +55,9 @@ enum Route {
     #[route("/premium")]
     #[transition(Fade)]
     Premium {},
+    #[route("/collection/:id")]
+    #[transition(Fade)]
+    Collection { id: i32 },
 }
 
 fn main() {
@@ -146,8 +147,8 @@ fn App() -> Element {
         }); */
     }); */
 
-    let collection = use_resource(move || async move { test_find_collection(1).await.unwrap() });
-    print!("collection resource: {:#?}", collection());
+    /* let collection = use_resource(move || async move { test_find_collection(1).await.unwrap() });
+    print!("collection resource: {:#?}", collection()); */
 
     rsx! {
         // Global app resources

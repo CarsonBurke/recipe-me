@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub user_id: i32,
     pub collection_name: String,
 }
 
@@ -16,25 +15,11 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::recipe_collection_recipe::Entity")]
     RecipeCollectionRecipe,
-    #[sea_orm(
-        belongs_to = "super::user::Entity",
-        from = "Column::UserId",
-        to = "super::user::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    User,
 }
 
 impl Related<super::recipe_collection_recipe::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::RecipeCollectionRecipe.def()
-    }
-}
-
-impl Related<super::user::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::User.def()
     }
 }
 
