@@ -1,13 +1,29 @@
 use std::time::{self, SystemTime, UNIX_EPOCH};
 
 use dioxus::prelude::*;
-use sea_orm::{Database, DatabaseConnection, DbErr};
+use sea_orm::{Database, DatabaseConnection, DbErr, EntityTrait};
+
+use crate::entities::recipe_collection;
 
 pub const DATABASE_URL: &str = "sqlite://recipes.sqlite?mode=rwc";
 
 pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(DATABASE_URL).await;
     db
+}
+
+pub async fn test_db() {
+    let db = db_conn().await.unwrap();
+
+    
+}
+
+pub async fn test_find_collection(collection_id: i32) -> Option<recipe_collection::Model> {
+    let db = db_conn().await.unwrap();
+    let collection = recipe_collection::Entity::find_by_id(collection_id).one(&db).await.unwrap();
+
+    println!("collection: {:#?}", collection);
+    collection
 }
 
 #[server]

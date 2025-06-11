@@ -2,13 +2,13 @@ use std::fmt::{self, Display};
 
 use dioxus::{logger::tracing::info, prelude::*};
 
+use dioxus_motion::prelude::*;
 use dioxus_sdk::storage::{use_persistent, use_storage, use_synced_storage, LocalStorage};
 use serde::{Deserialize, Serialize};
-use dioxus_motion::prelude::*;
-
 
 use crate::{
     components::navbar::Navbar,
+    server::test_find_collection,
     views::{
         collection::{collections::Collections, new_collection::NewCollection},
         dashboard::Dashboard,
@@ -22,6 +22,7 @@ mod constants;
 mod server;
 mod utils;
 mod views;
+mod entities;
 
 #[derive(Debug, Clone, Routable, PartialEq, MotionTransitions)]
 #[rustfmt::skip]
@@ -62,7 +63,9 @@ fn main() {
     dioxus::launch(App);
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Serialize, Deserialize, enum_iterator::Sequence)]
+#[derive(
+    Debug, Default, Clone, Copy, PartialEq, Serialize, Deserialize, enum_iterator::Sequence,
+)]
 pub enum Theme {
     #[default]
     Pastel,
@@ -142,6 +145,9 @@ fn App() -> Element {
             Theme::White => THEME_WHITE,
         }); */
     }); */
+
+    let collection = use_resource(move || async move { test_find_collection(1).await.unwrap() });
+    print!("collection resource: {:#?}", collection());
 
     rsx! {
         // Global app resources
