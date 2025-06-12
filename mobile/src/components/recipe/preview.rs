@@ -42,7 +42,7 @@ pub fn RecipePreview(
             div {
                 class: "column gapSmall paddingSmall",
                 div {
-                    class: "rowCollapsible gapMedium",
+                    class: "rowCollapsible gapXSmall",
                     h2 {
                         class: "textMedium",
                         "{name}"
@@ -52,6 +52,7 @@ pub fn RecipePreview(
                     }
                 }
                 p {
+                    class: "textSmall",
                     "{summary}",
                 }
             }
@@ -68,7 +69,7 @@ fn Wrapper(id: i32, selected: Signal<Selected>,/*  selected_context: Signal<Hash
         Selected::Selected | Selected::Unselected => {
             rsx! {
                 button {
-                    class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium",
+                    class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween",
                     div {
                         class: "column gapSmall recipe_preview_select",
                         button {
@@ -102,9 +103,9 @@ fn Wrapper(id: i32, selected: Signal<Selected>,/*  selected_context: Signal<Hash
         }
         _ => rsx! {
             Link {
-            class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium",
-            to: Route::RecipePage { id, },
-            {children}
+                class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween",
+                to: Route::RecipePage { id, },
+                {children}
             }
         },
     }

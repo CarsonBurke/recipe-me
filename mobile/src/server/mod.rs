@@ -3,15 +3,20 @@ use std::time::{self, SystemTime, UNIX_EPOCH};
 use dioxus::prelude::*;
 use sea_orm::{Database, DatabaseConnection, DbErr, EntityTrait};
 
-use crate::entities::recipe_collection;
+use crate::{entities::recipe_collection, server::collection::new_collection};
 
 pub mod collection;
+pub mod recipe;
 
 pub const DATABASE_URL: &str = "sqlite://local_recipes.sqlite?mode=rwc";
 
 pub async fn db_conn() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(DATABASE_URL).await;
     db
+}
+
+pub async fn init_db() {
+    new_collection("My Favourites".to_string(), "".to_string()).await;
 }
 
 pub async fn ping_self() -> u128 {

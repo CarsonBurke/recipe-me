@@ -61,6 +61,21 @@ enum Route {
 }
 
 fn main() {
+    // Throwing weird error, don't know why; should be able to do use_resource and use_persistent
+    /* let x = use_resource(|| async move {
+        let is_db_initialized = use_persistent(constants::IS_DB_INITIALIZED.to_string(), || false);
+
+        if !is_db_initialized() {
+            
+            server::init_db().await;
+            use_persistent(constants::IS_DB_INITIALIZED.to_string(), || true);
+        }
+
+        println!("Completed coroutine");
+        false
+    });
+    x(); */
+
     dioxus::launch(App);
 }
 
@@ -113,6 +128,8 @@ const THEME_WHITE: Asset = asset!("/assets/styling/themes/white.css"); */
 #[component]
 fn App() -> Element {
     // Build cool things ✌️
+
+
 
     /* let cached_theme = use_persistent::<Theme>(constants::THEME.to_string(), || Theme::default());
     println!("cached theme {}", cached_theme());

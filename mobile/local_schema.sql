@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS Comment (
 
 CREATE TABLE IF NOT EXISTS RecipeCollection (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    collection_name VARCHAR(255) NOT NULL
+    collection_name VARCHAR(255) NOT NULL,
+    description VARCHAR(255)
 );
 
 -- Map recipes to one collection

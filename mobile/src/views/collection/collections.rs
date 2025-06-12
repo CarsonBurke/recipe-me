@@ -24,7 +24,6 @@ pub fn Collections() -> Element {
                 }
                 div {
                     class: "column gapMedium centerColumn",
-                    "Collections"
                     div {
                         class: "row flexWrap gapSmall centerRow",
                         CollectionPreviews {  }

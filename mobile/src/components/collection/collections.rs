@@ -12,6 +12,7 @@ pub fn CollectionPreviews(add_recipe: Option<i32>) -> Element {
                 CollectionPreview {
                     id: collection.id,
                     name: collection.collection_name.clone(),
+                    description: collection.description.clone(),
                 }
             }
         }

@@ -51,7 +51,7 @@ pub fn FilteredRecipes(
                 name: recipe.name.clone(), 
                 summary: recipe.summary.clone(), 
                 source: recipe.source.clone(), 
-                rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON ), 
+                rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON), 
                 selected: match recipe_select { true => Selected::Unselected, false => Selected::NoSelect } 
             }
         }
