@@ -7,7 +7,7 @@ use crate::{components::rating_static::RatingStatic, Route};
 
 const CSS: Asset = asset!("/assets/styling/recipe_preview.css");
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Selected {
     NoSelect,
     Unselected,
@@ -27,6 +27,7 @@ pub fn RecipePreview(
     summary: String,
     source: Option<String>,
     rating: f32,
+    selected_set: Option<Signal<HashSet<i32>>>,
     selected: Selected,
 ) -> Element {
     let selected_signal = use_signal(|| selected);
@@ -64,7 +65,9 @@ pub fn RecipePreview(
 }
 
 #[component]
-fn Wrapper(id: i32, selected: Signal<Selected>,/*  selected_context: Signal<HashSet<i32>>, */ children: Element) -> Element {
+fn Wrapper(id: i32, selected: Signal<Selected>, selected_set: Option<Signal<HashSet<i32>>>, /*  selected_context: Signal<HashSet<i32>>, */ children: Element) -> Element {
+
+    println!("selected: {:?}", selected());
     match selected() {
         Selected::Selected | Selected::Unselected => {
             rsx! {
@@ -78,10 +81,10 @@ fn Wrapper(id: i32, selected: Signal<Selected>,/*  selected_context: Signal<Hash
                                 selected.set(
                                     match selected() {
                                         Selected::Selected => {
-                                            /* selected_context.with_mut(|set| set.remove(&id)); */
+                                            selected_set.unwrap().with_mut(|set| set.remove(&id));
                                             Selected::Unselected},
                                         _ => {
-                                            /* selected_context.with_mut(|set| set.insert(id)); */
+                                            selected_set.unwrap().with_mut(|set| set.insert(id));
                                             Selected::Selected}
                                     });
                             },

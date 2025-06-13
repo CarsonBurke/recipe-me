@@ -42,7 +42,8 @@ pub fn FilteredRecipes(
     }
 
     /* let selected_set: Signal<HashSet<i32>> = use_context_provider(|| use_signal(|| HashSet::new())); */
-
+    let selected_set: Signal<HashSet<i32>> = use_signal(|| HashSet::new());
+    println!("recipe select: {}", recipe_select);
     rsx! {
         for recipe in recipes().iter() {
 
@@ -52,10 +53,11 @@ pub fn FilteredRecipes(
                 summary: recipe.summary.clone(), 
                 source: recipe.source.clone(), 
                 rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON), 
-                selected: match recipe_select { true => Selected::Unselected, false => Selected::NoSelect } 
+                selected: match recipe_select { true => Selected::Unselected, false => Selected::NoSelect },
+                selected_set,
             }
         }
-        /* if !selected_set().is_empty() {
+        if !selected_set().is_empty() {
             div {
                 class: "width100 absBottom",
                 button {
@@ -66,6 +68,6 @@ pub fn FilteredRecipes(
                     "Add selected recipes"
                 }
             }
-        } */
+        }
     }
 }

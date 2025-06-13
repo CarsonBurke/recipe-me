@@ -32,6 +32,7 @@ impl From<&str> for Query {
             meal_id: res.meal_id,
             diet_id: res.diet_id,
             limit: res.limit,
+            recipe_select: res.recipe_select,
             ..Default::default()
         }
     }
