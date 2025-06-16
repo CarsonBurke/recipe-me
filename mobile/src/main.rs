@@ -10,7 +10,7 @@ use crate::{
     components::navbar::Navbar, server::collection::test_find_collection, views::{
         collection::{collections::Collections, collection::Collection, new_collection::NewCollection},
         dashboard::Dashboard,
-        recipe::{new_recipe::NewRecipe, recipe_page::RecipePage, recipes::Recipes},
+        recipe::{new::NewRecipeView, view_public::RecipePage, recipes::Recipes},
         settings::{personalize::Personalize, premium::Premium, view::Settings},
     }
 };
@@ -21,6 +21,7 @@ mod server;
 mod utils;
 mod views;
 mod entities;
+mod data;
 
 #[derive(Debug, Clone, Routable, PartialEq, MotionTransitions)]
 #[rustfmt::skip]
@@ -42,7 +43,7 @@ enum Route {
     Collections {},
     #[route("/new_recipe")]
     #[transition(Fade)]
-    NewRecipe {},
+    NewRecipeView {},
     #[route("/new_collection")]
     #[transition(Fade)]
     NewCollection {},

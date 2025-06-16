@@ -1,23 +1,22 @@
 use std::f32::EPSILON;
 
 use api::{
-    get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals,
-    get_recipes,
+    data::PartialCombinedRecipeIngredient, get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals, get_recipes
 };
 use dioxus::{logger::tracing::info, prelude::*};
 use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
     components::{
-        collection::collections::CollectionPreviews, dialog::DialogWrapper, filtered_recipes::{self, FilteredRecipes}, rating_static::RatingStatic, recipe::comments::RecipeComments
-    },
-    utils::round_to_decimals,
-    views::recipe::recipes::{self},
-    Route,
+        collection::collections::CollectionPreviews,
+        dialog::DialogWrapper,
+        rating_static::RatingStatic,
+        recipe::{comments::RecipeComments, filtered_public},
+    }, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::recipe::recipes::{self}, Route
 };
 
 #[component]
-pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
+pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
     info!("RecipePage: {id}");
 
     info!("Second check {}", id());
@@ -37,7 +36,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
         }
     })
     .suspend()?;
-    let recipe_read = &*recipe.read();
+    let recipe_read = recipe();
     println!("Read recipe id: {}", recipe_read.id);
     // let recipe_ref = recipe_read.as_ref().unwrap();
 
@@ -76,6 +75,24 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
     .suspend()?;
     let diets_read = &*diets.read();
     // let diets_ref = diets_read.as_ref().unwrap();
+
+    struct LocalData {
+        collection: Resource<recipe_collection::Model>,
+    }
+
+    fn get_local_data(is_local: bool) -> Option<LocalData> {
+        if is_local {
+            Some(LocalData {
+                collection: use_resource(|| async move {
+                    server::collection::get_collection(0).await.unwrap()
+                }),
+            })
+        } else {
+            None
+        }
+    }
+
+    let local_data = get_local_data(is_local);
 
     let rating = recipe_read.total_rating as f32 / (recipe_read.ratings as f32 + EPSILON);
 
@@ -147,13 +164,37 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                                 }
                                 div {
                                     class: "row gapSmall",
-                                    button {
-                                        class: "button buttonBg2",
-                                        onclick: move |_| {
-                                            println!("Favourite recipe")
-                                        },
-                                        dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
-                                    },
+                                    if let Some(local_data) = local_data {
+                                        button {
+                                            class: "button buttonBg2",
+                                            onclick: move |_| async move {
+                                                println!("Favourite recipe");
+                                            },
+                                            dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
+                                        }
+                                    }
+                                    else {
+                                        button {
+                                            class: "button buttonBg2",
+                                            onclick: move |_| {
+                                            let name = recipe_read.name.clone();
+                                            let description = recipe_read.description.clone();
+                                            let instructions = recipe_read.instructions.clone();
+                                            
+                                            async move {
+                                                println!("Add to library");
+
+                                                let server_ingredients = get_recipe_ingredients(id()).await.unwrap();
+                                                let ingredients = ingredients.iter().map(|i| IngredientPartial::from(i)).collect::<Vec<IngredientPartial>>();
+
+                                                let recipe_id = create_recipe(name, description, instructions, ingredients).await;
+
+                                                println!("Created local recipe from recipe with id {}", recipe_id);
+                                            }
+                                            },
+                                            dioxus_free_icons::Icon { icon: ld_icons::LdSave }
+                                        }
+                                    }
                                     DialogWrapper {
                                         header: rsx! {
                                             h1 { class: "textLarge", "Add to collection" }
@@ -245,7 +286,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     p {
-                        {recipe_read.description.clone()},
+                        {recipe().description},
                     }
                     div {
                         class: "column gapMedium",
@@ -298,7 +339,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                         class: "column gapSmall",
                         h2 { class: "textLarge",  "Instructions"}
                         p {
-                            {recipe_read.instructions.clone()},
+                            {recipe().instructions},
                         }
                     }
                 }
@@ -329,7 +370,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                     }
                     div {
                         class: "row overflowHorizontal gapMedium",
-                        FilteredRecipes {
+                        filtered_public::FilteredRecipes {
                             diet_id: Some(diet.id),
                             limit: Some(8),
                             recipe_select: false,
@@ -343,7 +384,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                     }
                     div {
                         class: "row overflowHorizontal gapMedium",
-                        FilteredRecipes {
+                        filtered_public::FilteredRecipes {
                             cuisine_id: Some(cuisine.id),
                             limit: Some(8),
                             recipe_select: false,
@@ -357,7 +398,7 @@ pub fn RecipePage(id: ReadOnlySignal<i32>) -> Element {
                     }
                     div {
                         class: "row overflowHorizontal gapMedium",
-                        FilteredRecipes {
+                        filtered_public::FilteredRecipes {
                             meal_id: Some(meal.id),
                             limit: Some(8),
                             recipe_select: false,

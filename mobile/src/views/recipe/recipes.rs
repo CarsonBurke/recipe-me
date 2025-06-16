@@ -3,7 +3,7 @@ use dioxus::{logger::tracing::info, prelude::*};
 use dioxus_free_icons::icons::ld_icons;
 use serde::{Deserialize, Serialize};
 
-use crate::{components::{filtered_recipes::{self, FilteredRecipes}}, Route};
+use crate::{components::recipe::filtered_local, Route};
 
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
 pub struct Query {
@@ -62,7 +62,7 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                         class: "row flexWrap gapSmall centerRow",
                         Link {
                             class: "button buttonBg2",
-                            to: Route::NewRecipe {},
+                            to: Route::NewRecipeView {},
                             dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                             "New recipe"
                         }
@@ -70,7 +70,7 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                 }
                 div {
                     class: "row gapMedium centerRow flexWrap",
-                    FilteredRecipes {  
+                    filtered_local::FilteredRecipes {  
                         cuisine_id: query_read.cuisine_id,
                         diet_id: query_read.diet_id,
                         ingredient_id: query_read.ingredient_id,

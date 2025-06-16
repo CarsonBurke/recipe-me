@@ -2,9 +2,7 @@ use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
-    Route,
-    components::{dialog::DialogWrapper, filtered_recipes::FilteredRecipes},
-    views,
+    components::{dialog::DialogWrapper, recipe::filtered_local}, views, Route
 };
 
 #[component]
@@ -27,7 +25,7 @@ pub fn Dashboard() -> Element {
                     }
                     div {
                         class: "row overflowHorizontal gapMedium paddingLarge",
-                        FilteredRecipes {
+                        filtered_local::FilteredRecipes {
                             recipe_select: false,
                         }
                     }
@@ -67,7 +65,7 @@ pub fn Dashboard() -> Element {
                                         }
                                     }
                                     Link {
-                                        to: Route::NewRecipe {  },
+                                        to: Route::NewRecipeView {  },
                                         class: "button buttonBg3 round square",
                                         div {
                                             class: "column gapXSmall centerColumn",

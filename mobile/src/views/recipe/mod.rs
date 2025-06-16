@@ -1,3 +1,4 @@
-pub mod recipe_page;
+pub mod view_public;
+pub mod view_local;
 pub mod recipes;
-pub mod new_recipe;
+pub mod new;

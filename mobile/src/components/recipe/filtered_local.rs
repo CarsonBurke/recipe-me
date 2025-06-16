@@ -3,7 +3,7 @@ use std::{collections::HashSet, f32::EPSILON};
 use api::{get_filtered_recipes, FilteredRecipesParams};
 use dioxus::prelude::*;
 
-use crate::components::recipe::preview::{RecipePreview, Selected};
+use crate::{components::recipe::preview::{RecipePreview, Selected}, server, views, Route};
 
 #[derive(Clone, Debug, Copy, PartialEq, Default)]
 pub struct Params {}
@@ -20,24 +20,36 @@ pub fn FilteredRecipes(
     collection_id: Option<i32>,
 ) -> Element {
     let recipes = use_resource(move || {
-        let params = FilteredRecipesParams {
-            cuisine_id: cuisine_id.clone(),
-            diet_id: diet_id.clone(),
-            ingredient_id: ingredient_id.clone(),
-            meal_id: meal_id.clone(),
-            limit: limit.clone().unwrap_or(50),
-            author_id: author_id.clone(),
-            public: Some(recipe_select.clone()),
-            collection_id: collection_id.clone(),
-            page_offset: Some(0),
-        };
-        async move { get_filtered_recipes(params).await.unwrap() }
+        
+        async move {
+            let params = server::recipe::FilteredRecipesParams {
+                cuisine_id: cuisine_id.clone(),
+                diet_id: diet_id.clone(),
+                ingredient_id: ingredient_id.clone(),
+                meal_id: meal_id.clone(),
+                limit: limit.clone().unwrap_or(50),
+                author_id: author_id.clone(),
+                public: Some(recipe_select.clone()),
+                collection_id: collection_id.clone(),
+                page_offset: Some(0),
+            };
+
+            server::recipe::get_filtered_recipes(params).await   
+        }
     })
     .suspend()?;
 
     if recipes().is_empty() {
         return rsx! {
-            p { class: "textMedium", "No recipes found" }
+            div {
+                class: "column gapSmall centerColumn",
+                p { class: "textMedium", "No recipes found" }
+                Link {
+                    class: "button buttonBg2",
+                    to: Route::Recipes { query: views::recipe::recipes::Query::default() },
+                    "Find a recipe"
+                }
+            }
         };
     }
 
@@ -47,12 +59,12 @@ pub fn FilteredRecipes(
     rsx! {
         for recipe in recipes().iter() {
 
-            RecipePreview { 
-                id: recipe.id, 
-                name: recipe.name.clone(), 
-                summary: recipe.summary.clone(), 
-                source: recipe.source.clone(), 
-                rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON), 
+            RecipePreview {
+                id: recipe.id,
+                name: recipe.name.clone(),
+                summary: recipe.summary.clone(),
+                source: recipe.source.clone(),
+                rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON),
                 selected: match recipe_select { true => Selected::Unselected, false => Selected::NoSelect },
                 selected_set,
             }
