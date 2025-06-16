@@ -1,25 +1,16 @@
 use std::f32::EPSILON;
 
-use api::{
-    data::PartialCombinedRecipeIngredient, get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals, get_recipes
-};
-use dioxus::{logger::tracing::info, prelude::*};
+use api::{get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals};
+use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{
-    components::{
-        collection::collections::CollectionPreviews,
-        dialog::DialogWrapper,
-        rating_static::RatingStatic,
-        recipe::{comments::RecipeComments, filtered_public},
-    }, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::recipe::recipes::{self}, Route
-};
+use crate::{components::{collection::collections::CollectionPreviews, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::{self, recipe::recipes}, Route};
 
 #[component]
 pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
-    info!("RecipePage: {id}");
+    println!("RecipePage: {id}");
 
-    info!("Second check {}", id());
+    println!("Second check {}", id());
 
     /* web_sys::window().and_then(|win| Some(win.scroll_to_with_x_and_y(0.0, 0.0))); */
 
@@ -185,7 +176,7 @@ pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
                                                 println!("Add to library");
 
                                                 let server_ingredients = get_recipe_ingredients(id()).await.unwrap();
-                                                let ingredients = ingredients.iter().map(|i| IngredientPartial::from(i)).collect::<Vec<IngredientPartial>>();
+                                                let ingredients = server_ingredients.iter().map(|i| IngredientPartial::from(i)).collect::<Vec<IngredientPartial>>();
 
                                                 let recipe_id = create_recipe(name, description, instructions, ingredients).await;
 
