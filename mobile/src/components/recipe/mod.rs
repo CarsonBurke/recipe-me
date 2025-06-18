@@ -4,4 +4,4 @@ pub mod comment;
 pub mod new;
 pub mod filtered_local;
 pub mod filtered_public;
-pub mod comp;
+pub mod recipe;

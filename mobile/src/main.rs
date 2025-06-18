@@ -10,7 +10,7 @@ use crate::{
     components::navbar::Navbar, server::collection::test_find_collection, views::{
         collection::{collections::Collections, collection::Collection, new_collection::NewCollection},
         dashboard::Dashboard,
-        recipe::{new::NewRecipeView, view_public::RecipePage, recipes::Recipes},
+        recipe::{new::NewRecipeView, public::RecipePage, recipes::Recipes},
         settings::{personalize::Personalize, premium::Premium, view::Settings},
     }
 };

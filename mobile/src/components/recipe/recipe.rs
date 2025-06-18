@@ -4,10 +4,10 @@ use api::{get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredie
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{components::{collection::collections::CollectionPreviews, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::{self, recipe::recipes}, Route};
+use crate::{components::{collection::collections::CollectionPreviews, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::{recipe::recipes}, Route};
 
 #[component]
-pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
+pub fn Recipe(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
     println!("RecipePage: {id}");
 
     println!("Second check {}", id());
@@ -71,19 +71,19 @@ pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
         collection: Resource<recipe_collection::Model>,
     }
 
-    fn get_local_data(is_local: bool) -> Option<LocalData> {
-        if is_local {
-            Some(LocalData {
-                collection: use_resource(|| async move {
-                    server::collection::get_collection(0).await.unwrap()
-                }),
-            })
-        } else {
-            None
-        }
-    }
+    // fn get_local_data(is_local: bool) -> Option<LocalData> {
+    //     if is_local {
+    //         Some(LocalData {
+    //             collection: use_resource(|| async move {
+    //                 server::collection::get_collection(0).await.unwrap()
+    //             }),
+    //         })
+    //     } else {
+    //         None
+    //     }
+    // }
 
-    let local_data = get_local_data(is_local);
+    // let local_data = get_local_data(is_local);
 
     let rating = recipe_read.total_rating as f32 / (recipe_read.ratings as f32 + EPSILON);
 
@@ -155,37 +155,37 @@ pub fn RecipeComp(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
                                 }
                                 div {
                                     class: "row gapSmall",
-                                    if let Some(local_data) = local_data {
-                                        button {
-                                            class: "button buttonBg2",
-                                            onclick: move |_| async move {
-                                                println!("Favourite recipe");
-                                            },
-                                            dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
-                                        }
-                                    }
-                                    else {
-                                        button {
-                                            class: "button buttonBg2",
-                                            onclick: move |_| {
-                                            let name = recipe_read.name.clone();
-                                            let description = recipe_read.description.clone();
-                                            let instructions = recipe_read.instructions.clone();
+                                    // if let Some(local_data) = local_data {
+                                    //     button {
+                                    //         class: "button buttonBg2",
+                                    //         onclick: move |_| async move {
+                                    //             println!("Favourite recipe");
+                                    //         },
+                                    //         dioxus_free_icons::Icon { icon: ld_icons::LdHeart }
+                                    //     }
+                                    // }
+                                    // else {
+                                    //     button {
+                                    //         class: "button buttonBg2",
+                                    //         onclick: move |_| {
+                                    //         let name = recipe_read.name.clone();
+                                    //         let description = recipe_read.description.clone();
+                                    //         let instructions = recipe_read.instructions.clone();
                                             
-                                            async move {
-                                                println!("Add to library");
+                                    //         async move {
+                                    //             println!("Add to library");
 
-                                                let server_ingredients = get_recipe_ingredients(id()).await.unwrap();
-                                                let ingredients = server_ingredients.iter().map(|i| IngredientPartial::from(i)).collect::<Vec<IngredientPartial>>();
+                                    //             let server_ingredients = get_recipe_ingredients(id()).await.unwrap();
+                                    //             let ingredients = server_ingredients.iter().map(|i| IngredientPartial::from(i)).collect::<Vec<IngredientPartial>>();
 
-                                                let recipe_id = create_recipe(name, description, instructions, ingredients).await;
+                                    //             let recipe_id = create_recipe(name, description, instructions, ingredients).await;
 
-                                                println!("Created local recipe from recipe with id {}", recipe_id);
-                                            }
-                                            },
-                                            dioxus_free_icons::Icon { icon: ld_icons::LdSave }
-                                        }
-                                    }
+                                    //             println!("Created local recipe from recipe with id {}", recipe_id);
+                                    //         }
+                                    //         },
+                                    //         dioxus_free_icons::Icon { icon: ld_icons::LdSave }
+                                    //     }
+                                    // }
                                     DialogWrapper {
                                         header: rsx! {
                                             h1 { class: "textLarge", "Add to collection" }
