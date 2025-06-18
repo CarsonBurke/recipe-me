@@ -63,9 +63,9 @@ pub fn FilteredRecipes(
         }
         if !selected_set().is_empty() {
             div {
-                class: "width100 absBottom",
+                class: "absBottom",
                 button {
-                    class: "button buttonBg2 width100",
+                    class: "button buttonBg2",
                     onclick: move |_| {
                         println!("Add selected recipes {:?}", selected_set());
                     },

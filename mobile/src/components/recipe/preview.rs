@@ -39,6 +39,7 @@ pub fn RecipePreview(
         Wrapper {
             id,
             selected: selected_signal,
+            selected_set,
             /* selected_context, */
             div {
                 class: "column gapSmall paddingSmall",
@@ -65,41 +66,43 @@ pub fn RecipePreview(
 }
 
 #[component]
-fn Wrapper(id: i32, selected: Signal<Selected>, selected_set: Option<Signal<HashSet<i32>>>, /*  selected_context: Signal<HashSet<i32>>, */ children: Element) -> Element {
-
+fn Wrapper(
+    id: i32,
+    selected: Signal<Selected>,
+    selected_set: Option<Signal<HashSet<i32>>>,
+    /*  selected_context: Signal<HashSet<i32>>, */ children: Element,
+) -> Element {
     println!("selected: {:?}", selected());
     match selected() {
         Selected::Selected | Selected::Unselected => {
             rsx! {
                 button {
+                    onclick: move |_| {
+
+                        let new_selected = match selected() {
+                            Selected::Selected => {
+                                selected_set.unwrap().with_mut(|set| set.remove(&id));
+                                Selected::Unselected},
+                            _ => {
+                                selected_set.unwrap().with_mut(|set| set.insert(id));
+                                Selected::Selected}
+                        };
+
+                        selected.set(new_selected);
+                    },
                     class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween",
                     div {
                         class: "column gapSmall recipe_preview_select",
                         button {
                             class: "button buttonBg2 textPositive",
-                            onclick: move |_| {
-                                selected.set(
-                                    match selected() {
-                                        Selected::Selected => {
-                                            selected_set.unwrap().with_mut(|set| set.remove(&id));
-                                            Selected::Unselected},
-                                        _ => {
-                                            selected_set.unwrap().with_mut(|set| set.insert(id));
-                                            Selected::Selected}
-                                    });
-                            },
+
                             match selected() {
                                 Selected::Selected => rsx! { dioxus_free_icons::Icon { icon: ld_icons::LdCheck } },
                                 _ => rsx! {dioxus_free_icons::Icon { icon: ld_icons::LdPlus }}
                             }
-
-                        }
-                        button {
-                            class: "button buttonBg2",
-                            dioxus_free_icons::Icon { icon: ld_icons::LdEye }
                         }
                     }
-                    
+
                     {children}
                 }
             }
