@@ -1,4 +1,4 @@
-use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, EntityTrait, QueryFilter, QuerySelect, QueryTrait};
+use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, EntityTrait, PaginatorTrait, QueryFilter, QuerySelect, QueryTrait};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -184,4 +184,9 @@ pub async fn create_recipe_ingredients(
     }
 
     ingredient_ids
+}
+
+pub async fn recipes_count() -> u64 {
+    let db = db_conn().await.unwrap();
+    recipe::Entity::find().count(&db).await.unwrap()
 }

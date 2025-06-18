@@ -1,12 +1,17 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::Route;
+use crate::{server, Route};
 
 #[component]
 pub fn Settings() -> Element {
-
     let logged_in = true;
+
+    let recipes_count = use_resource(|| server::recipe::recipes_count());
+
+    let recipes_count = recipes_count().unwrap_or(0);
+    let max_recipes = 100;
+    let class_add = if recipes_count >= max_recipes - 10 { "textNegative" } else { "" };
 
     rsx! {
         main {
@@ -38,18 +43,18 @@ pub fn Settings() -> Element {
                                 div {
                                     class: "row gapXSmall spaceBetween textXSmall",
                                     p {
-                                        class: "textNegative textWeak",
-                                        "X recipes remaining"
+                                        class: "{class_add} textWeak",
+                                        {format!("{}/100 recipes remaining", max_recipes - recipes_count)}"X recipes remaining"
                                     }
                                     p {
                                         class: "textWeak",
                                         "upgrade to premium for unlimited"
                                     }
                                 }
-                                
+
                             }
                             div {
-                                class: "column gapSmall bg2 round paddingLarge width100",    
+                                class: "column gapSmall bg2 round paddingLarge width100",
                                 Link {
                                     class: "button buttonBg2 width100",
                                     to: Route::Premium {},
