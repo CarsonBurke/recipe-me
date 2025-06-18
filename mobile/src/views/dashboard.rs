@@ -2,7 +2,8 @@ use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
 use crate::{
-    components::{dialog::DialogWrapper, recipe::filtered_local}, views, Route
+    components::{dialog::DialogWrapper, recipe::filtered_local},
+    views, Route,
 };
 
 #[component]
@@ -51,6 +52,7 @@ pub fn Dashboard() -> Element {
                                     Link {
                                         to: Route::Recipes { query: views::recipe::recipes::Query {
                                             recipe_select: true,
+                                            public: true,
                                             ..Default::default()
                                         } },
                                         class: "button buttonBg3 round square",

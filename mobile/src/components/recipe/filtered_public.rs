@@ -1,10 +1,11 @@
 use std::{collections::HashSet, f32::EPSILON};
 
 use api::{get_filtered_recipes, FilteredRecipesParams};
-use dioxus::prelude::*;
+use dioxus::{logger::tracing::info, prelude::*};
 
 use crate::{
     components::recipe::preview::{RecipePreview, Selected},
+    data::partials::IngredientPartial,
     server,
 };
 
@@ -45,11 +46,25 @@ pub fn FilteredRecipes(
         };
     }
 
-    /* let selected_set: Signal<HashSet<i32>> = use_context_provider(|| use_signal(|| HashSet::new())); */
+    let z = recipes();
+
     let selected_set: Signal<HashSet<i32>> = use_signal(|| HashSet::new());
+
+    let create_from_selected_recipes = move |_| async move {
+        println!("Add selected recipes {:?}", selected_set());
+
+        for recipe_id in selected_set().iter() {
+            println!("before new recipe");
+            let new_recipe = server::recipe::recipe_from_public(*recipe_id).await;
+            println!("new recipe: {:#?}", new_recipe);
+        }
+
+        navigator().go_back();
+    };
+    
     println!("recipe select: {}", recipe_select);
     rsx! {
-        for recipe in recipes().iter() {
+        for recipe in z.iter() {
 
             RecipePreview {
                 id: recipe.id,
@@ -63,12 +78,10 @@ pub fn FilteredRecipes(
         }
         if !selected_set().is_empty() {
             div {
-                class: "absBottom",
+                class: "absBottom width100 row centerRow",
                 button {
-                    class: "button buttonBg2",
-                    onclick: move |_| {
-                        println!("Add selected recipes {:?}", selected_set());
-                    },
+                    class: "button buttonBg2 widthFit",
+                    onclick: create_from_selected_recipes,
                     "Add selected recipes"
                 }
             }

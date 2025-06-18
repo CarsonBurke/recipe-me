@@ -25,9 +25,14 @@ pub fn NewRecipe(default_name: Option<String>, default_description: Option<Strin
 
                 let recipe_id = server::recipe::create_recipe(name(), description(), instructions(), ingredients()).await;
 
+                let Ok(recipe_id) = recipe_id else {
+                    println!("Failed to create recipe, err {:?}", recipe_id);
+                    return
+                };
+
                 println!("created recipe with id {}", recipe_id);
 
-                navigator().push(Route::Recipes { query: views::recipe::recipes::Query::default() });
+                navigator().push(Route::Recipes { query: views::recipe::recipes::Query::default() });   
 
                 /* let recipe_id = user_actions::create_recipe(login_token, name(), description(), instructions(), ingredients()).await;
 

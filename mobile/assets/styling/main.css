@@ -407,11 +407,15 @@ body {
 }
 
 .absBottom {
-  position: "absolute";
-  bottom: 0;
+  position: fixed;
+  bottom: calc(var(--navbarHeight) + var(--spacingMedium));
 }
 
 hr {
   height: 2px;
   width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
 }

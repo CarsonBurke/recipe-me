@@ -73,6 +73,7 @@ fn Wrapper(
     /*  selected_context: Signal<HashSet<i32>>, */ children: Element,
 ) -> Element {
     println!("selected: {:?}", selected());
+
     match selected() {
         Selected::Selected | Selected::Unselected => {
             rsx! {
@@ -90,11 +91,14 @@ fn Wrapper(
 
                         selected.set(new_selected);
                     },
-                    class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween",
+                    class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween pointer",
                     div {
                         class: "column gapSmall recipe_preview_select",
                         button {
-                            class: "button buttonBg2 textPositive",
+                            class: {format!("button buttonBg2 {}", match selected() {
+                                Selected::Selected => "textPositive",
+                                _ => ""
+                            })},
 
                             match selected() {
                                 Selected::Selected => rsx! { dioxus_free_icons::Icon { icon: ld_icons::LdCheck } },

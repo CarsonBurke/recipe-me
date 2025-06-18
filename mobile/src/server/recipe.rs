@@ -1,4 +1,4 @@
-use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, EntityTrait, PaginatorTrait, QueryFilter, QuerySelect, QueryTrait};
+use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QuerySelect, QueryTrait};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -126,7 +126,8 @@ pub async fn create_recipe(
     description: String,
     instructions: String,
     ingredients: Vec<IngredientPartial>,
-) -> i32 {
+) -> Result<i32, DbErr> {
+    let db = db_conn().await.unwrap();
 
     let active_recipe = recipe::ActiveModel {
         id: ActiveValue::NotSet,
@@ -147,20 +148,18 @@ pub async fn create_recipe(
         ..Default::default()
     };
 
-    let recipe_result = active_recipe.insert(&db_conn().await.unwrap()).await;
-    let recipe_id = recipe_result.unwrap().id;
+    let new_recipe = active_recipe.insert(&db).await?;
 
-    create_recipe_ingredients(recipe_id, &ingredients).await;
+    create_recipe_ingredients(new_recipe.id, &ingredients, &db).await;
 
-    recipe_id
+    Ok(new_recipe.id)
 }
 
 pub async fn create_recipe_ingredients(
     recipe_id: i32,
     ingredients: &[IngredientPartial],
-) -> Vec<i32> {
-    let mut ingredient_ids = Vec::new();
-
+    db: &DatabaseConnection
+) {
     for ingredient in ingredients {
         let active_ingredient_name = ingredient_name::ActiveModel {
             name: ActiveValue::Set(ingredient.name.clone()),
@@ -168,7 +167,7 @@ pub async fn create_recipe_ingredients(
         };
 
         let name_result = active_ingredient_name
-            .insert(&db_conn().await.unwrap())
+            .insert(db)
             .await;
 
         let active_ingredient = recipe_ingredient::ActiveModel {
@@ -178,15 +177,29 @@ pub async fn create_recipe_ingredients(
             ..Default::default()
         };
 
-        let ingredient_result = active_ingredient.insert(&db_conn().await.unwrap()).await;
-
-        ingredient_ids.push(name_result.unwrap().id);
-    }
-
-    ingredient_ids
+        let ingredient_result = active_ingredient.insert(db).await;
+    };
 }
 
 pub async fn recipes_count() -> u64 {
     let db = db_conn().await.unwrap();
     recipe::Entity::find().count(&db).await.unwrap()
+}
+
+pub async fn recipe_from_public(id: i32) -> Result<i32, DbErr> {
+    
+    // Get the recipe and relevant data from the public database
+    // Then copy it over into ours
+    /* let public_recipe = recipe::Entity::find_by_id(id)
+        .one(&db)
+        .await
+        .unwrap(); */
+
+    let public_recipe = api::get_recipe(id).await.unwrap();
+
+    let public_ingredients = api::get_recipe_ingredients(id).await.unwrap();
+    let ingredients = public_ingredients.iter().map(|ing| IngredientPartial::from(ing)).collect();
+
+    let new_recipe_id = create_recipe(public_recipe.name, public_recipe.description, public_recipe.instructions, ingredients).await;
+    new_recipe_id
 }
