@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     components::navbar::Navbar, server::collection::test_find_collection, views::{
-        collection::{collections::Collections, collection::Collection, new_collection::NewCollection},
+        collection::{collections::Collections, local::CollectionLocal, private::CollectionPrivate, new_collection::NewCollection},
         dashboard::Dashboard,
-        recipe::{new::NewRecipeView, public::RecipePage, recipes::Recipes},
+        recipe::{local::RecipeLocal, public::RecipePublic, new::NewRecipeView, recipes::Recipes},
         settings::{personalize::Personalize, premium::Premium, view::Settings},
     }
 };
@@ -35,12 +35,15 @@ enum Route {
     Recipes {
         query: views::recipe::recipes::Query,
     },
-    #[route("/recipe/:id")]
+    #[route("/recipe_local/:id")]
     #[transition(Fade)]
-    RecipePage { id: i32 },
+    RecipeLocal { id: i32 },
+    #[route("/recipe_public/:id")]
+    #[transition(Fade)]
+    RecipePublic { id: i32 },
     #[route("/collections")]
     #[transition(Fade)]
-    Collections {},
+    Collections { public: bool },
     #[route("/new_recipe")]
     #[transition(Fade)]
     NewRecipeView {},
@@ -56,9 +59,12 @@ enum Route {
     #[route("/premium")]
     #[transition(Fade)]
     Premium {},
-    #[route("/collection/:id")]
+    #[route("/collection_local/:id")]
     #[transition(Fade)]
-    Collection { id: i32 },
+    CollectionLocal { id: i32 },
+    #[route("/collection_private/:id")]
+    #[transition(Fade)]
+    CollectionPrivate { id: i32 },
 }
 
 fn main() {

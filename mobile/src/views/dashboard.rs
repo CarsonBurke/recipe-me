@@ -91,7 +91,7 @@ pub fn Dashboard() -> Element {
                         }
                         Link {
                             class: "button buttonBg2 round",
-                            to: Route::Collections {},
+                            to: Route::Collections { public: false },
                             dioxus_free_icons::Icon { icon: ld_icons::LdSquareLibrary }
                             "My collections"
                         }

@@ -3,11 +3,12 @@ use dioxus::prelude::*;
 use crate::Route;
 
 #[component]
-pub fn CollectionPreview(id: i32, name: String, add_recipe: Option<i32>, description: Option<String>) -> Element {
+pub fn CollectionPreview(id: i32, name: String, add_recipe: Option<i32>, description: Option<String>, public: bool) -> Element {
     rsx! {
         Wrapper {
             id,
             add_recipe,
+            public,
             div {
                 class: "column gapSmall paddingSmall",
                 h2 { class: "textMedium", {name} }
@@ -21,7 +22,7 @@ pub fn CollectionPreview(id: i32, name: String, add_recipe: Option<i32>, descrip
 }
 
 #[component]
-fn Wrapper(children: Element, id: i32, add_recipe: Option<i32>) -> Element {
+fn Wrapper(children: Element, id: i32, add_recipe: Option<i32>, public: bool) -> Element {
     match add_recipe {
         Some(id) => rsx! { 
             button {
@@ -34,7 +35,10 @@ fn Wrapper(children: Element, id: i32, add_recipe: Option<i32>) -> Element {
         },
         _ => rsx! { 
             Link {
-                to: Route::Collection { id },
+                to: match public {
+                    true => Route::CollectionLocal { id },
+                    false => Route::CollectionPrivate { id },
+                },
                 class: "round paddingMedium column gapMedium buttonBg1 borderBg2 spaceBetween defaultTransition",
                 {children}
             }

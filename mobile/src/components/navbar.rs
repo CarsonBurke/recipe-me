@@ -38,7 +38,7 @@ pub fn Navbar() -> Element {
                 }
                 Link {
                     class: "width100 button buttonBg3 column centerRow textSmall",
-                    to: Route::Collections {},
+                    to: Route::Collections { public: false },
                     div {
                         class: "column centerColumn centerRow",
                         p { class: "textSmall", dioxus_free_icons::Icon { icon: ld_icons::LdBook } }

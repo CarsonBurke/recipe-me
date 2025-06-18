@@ -67,6 +67,7 @@ pub fn FilteredRecipes(
                 rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON),
                 selected: match recipe_select { true => Selected::Unselected, false => Selected::NoSelect },
                 selected_set,
+                public: false,
             }
         }
         if !selected_set().is_empty() {

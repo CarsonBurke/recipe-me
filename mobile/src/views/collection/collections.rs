@@ -4,7 +4,7 @@ use dioxus_free_icons::icons::ld_icons;
 use crate::{components::collection::{collections::CollectionPreviews, preview::CollectionPreview}, server::collection::get_my_collections, Route};
 
 #[component]
-pub fn Collections() -> Element {
+pub fn Collections(public: bool) -> Element {
     let collections = use_resource(|| async move { get_my_collections().await });
 
     rsx! {
@@ -26,7 +26,7 @@ pub fn Collections() -> Element {
                     class: "column gapMedium centerColumn",
                     div {
                         class: "row flexWrap gapSmall centerRow",
-                        CollectionPreviews {  }
+                        CollectionPreviews { public, }
                     }
                 }
             }

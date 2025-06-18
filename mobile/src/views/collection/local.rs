@@ -5,7 +5,7 @@ use dioxus::{html::u, prelude::*};
 use crate::{components::recipe::preview::{RecipePreview, Selected}, server::collection::{get_collection, my_collection_recipes}};
 
 #[component]
-pub fn Collection(id: ReadOnlySignal<i32>) -> Element {
+pub fn CollectionLocal(id: ReadOnlySignal<i32>) -> Element {
     let collection = use_resource(move || {
         let cloned_id = id();
         async move { get_collection(cloned_id).await }
@@ -42,14 +42,15 @@ pub fn Collection(id: ReadOnlySignal<i32>) -> Element {
                                 summary: recipe.summary,
                                 source: recipe.source,
                                 rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON),
-                                selected: Selected::NoSelect
+                                selected: Selected::NoSelect,
+                                public: false,
                             }
                         }       
                     }
                 }
             }
             else {
-                h1 { "Resource error" }
+                h1 { "Could not find collection" }
             }
         }
     }

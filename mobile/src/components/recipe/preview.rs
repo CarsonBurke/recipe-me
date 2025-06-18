@@ -29,6 +29,7 @@ pub fn RecipePreview(
     rating: f32,
     selected_set: Option<Signal<HashSet<i32>>>,
     selected: Selected,
+    public: bool,
 ) -> Element {
     let selected_signal = use_signal(|| selected);
     /* let mut selected_context = use_context::<Signal<HashSet<i32>>>(); */
@@ -39,6 +40,7 @@ pub fn RecipePreview(
         Wrapper {
             id,
             selected: selected_signal,
+            public,
             selected_set,
             /* selected_context, */
             div {
@@ -70,6 +72,7 @@ fn Wrapper(
     id: i32,
     selected: Signal<Selected>,
     selected_set: Option<Signal<HashSet<i32>>>,
+    public: bool,
     /*  selected_context: Signal<HashSet<i32>>, */ children: Element,
 ) -> Element {
     println!("selected: {:?}", selected());
@@ -114,7 +117,10 @@ fn Wrapper(
         _ => rsx! {
             Link {
                 class: "recipe_preview column round borderBg2 paddingMedium buttonBg1 defaultTransition gapMedium spaceBetween",
-                to: Route::RecipePage { id, },
+                to: match public {
+                    true => Route::RecipePublic { id },
+                    false => Route::RecipeLocal { id },
+                },
                 {children}
             }
         },

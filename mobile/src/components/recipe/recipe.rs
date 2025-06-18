@@ -7,7 +7,7 @@ use dioxus_free_icons::icons::ld_icons;
 use crate::{components::{collection::collections::CollectionPreviews, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::{recipe::recipes}, Route};
 
 #[component]
-pub fn Recipe(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
+pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
     println!("RecipePage: {id}");
 
     println!("Second check {}", id());
@@ -202,7 +202,7 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_local: bool) -> Element {
                                         dialog: rsx! {
                                             div {
                                                 class: "row overflowHorizontal gapSmall round",
-                                                CollectionPreviews {  }
+                                                CollectionPreviews { public: false }
                                             }
                                         }
                                     }

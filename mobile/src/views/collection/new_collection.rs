@@ -38,7 +38,7 @@ pub fn NewCollection() -> Element {
 
                         is_processing.set(false);
 
-                        navigator().push(Route::Collections {});
+                        navigator().push(Route::Collections { public: false });
                     },
                     class: "column gapLarge paddingLarge round bg2 centerColumn",
                     h1 {class: "textLarge", "New collection" },
