@@ -256,6 +256,7 @@ body {
   gap: var(--spacingSmall);
   align-items: center;
   white-space: nowrap;
+  font-size: var(--textSmall);
 }
 
 .button:disabled {

@@ -60,11 +60,43 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                 class: "section column",
                 div {
                     class: "row gapMedium centerColumn spaceBetween",
-                    h1 { class: "textLarge", "My recipes" }
+                    if query_read.public {
+                        h1 { class: "textLarge", "My recipes" }
+                    }
+                    else {
+                        h1 { class: "textLarge", "Public recipes" }
+                    }
                     div {
                         class: "row flexWrap gapSmall centerRow",
+                        if !query_read.public {
+                            Link {
+                                class: "buttonSmall buttonBg2",
+                                to: Route::Recipes {
+                                    query: Query {
+                                        public: true,
+                                        recipe_select: true,
+                                        ..Default::default()
+                                    }
+                                },
+                                dioxus_free_icons::Icon { icon: ld_icons::LdCloudDownload }
+                                "Get recipe"
+                            }
+                        }
+                        else {
+                            Link {
+                                class: "buttonSmall buttonBg2",
+                                to: Route::Recipes {
+                                    query: Query {
+                                        public: false,
+                                        ..Default::default()
+                                    }
+                                },
+                                dioxus_free_icons::Icon { icon: ld_icons::LdBook }
+                                "My recipes"
+                            }
+                        }
                         Link {
-                            class: "button buttonBg2",
+                            class: "buttonSmall buttonBg2",
                             to: Route::NewRecipeView {},
                             dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                             "New recipe"

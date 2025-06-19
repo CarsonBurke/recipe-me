@@ -60,7 +60,7 @@ pub fn Dashboard() -> Element {
                                             class: "column gapXSmall centerColumn",
                                             div {
                                                 class: "row centerRow gapSmall",
-                                                dioxus_free_icons::Icon { icon: ld_icons::LdSearch }
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdCloudDownload }
                                                 "Find recipe"
                                             }
                                             p { class: "textXSmall", "Import a recipe from online" }
