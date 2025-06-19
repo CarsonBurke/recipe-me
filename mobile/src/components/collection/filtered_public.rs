@@ -1,9 +1,16 @@
 use dioxus::prelude::*;
 
-use crate::{components::collection::preview::CollectionPreview, server::collection::get_my_collections};
+use crate::{
+    components::collection::preview::CollectionPreview, server::collection::get_my_collections,
+};
+
+pub struct AddRecipe {
+    pub recipe_id: i32,
+    pub collection: bool,
+}
 
 #[component]
-pub fn CollectionPreviews(add_recipe: Option<i32>, public: bool) -> Element {
+pub fn CollectionPreviews(add_recipe: Option<Signal<AddRecipe>>) -> Element {
     let collections = use_resource(|| async move { get_my_collections().await });
 
     rsx! {
@@ -11,7 +18,7 @@ pub fn CollectionPreviews(add_recipe: Option<i32>, public: bool) -> Element {
             for collection in collections.iter() {
                 CollectionPreview {
                     id: collection.id,
-                    public,
+                    public: true,
                     name: collection.collection_name.clone(),
                     description: collection.description.clone(),
                 }

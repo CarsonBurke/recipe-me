@@ -4,7 +4,7 @@ use api::{get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredie
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{components::{collection::collections::CollectionPreviews, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::{recipe::recipes}, Route};
+use crate::{components::{self, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::recipe::recipes, Route};
 
 #[component]
 pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
@@ -202,7 +202,7 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
                                         dialog: rsx! {
                                             div {
                                                 class: "row overflowHorizontal gapSmall round",
-                                                CollectionPreviews { public: false }
+                                                components::collection::filtered_local::CollectionPreviews { }
                                             }
                                         }
                                     }
