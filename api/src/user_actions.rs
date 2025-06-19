@@ -94,3 +94,15 @@ pub async fn get_collections(
         .unwrap();
     Ok(collections)
 }
+
+#[server]
+pub async fn get_all_collections(offset: u64, limit: u64) -> Result<Vec<recipe_collection::Model>, ServerFnError> {
+    let db = db_conn().await.unwrap();
+    let collections = recipe_collection::Entity::find()
+        /* .offset(offset) */
+        /* .limit(limit) */
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(collections)
+}

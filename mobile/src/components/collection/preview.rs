@@ -37,7 +37,7 @@ fn Wrapper(children: Element, id: i32, add_recipe: Option<i32>, public: bool) ->
             Link {
                 to: match public {
                     true => Route::CollectionLocal { id },
-                    false => Route::CollectionPrivate { id },
+                    false => Route::CollectionPublic { id },
                 },
                 class: "round paddingMedium column gapMedium buttonBg1 borderBg2 spaceBetween defaultTransition",
                 {children}

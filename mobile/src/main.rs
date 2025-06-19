@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     components::navbar::Navbar, server::collection::test_find_collection, views::{
-        collection::{collections::Collections, local::CollectionLocal, private::CollectionPrivate, new_collection::NewCollection},
+        collection::{collections::Collections, local::CollectionLocal, public::CollectionPublic, new_collection::NewCollection},
         dashboard::Dashboard,
         recipe::{local::RecipeLocal, public::RecipePublic, new::NewRecipeView, recipes::Recipes},
         settings::{personalize::Personalize, premium::Premium, view::Settings},
@@ -64,7 +64,7 @@ enum Route {
     CollectionLocal { id: i32 },
     #[route("/collection_private/:id")]
     #[transition(Fade)]
-    CollectionPrivate { id: i32 },
+    CollectionPublic { id: i32 },
 }
 
 fn main() {

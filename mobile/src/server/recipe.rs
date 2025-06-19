@@ -1,9 +1,10 @@
-use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QuerySelect, QueryTrait};
+use api::data::{PartialCombinedRecipeIngredient, PartialComment, PartialCuisine, PartialDiet, PartialMeal};
+use sea_orm::{metric::Info, prelude::Decimal, sea_query::Query, ActiveModelTrait, ActiveValue, ColumnTrait, Condition, DatabaseConnection, DbErr, EntityTrait, JoinType, PaginatorTrait, QueryFilter, QuerySelect, QueryTrait, RelationTrait};
 use serde::{Deserialize, Serialize};
 
 use crate::{
     data::partials::IngredientPartial,
-    entities::{ingredient_name, recipe, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal},
+    entities::{comment, cuisine_name, diet_name, ingredient_name, meal_name, recipe, recipe_cuisine, recipe_diet, recipe_ingredient, recipe_meal, user},
     server::db_conn,
 };
 
@@ -202,4 +203,104 @@ pub async fn recipe_from_public(id: i32) -> Result<i32, DbErr> {
 
     let new_recipe_id = create_recipe(public_recipe.name, public_recipe.description, public_recipe.instructions, ingredients).await;
     new_recipe_id
+}
+
+
+pub async fn get_recipe(id: i32) -> Result<recipe::Model, DbErr> {
+    let db = db_conn().await.unwrap();
+    let recipe = recipe::Entity::find_by_id(id).one(&db).await.unwrap();
+    Ok(recipe.unwrap())
+}
+
+pub async fn get_recipe_ingredients(
+    id: i32,
+) -> Result<Vec<PartialCombinedRecipeIngredient>, DbErr> {
+    let db = db_conn().await.unwrap();
+    // let recipe_ingredients = recipe_ingredient::Entity::find().filter(recipe_ingredient::Column::RecipeId.eq(id)).all(&db).await.unwrap();
+
+    let partial = recipe_ingredient::Entity::find()
+        // Instead can probably do .find_with_related(IngredientName)
+        .join(
+            JoinType::InnerJoin,
+            recipe_ingredient::Relation::IngredientName.def(),
+        )
+        .filter(recipe_ingredient::Column::RecipeId.eq(id))
+        .select_only()
+        .column_as(ingredient_name::Column::Name, "name")
+        .column_as(recipe_ingredient::Column::Amount, "amount")
+        .column_as(recipe_ingredient::Column::Description, "description")
+        .column_as(recipe_ingredient::Column::IngredientId, "id")
+        .into_model::<PartialCombinedRecipeIngredient>()
+        .all(&db)
+        .await
+        .unwrap();
+
+    Ok(partial)
+}
+
+pub async fn get_recipe_cuisines(id: i32) -> Result<Vec<PartialCuisine>, DbErr> {
+    let db = db_conn().await.unwrap();
+    let recipe_cuisines = recipe_cuisine::Entity::find()
+        .join(
+            JoinType::InnerJoin,
+            recipe_cuisine::Relation::CuisineName.def(),
+        )
+        .filter(recipe_cuisine::Column::RecipeId.eq(id))
+        .select_only()
+        .column_as(cuisine_name::Column::Name, "name")
+        .column_as(recipe_cuisine::Column::CuisineId, "id")
+        .into_model::<PartialCuisine>()
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(recipe_cuisines)
+}
+
+pub async fn get_recipe_meals(id: i32) -> Result<Vec<PartialMeal>, DbErr> {
+    let db = db_conn().await.unwrap();
+    let recipe_meals = recipe_meal::Entity::find()
+        .join(JoinType::InnerJoin, recipe_meal::Relation::MealName.def())
+        .filter(recipe_meal::Column::RecipeId.eq(id))
+        .select_only()
+        .column_as(meal_name::Column::Name, "name")
+        .column_as(recipe_meal::Column::MealId, "id")
+        .into_model::<PartialMeal>()
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(recipe_meals)
+}
+
+pub async fn get_recipe_diets(id: i32) -> Result<Vec<PartialDiet>, DbErr> {
+    let db = db_conn().await.unwrap();
+    let recipe_diets = recipe_diet::Entity::find()
+        .join(JoinType::InnerJoin, recipe_diet::Relation::DietName.def())
+        .filter(recipe_diet::Column::RecipeId.eq(id))
+        .select_only()
+        .column_as(diet_name::Column::Name, "name")
+        .column_as(recipe_diet::Column::DietId, "id")
+        .into_model::<PartialDiet>()
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(recipe_diets)
+}
+
+pub async fn get_recipe_comments(recipe_id: i32, limit: u64) -> Result<Vec<PartialComment>, DbErr> {
+    let db = db_conn().await.unwrap();
+    let recipe_comments = comment::Entity::find()
+        .limit(limit)
+        .join(JoinType::InnerJoin, comment::Relation::Recipe.def())
+        .filter(comment::Column::RecipeId.eq(recipe_id))
+        .join(JoinType::InnerJoin, comment::Relation::User.def())
+        .select_only()
+        .column_as(user::Column::Username, "name")
+        .column_as(comment::Column::UserId, "user_id")
+        .column_as(comment::Column::Comment, "comment")
+        .column_as(comment::Column::Rating, "rating")
+        .into_model::<PartialComment>()
+        .all(&db)
+        .await
+        .unwrap();
+    Ok(recipe_comments)
 }

@@ -103,6 +103,7 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
 
     rsx! {
         main {
+            class: "main",
             onmounted: move |cx| {
                 println!("Mounted");
                 main.set(Some(cx.data()));
@@ -117,7 +118,6 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
                     };
                 }
             },
-            class: "main",
             section {
                 class: "section column gapMedium",
                 div {
@@ -212,59 +212,65 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
                     }
                     div {
                         class: "row gapSmall centerColumn overflowHorizontal round",
-                        div {
-                            class: "column gapSmall",
-                            p { class: "textSmall textWeak", "Meal" },
+                        if !meals_read.is_empty() {
                             div {
-                                class: "row gapSmall",
-                                for meal in meals_read {
-                                    Link {
-                                        to: Route::Recipes {
-                                            query: recipes::Query {
-                                                meal_id: Some(meal.id),
-                                                ..Default::default()
-                                            }
-                                        },
-                                        class: "pill textSmall button buttonBg2",
-                                        {meal.name.clone()}
+                                class: "column gapSmall",
+                                p { class: "textSmall textWeak", "Meal" },
+                                div {
+                                    class: "row gapSmall",
+                                    for meal in meals_read {
+                                        Link {
+                                            to: Route::Recipes {
+                                                query: recipes::Query {
+                                                    meal_id: Some(meal.id),
+                                                    ..Default::default()
+                                                }
+                                            },
+                                            class: "pill textSmall button buttonBg2",
+                                            {meal.name.clone()}
+                                        }
                                     }
                                 }
                             }
                         }
-                        div {
-                            class: "column gapSmall",
-                            p { class: "textSmall textWeak", "Diet" },
+                        if !diets_read.is_empty() {
                             div {
-                                class: "row gapSmall",
-                                for diet in diets_read {
-                                    Link {
-                                        to: Route::Recipes {
-                                            query: recipes::Query {
-                                                diet_id: Some(diet.id),
-                                                ..Default::default()
-                                            }
-                                        },
-                                        class: "pill textSmall button buttonBg2",
-                                        {diet.name.clone()}
+                                class: "column gapSmall",
+                                p { class: "textSmall textWeak", "Diet" },
+                                div {
+                                    class: "row gapSmall",
+                                    for diet in diets_read {
+                                        Link {
+                                            to: Route::Recipes {
+                                                query: recipes::Query {
+                                                    diet_id: Some(diet.id),
+                                                    ..Default::default()
+                                                }
+                                            },
+                                            class: "pill textSmall button buttonBg2",
+                                            {diet.name.clone()}
+                                        }
                                     }
                                 }
                             }
                         }
-                        div {
-                            class: "column gapSmall",
-                            p { class: "textSmall textWeak", "Cuisine" },
+                        if !cuisines_read.is_empty() {
                             div {
-                                class: "row gapSmall",
-                                for cuisine in cuisines_read {
-                                    Link {
-                                        to: Route::Recipes {
-                                            query: recipes::Query {
-                                                cuisine_id: Some(cuisine.id),
-                                                ..Default::default()
-                                            }
-                                        },
-                                        class: "pill textSmall button buttonBg2",
-                                        {cuisine.name.clone()}
+                                class: "column gapSmall",
+                                p { class: "textSmall textWeak", "Cuisine" },
+                                div {
+                                    class: "row gapSmall",
+                                    for cuisine in cuisines_read {
+                                        Link {
+                                            to: Route::Recipes {
+                                                query: recipes::Query {
+                                                    cuisine_id: Some(cuisine.id),
+                                                    ..Default::default()
+                                                }
+                                            },
+                                            class: "pill textSmall button buttonBg2",
+                                            {cuisine.name.clone()}
+                                        }
                                     }
                                 }
                             }

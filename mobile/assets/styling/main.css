@@ -299,7 +299,6 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  // padding-top: calc(var(--navbarHeight) + var(--spacingLarge));
   padding-top: var(--spacingLarge);
   padding-bottom: calc(var(--navbarHeight) + var(--spacingLarge));
   gap: var(--spacingLarge);

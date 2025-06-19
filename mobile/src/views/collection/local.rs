@@ -45,7 +45,7 @@ pub fn CollectionLocal(id: ReadOnlySignal<i32>) -> Element {
                                 selected: Selected::NoSelect,
                                 public: false,
                             }
-                        }       
+                        }
                     }
                 }
             }
