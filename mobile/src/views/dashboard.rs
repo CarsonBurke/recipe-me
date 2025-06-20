@@ -22,6 +22,7 @@ pub fn Dashboard() -> Element {
                             to: Route::Recipes { query: views::recipe::recipes::Query::default() },
                             class: "buttonSmall buttonBg2",
                             "See all"
+                            dioxus_free_icons::Icon { icon: ld_icons::LdArrowRight }
                         }
                     }
                     div {
