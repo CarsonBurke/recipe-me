@@ -61,14 +61,28 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                 div {
                     class: "row gapMedium centerColumn spaceBetween",
                     if query_read.public {
-                        h1 { class: "textLarge", "My recipes" }
+                        h1 { class: "textLarge", "Public recipes" }
                     }
                     else {
-                        h1 { class: "textLarge", "Public recipes" }
+                        h1 { class: "textLarge", "My recipes" }
                     }
                     div {
                         class: "row flexWrap gapSmall centerRow",
-                        if !query_read.public {
+                        if query_read.public {
+                            Link {
+                                class: "buttonSmall buttonBg2",
+                                to: Route::Recipes {
+                                    query: Query {
+                                        public: false,
+                                        ..Default::default()
+                                    }
+                                },
+                                dioxus_free_icons::Icon { icon: ld_icons::LdBook }
+                                "My recipes"
+                            }
+                        }
+                        else {
+                            
                             Link {
                                 class: "buttonSmall buttonBg2",
                                 to: Route::Recipes {
@@ -80,19 +94,6 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                                 },
                                 dioxus_free_icons::Icon { icon: ld_icons::LdCloudDownload }
                                 "Get recipe"
-                            }
-                        }
-                        else {
-                            Link {
-                                class: "buttonSmall buttonBg2",
-                                to: Route::Recipes {
-                                    query: Query {
-                                        public: false,
-                                        ..Default::default()
-                                    }
-                                },
-                                dioxus_free_icons::Icon { icon: ld_icons::LdBook }
-                                "My recipes"
                             }
                         }
                         Link {
