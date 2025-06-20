@@ -108,6 +108,10 @@ body {
   color: lightslategray;
 }
 
+.textSoft {
+  color: #d4d4d4;
+}
+
 .flexWrap {
   flex-wrap: wrap;
 }
@@ -354,6 +358,10 @@ body {
 .width100 {
   width: 100%;
   box-sizing: border-box;
+}
+
+.height100 {
+  height: 100%;
 }
 
 .textPositive {

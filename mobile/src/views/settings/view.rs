@@ -29,10 +29,6 @@ pub fn Settings() -> Element {
                                 div {
                                     class: "row gapMedium gapSmall bg2 round paddingLarge",
                                     div {
-                                        class: "button buttonBg3",
-                                        "Account image"
-                                    }
-                                    div {
                                         class: "column gapXSmall",
                                         h2 {
                                             class: "textMedium",

@@ -202,7 +202,12 @@ pub async fn recipe_from_public(id: i32) -> Result<i32, DbErr> {
     let ingredients = public_ingredients.iter().map(|ing| IngredientPartial::from(ing)).collect();
 
     let new_recipe_id = create_recipe(public_recipe.name, public_recipe.description, public_recipe.instructions, ingredients).await;
-    new_recipe_id
+
+    let Ok(new_recipe_id) = new_recipe_id else {
+        return new_recipe_id 
+    };
+
+    Ok(new_recipe_id)
 }
 
 
