@@ -59,15 +59,15 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
             section {
                 class: "section column",
                 div {
-                    class: "row gapMedium centerColumn spaceBetween",
+                    class: "row gapMedium centerColumn spaceBetween flexWrap",
                     if query_read.public {
-                        h1 { class: "textLarge", "Public recipes" }
+                        h1 { class: "textLarge", "Browse recipes" }
                     }
                     else {
                         h1 { class: "textLarge", "My recipes" }
                     }
                     div {
-                        class: "row flexWrap gapSmall centerRow",
+                        class: "row flexWrap gapSmall centerRow widthFit",
                         if query_read.public {
                             Link {
                                 class: "buttonSmall buttonBg2",
@@ -93,7 +93,7 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                                     }
                                 },
                                 dioxus_free_icons::Icon { icon: ld_icons::LdCloudDownload }
-                                "Get recipe"
+                                "Get recipes"
                             }
                         }
                         Link {

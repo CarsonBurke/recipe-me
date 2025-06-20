@@ -44,7 +44,7 @@ pub fn Collections(query: ReadOnlySignal<Query>) -> Element {
             section {
                 class: "section column gapLarge",
                 div {
-                    class: "row gapMedium centerColumn spaceBetween",
+                    class: "row gapMedium centerColumn flexWrap spaceBetween",
                     if query_read.public {
                         h1 { class: "textLarge", "Browse collections" }
                     }
