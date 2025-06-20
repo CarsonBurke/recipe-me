@@ -20,7 +20,7 @@ use crate::{
         },
     },
     utils::round_to_decimals,
-    views::recipe::recipes,
+    views::{self, recipe::recipes},
     Route,
 };
 
@@ -449,7 +449,7 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                     }
                 }
                 div {
-                    class: "row centerRow",
+                    class: "row centerRow gapSmall",
                     button {
                         class: "buttonBg2 button",
                         onclick: move |_| {
@@ -457,6 +457,12 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                         },
                         dioxus_free_icons::Icon { icon: ld_icons::LdArrowLeft }
                         "Back"
+                    }
+                    Link {
+                        to: Route::Recipes { query: views::recipe::recipes::Query { public: true, ..Default::default()} },
+                        class: "buttonBg2 button",
+                        dioxus_free_icons::Icon { icon: ld_icons::LdCloudDownload }
+                        "Find recipes"
                     }
                 }
             }
