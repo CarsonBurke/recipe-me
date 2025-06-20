@@ -1,11 +1,13 @@
 use api::{get_filtered_recipes, get_recipes, FilteredRecipesParams};
-use dioxus::{logger::tracing::info, prelude::*};
+use dioxus::{html::h1, logger::tracing::info, prelude::*};
 use dioxus_free_icons::icons::ld_icons;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    components::recipe::{filtered_local, filtered_public},
-    Route,
+    components::{
+        dialog::DialogWrapper,
+        recipe::{filtered_local, filtered_public},
+    }, server, Route
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Default, Serialize, Deserialize)]
@@ -55,7 +57,7 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
 
     rsx! {
         main {
-            class: "main column gapMedium",
+            class: "main column gapLarge",
             section {
                 class: "section column",
                 div {
@@ -82,7 +84,6 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                             }
                         }
                         else {
-                            
                             Link {
                                 class: "buttonSmall buttonBg2",
                                 to: Route::Recipes {
@@ -102,6 +103,80 @@ pub fn Recipes(query: ReadOnlySignal<Query>) -> Element {
                             dioxus_free_icons::Icon { icon: ld_icons::LdPlus }
                             "New recipe"
                         }
+                        DialogWrapper {
+                            dialog: {
+
+                                let meals = use_resource(|| {
+                                    server::recipe::get_all_meals(10, 0)
+                                }).suspend()?;
+
+                                let diets = use_resource(|| {
+                                    server::recipe::get_all_diets(10, 0)
+                                }).suspend()?;
+
+                                let cuisines = use_resource(|| {
+                                    server::recipe::get_all_cuisines(10, 0)
+                                }).suspend()?;
+
+                                let ingredients = use_resource(|| {
+                                    server::recipe::get_all_ingredients(10, 0)
+                                }).suspend()?;
+
+                                rsx! {
+                                    div {
+                                        class: "row overflowHorizontal gapLarge paddingMedium bg2",
+                                        div {
+                                            class: "column gapSmall",
+                                            p { class: "textSmall textWeak", "Diet" }
+                                            select {
+                                                class: "selectTest",
+                                                for diet in diets.iter() {
+                                                    option { value: diet.id, "{diet.name}" }
+                                                }
+                                            }
+                                        }
+                                        div {
+                                            class: "column gapSmall",
+                                            p { class: "textSmall textWeak", "Meal" }
+                                            select {
+                                                class: "selectTest",
+                                                for meal in meals.iter() {
+                                                    option { value: meal.id, "{meal.name}" }
+                                                }
+                                            }
+                                        }
+                                        div {
+                                            class: "column gapSmall",
+                                            p { class: "textSmall textWeak", "Cuisine" }
+                                            select {
+                                                class: "selectTest",
+                                                for cuisine in cuisines.iter() {
+                                                    option { value: cuisine.id, "{cuisine.name}" }
+                                                }
+                                            }
+                                        }
+                                        div {
+                                            class: "column gapSmall",
+                                            p { class: "textSmall textWeak", "With ingredient" }
+                                            select {
+                                                class: "selectTest",
+                                                for ingredient in ingredients.iter() {
+                                                    option { value: ingredient.id, "{ingredient.name}" }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            button: rsx! {
+                                button {
+                                    class: "buttonSmall buttonBg2",
+                                    dioxus_free_icons::Icon { icon: ld_icons::LdFilter }
+                                }
+                            },
+                            header: rsx! { h1 { class: "textLarge", "Filter" } }
+                        }
+
                     }
                 }
                 div {

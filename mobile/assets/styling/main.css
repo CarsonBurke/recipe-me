@@ -8,6 +8,7 @@
   border: unset;
   width: unset;
   color: unset;
+  background-color: unset;
 }
 
 body {
@@ -426,4 +427,12 @@ hr {
 
 .pointer {
   cursor: pointer;
+}
+
+.selectTest {
+  background: black;
+}
+
+select {
+  background-color: black !important;
 }

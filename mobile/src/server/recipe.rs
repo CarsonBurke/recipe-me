@@ -315,3 +315,43 @@ pub async fn delete_recipe(id: i32) -> Result<(), DbErr> {
     recipe::Entity::delete_by_id(id).exec(&db).await.unwrap();
     Ok(())
 }
+
+pub async fn get_all_meals(limit: u64, offset: u64) -> Vec<meal_name::Model> {
+    let db = db_conn().await.unwrap();
+    meal_name::Entity::find()
+        .limit(limit)
+        .offset(offset)
+        .all(&db)
+        .await
+        .unwrap()
+}
+
+pub async fn get_all_cuisines(limit: u64, offset: u64) -> Vec<cuisine_name::Model> {
+    let db = db_conn().await.unwrap();
+    cuisine_name::Entity::find()
+        .limit(limit)
+        .offset(offset)
+        .all(&db)
+        .await
+        .unwrap()
+}
+
+pub async fn get_all_ingredients(limit: u64, offset: u64) -> Vec<ingredient_name::Model> {
+    let db = db_conn().await.unwrap();
+    ingredient_name::Entity::find()
+        .limit(limit)
+        .offset(offset)
+        .all(&db)
+        .await
+        .unwrap()
+}
+
+pub async fn get_all_diets(limit: u64, offset: u64) -> Vec<diet_name::Model> {
+    let db = db_conn().await.unwrap();
+    diet_name::Entity::find()
+        .limit(limit)
+        .offset(offset)
+        .all(&db)
+        .await
+        .unwrap()
+}
