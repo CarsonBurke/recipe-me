@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{server::collection::new_collection, Route};
+use crate::{server::collection::new_collection, views, Route};
 
 #[component]
 pub fn NewCollection() -> Element {
@@ -38,7 +38,7 @@ pub fn NewCollection() -> Element {
 
                         is_processing.set(false);
 
-                        navigator().push(Route::Collections { public: false });
+                        navigator().push(Route::Collections { query: views::collection::collections::Query { public: false } });
                     },
                     class: "column gapLarge paddingLarge round bg2 centerColumn",
                     h1 {class: "textLarge", "New collection" },

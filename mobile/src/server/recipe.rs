@@ -304,3 +304,9 @@ pub async fn get_recipe_comments(recipe_id: i32, limit: u64) -> Result<Vec<Parti
         .unwrap();
     Ok(recipe_comments)
 }
+
+pub async fn delete_recipe(id: i32) -> Result<(), DbErr> {
+    let db = db_conn().await.unwrap();
+    recipe::Entity::delete_by_id(id).exec(&db).await.unwrap();
+    Ok(())
+}

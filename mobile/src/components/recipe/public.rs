@@ -283,7 +283,7 @@ pub fn RecipePublic(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     p {
-                        {recipe().description},
+                        {recipe_read.description},
                     }
                     div {
                         class: "column gapMedium",
@@ -336,7 +336,7 @@ pub fn RecipePublic(id: ReadOnlySignal<i32>) -> Element {
                         class: "column gapSmall",
                         h2 { class: "textLarge",  "Instructions"}
                         p {
-                            {recipe().instructions},
+                            {recipe_read.instructions},
                         }
                     }
                 }

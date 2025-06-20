@@ -41,11 +41,19 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
         println!("check 1 id: {cloned_id}");
         async move {
             println!("check 2 id: {cloned_id}");
-            get_recipe(cloned_id).await.unwrap()
+            get_recipe(cloned_id).await
         }
     })
     .suspend()?;
-    let recipe_read = recipe();
+
+    let recipe_read = recipe.read();
+    let Ok(recipe_ref) = &*recipe_read else {
+        return rsx ! {
+            h1 { class: "textSmall", "Recipe not found" }
+        }
+    };
+
+    let recipe_read = recipe_ref;
     println!("Read recipe id: {}", recipe_read.id);
     // let recipe_ref = recipe_read.as_ref().unwrap();
 
@@ -211,6 +219,38 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                                             }
                                         }
                                     }
+                                    DialogWrapper {
+                                        header: rsx! {
+                                            h1 { class: "textLarge", "Delete recipe" }
+                                        },
+                                        button: rsx! {
+                                            button {
+                                                class: "button buttonBg2 textXSmall",
+                                                onclick: move |_| {
+                                                    println!("Delete recipe");
+                                                },
+                                                dioxus_free_icons::Icon { icon: ld_icons::LdTrash }
+                                            }
+                                        },
+                                        dialog: rsx! {
+                                            div {
+                                                class: "column gapMedium round centerColumn",
+                                                p { class: "textSmall", "Are you sure you want to delete this recipe?" },
+                                                button {
+                                                    class: "button buttonBg3 textNegative widthFit",
+                                                    onclick: move |_| async move {
+                                                        spawn(async move {
+                                                            server::recipe::delete_recipe(id()).await.unwrap();
+                                                        });
+                                                        
+                                                        navigator().go_back();
+                                                    },
+                                                    "Delete"
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
                                 }
                             }
                         }
@@ -288,7 +328,7 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                         }
                     }
                     p {
-                        {recipe().description},
+                        {recipe_ref.description.clone()},
                     }
                     div {
                         class: "column gapMedium",
@@ -341,7 +381,7 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                         class: "column gapSmall",
                         h2 { class: "textLarge",  "Instructions"}
                         p {
-                            {recipe().instructions},
+                            {recipe_ref.instructions.clone()},
                         }
                     }
                 }

@@ -51,24 +51,27 @@ pub fn RecipePreview(
             div {
                 class: "column gapSmall paddingSmall",
                 div {
-                    class: "rowCollapsible gapXSmall",
+                    class: "column",
                     h2 {
-                        class: "textMedium",
+                        class: "textMedium widthFit",
                         "{name}"
                     }
                     if rating == 0. {
                         p { class: "textXSmall textWeak", "No ratings" }
                     }
                     else {
-                        RatingStatic {
-                            rating
+                        div {
+                            class: "row gapSmall centerColumn",
+                            RatingStatic {
+                                rating
+                            }
+                            p { class: "textXSmall textWeak", "{ratings} ratings" }
                         }
-                        p { class: "textXSmall textWeak", "{ratings} ratings" }
                     }
                     
                 }
                 p {
-                    class: "textSmall",
+                    class: "textSmall widthFit",
                     "{summary}",
                 }
             }

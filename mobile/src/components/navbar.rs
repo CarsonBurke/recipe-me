@@ -4,7 +4,7 @@ use dioxus_free_icons::{
     icons::{self, ld_icons},
 };
 
-use crate::{views::recipe::recipes, Route};
+use crate::{views::{self, recipe::recipes}, Route};
 
 const CSS: Asset = asset!("/assets/styling/navbar.css");
 
@@ -38,7 +38,7 @@ pub fn Navbar() -> Element {
                 }
                 Link {
                     class: "width100 button buttonBg3 column centerRow textSmall",
-                    to: Route::Collections { public: false },
+                    to: Route::Collections { query: views::collection::collections::Query { public: false } },
                     div {
                         class: "column centerColumn centerRow",
                         p { class: "textSmall", dioxus_free_icons::Icon { icon: ld_icons::LdBook } }

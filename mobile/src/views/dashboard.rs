@@ -20,7 +20,7 @@ pub fn Dashboard() -> Element {
                         h1 { class: "textLarge", "Your favourites" },
                         Link {
                             to: Route::Recipes { query: views::recipe::recipes::Query::default() },
-                            class: "button buttonBg2",
+                            class: "buttonSmall buttonBg2",
                             "See all"
                         }
                     }
@@ -91,7 +91,7 @@ pub fn Dashboard() -> Element {
                         }
                         Link {
                             class: "button buttonBg2 round",
-                            to: Route::Collections { public: false },
+                            to: Route::Collections { query: views::collection::collections::Query { public: false } },
                             dioxus_free_icons::Icon { icon: ld_icons::LdSquareLibrary }
                             "My collections"
                         }

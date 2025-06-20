@@ -1,3 +1,4 @@
+use api::user_actions::{get_all_collections, get_collections};
 use dioxus::prelude::*;
 
 use crate::{
@@ -11,16 +12,16 @@ pub struct AddRecipe {
 
 #[component]
 pub fn CollectionPreviews(add_recipe: Option<Signal<AddRecipe>>) -> Element {
-    let collections = use_resource(|| async move { get_my_collections().await });
+    let collections = use_resource(|| async move { get_all_collections(0, 50).await.unwrap() });
 
     rsx! {
         if let Some(collections) = collections() {
             for collection in collections.iter() {
                 CollectionPreview {
                     id: collection.id,
-                    public: true,
+                    public: false,
                     name: collection.collection_name.clone(),
-                    description: collection.description.clone(),
+                    description: "no description".to_string(),
                 }
             }
         }

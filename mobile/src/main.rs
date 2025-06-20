@@ -41,9 +41,11 @@ enum Route {
     #[route("/recipe_public/:id")]
     #[transition(Fade)]
     RecipePublic { id: i32 },
-    #[route("/collections")]
+    #[route("/collections?:..query")]
     #[transition(Fade)]
-    Collections { public: bool },
+    Collections {
+        query: views::collection::collections::Query,
+    },
     #[route("/new_recipe")]
     #[transition(Fade)]
     NewRecipeView {},
