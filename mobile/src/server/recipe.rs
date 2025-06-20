@@ -207,14 +207,16 @@ pub async fn recipe_from_public(id: i32) -> Result<i32, DbErr> {
         return new_recipe_id 
     };
 
+    let comments = api::get_recipe_comments(id, 1000).await.unwrap();
+
     Ok(new_recipe_id)
 }
 
 
-pub async fn get_recipe(id: i32) -> Result<recipe::Model, DbErr> {
+pub async fn get_recipe(id: i32) -> Option<recipe::Model> {
     let db = db_conn().await.unwrap();
     let recipe = recipe::Entity::find_by_id(id).one(&db).await.unwrap();
-    Ok(recipe.unwrap())
+    recipe
 }
 
 pub async fn get_recipe_ingredients(

@@ -47,7 +47,7 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
     .suspend()?;
 
     let recipe_read = recipe.read();
-    let Ok(recipe_ref) = &*recipe_read else {
+    let Some(recipe_ref) = &*recipe_read else {
         return rsx ! {
             h1 { class: "textSmall", "Recipe not found" }
         }
@@ -239,9 +239,8 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                                                 button {
                                                     class: "button buttonBg3 textNegative widthFit",
                                                     onclick: move |_| async move {
-                                                        spawn(async move {
-                                                            server::recipe::delete_recipe(id()).await.unwrap();
-                                                        });
+                                                        
+                                                        server::recipe::delete_recipe(id()).await.unwrap();
                                                         
                                                         navigator().go_back();
                                                     },
