@@ -1,15 +1,18 @@
-use api::get_recipe_comments;
+use api;
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::components::recipe::comment::RecipeComment;
+use crate::{components::recipe::comment::RecipeComment, server};
 
 #[component]
-pub fn RecipeComments(recipe_id: ReadOnlySignal<i32>) -> Element {
+pub fn RecipeComments(recipe_id: ReadOnlySignal<i32>, public: bool) -> Element {
     let mut limit = use_signal(move || 3);
 
     let comments = use_server_future(move || async move {
-        get_recipe_comments(recipe_id(), limit()).await.unwrap()
+        match public {
+            true => api::get_recipe_comments(recipe_id(), limit()).await.unwrap(),
+            false => server::recipe::get_recipe_comments(recipe_id(), limit()).await.unwrap(),
+        }
     })?;
     let comments_read = comments.read();
     let comments_ref = comments_read.as_ref().unwrap();

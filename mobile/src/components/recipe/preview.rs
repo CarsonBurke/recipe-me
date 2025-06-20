@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, f32::EPSILON};
 
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
@@ -26,7 +26,8 @@ pub fn RecipePreview(
     name: String,
     summary: String,
     source: Option<String>,
-    rating: f32,
+    ratings: i32,
+    total_rating: i32,
     selected_set: Option<Signal<HashSet<i32>>>,
     selected: Selected,
     public: bool,
@@ -34,6 +35,7 @@ pub fn RecipePreview(
     let selected_signal = use_signal(|| selected);
     /* let mut selected_context = use_context::<Signal<HashSet<i32>>>(); */
 
+    let rating = (total_rating as f32) / (ratings as f32 + EPSILON);
     println!("rating for preview {}", rating);
 
     rsx! {
@@ -61,6 +63,7 @@ pub fn RecipePreview(
                         RatingStatic {
                             rating
                         }
+                        p { class: "textXSmall textWeak", "{ratings} ratings" }
                     }
                     
                 }

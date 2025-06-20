@@ -149,9 +149,9 @@ pub fn RecipePublic(id: ReadOnlySignal<i32>) -> Element {
                                                 rating
                                             }
                                             p { class: "row textSmall textWeak", {format!("{}/5", round_to_decimals(rating, 1))} }
+                                            p { class: "textSmall textWeak", {format!("{} ratings", recipe_read.ratings)} }
                                         }
                                     }
-                                    p { class: "textSmall textWeak", {format!("{} ratings", recipe_read.ratings)} }
                                 }
                                 div {
                                     class: "row gapSmall",
@@ -351,6 +351,7 @@ pub fn RecipePublic(id: ReadOnlySignal<i32>) -> Element {
                     }
                     RecipeComments {
                         recipe_id: id(),
+                        public: true,
                     }
                 }
             }

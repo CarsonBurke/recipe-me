@@ -41,7 +41,8 @@ pub fn CollectionLocal(id: ReadOnlySignal<i32>) -> Element {
                                 name: recipe.name,
                                 summary: recipe.summary,
                                 source: recipe.source,
-                                rating: (recipe.total_rating as f32) / (recipe.ratings as f32 + EPSILON),
+                                total_rating: recipe.total_rating,
+                                ratings: recipe.ratings,
                                 selected: Selected::NoSelect,
                                 public: false,
                             }
