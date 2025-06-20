@@ -5,7 +5,7 @@ const CSS: Asset = asset!("/assets/styling/rating_static.css");
 #[component]
 /// [rating]: a float between 0 and 5
 pub fn RatingStatic(rating: f32) -> Element {
-
+    
     let rating_percent = rating / 5. * 100.;
 
     rsx! {

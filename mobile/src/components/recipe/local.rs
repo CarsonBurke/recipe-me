@@ -1,13 +1,31 @@
 use std::f32::EPSILON;
 
-use api::{get_recipe, get_recipe_cuisines, get_recipe_diets, get_recipe_ingredients, get_recipe_meals};
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons;
 
-use crate::{components::{self, dialog::DialogWrapper, rating_static::RatingStatic, recipe::{comments::RecipeComments, filtered_public}}, data::partials::IngredientPartial, entities::recipe_collection, server::{self, recipe::create_recipe}, utils::round_to_decimals, views::recipe::recipes, Route};
+use crate::{
+    components::{
+        self,
+        dialog::DialogWrapper,
+        rating_static::RatingStatic,
+        recipe::{comments::RecipeComments, filtered_public},
+    },
+    data::partials::IngredientPartial,
+    entities::recipe_collection,
+    server::{
+        self,
+        recipe::{
+            create_recipe, get_recipe, get_recipe_cuisines, get_recipe_diets,
+            get_recipe_ingredients, get_recipe_meals,
+        },
+    },
+    utils::round_to_decimals,
+    views::recipe::recipes,
+    Route,
+};
 
 #[component]
-pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
+pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
     println!("RecipePage: {id}");
 
     println!("Second check {}", id());
@@ -67,23 +85,9 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
     let diets_read = &*diets.read();
     // let diets_ref = diets_read.as_ref().unwrap();
 
-    struct LocalData {
-        collection: Resource<recipe_collection::Model>,
-    }
-
-    // fn get_local_data(is_local: bool) -> Option<LocalData> {
-    //     if is_local {
-    //         Some(LocalData {
-    //             collection: use_resource(|| async move {
-    //                 server::collection::get_collection(0).await.unwrap()
-    //             }),
-    //         })
-    //     } else {
-    //         None
-    //     }
-    // }
-
-    // let local_data = get_local_data(is_local);
+    let favourites_collection =
+        use_resource(|| async move { server::collection::get_collection(1).await.unwrap() })
+            .suspend()?;
 
     let rating = recipe_read.total_rating as f32 / (recipe_read.ratings as f32 + EPSILON);
 
@@ -142,7 +146,7 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
                                     div {
                                         class: "row centerColumn gapSmall",
                                         if recipe_read.ratings == 0 {
-                                            p { class: "textSmall textWeak", "No ratings" }
+                                            p { class: "textSmall textWeak", "no ratings" }
                                         }
                                         else {
                                             RatingStatic {
@@ -171,7 +175,7 @@ pub fn Recipe(id: ReadOnlySignal<i32>, is_public: bool) -> Element {
                                     //         let name = recipe_read.name.clone();
                                     //         let description = recipe_read.description.clone();
                                     //         let instructions = recipe_read.instructions.clone();
-                                            
+
                                     //         async move {
                                     //             println!("Add to library");
 

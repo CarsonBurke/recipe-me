@@ -34,8 +34,11 @@ pub fn RecipePreview(
     let selected_signal = use_signal(|| selected);
     /* let mut selected_context = use_context::<Signal<HashSet<i32>>>(); */
 
+    println!("rating for preview {}", rating);
+
     rsx! {
         document::Link { rel: "stylesheet", href: CSS }
+
 
         Wrapper {
             id,
@@ -51,9 +54,15 @@ pub fn RecipePreview(
                         class: "textMedium",
                         "{name}"
                     }
-                    RatingStatic {
-                        rating
+                    if rating == 0. {
+                        p { class: "textXSmall textWeak", "No ratings" }
                     }
+                    else {
+                        RatingStatic {
+                            rating
+                        }
+                    }
+                    
                 }
                 p {
                     class: "textSmall",

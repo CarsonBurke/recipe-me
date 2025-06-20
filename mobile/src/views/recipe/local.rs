@@ -1,13 +1,12 @@
 use dioxus::prelude::*;
 
-use crate::components::recipe::recipe::Recipe;
+use crate::components::{self};
 
 #[component]
 pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
     rsx! {
-        Recipe {
+        components::recipe::local::RecipeLocal {
             id,
-            is_public: false
         }
     }
 }
