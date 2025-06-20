@@ -17,7 +17,7 @@ pub fn Navbar() -> Element {
                 class: "navbar paddingSectionSide row bg3 gapSmall centerRow centerColumn",
 
                 Link {
-                    class: "width100 button buttonBg3 centerRow",
+                    class: "width100 buttonSmall buttonBg3 centerRow",
                     to: Route::Dashboard {},
                     div {
                         class: "column centerColumn centerRow",
@@ -26,7 +26,7 @@ pub fn Navbar() -> Element {
                     }
                 }
                 Link {
-                    class: "width100 button buttonBg3 column centerRow textSmall",
+                    class: "width100 buttonSmall buttonBg3 column centerRow textSmall",
                     to: Route::Recipes { 
                         query: recipes::Query::default(),
                     },
@@ -37,7 +37,7 @@ pub fn Navbar() -> Element {
                     }
                 }
                 Link {
-                    class: "width100 button buttonBg3 column centerRow textSmall",
+                    class: "width100 buttonSmall buttonBg3 column centerRow textSmall",
                     to: Route::Collections { query: views::collection::collections::Query { public: false } },
                     div {
                         class: "column centerColumn centerRow",
@@ -46,7 +46,7 @@ pub fn Navbar() -> Element {
                     }
                 }
                 Link {
-                    class: "width100 button buttonBg3 column centerRow textSmall",
+                    class: "width100 buttonSmall buttonBg3 column centerRow textSmall",
                     to: Route::Settings {},
                     div {
                         class: "column centerColumn centerRow",

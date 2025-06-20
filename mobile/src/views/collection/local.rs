@@ -24,13 +24,20 @@ pub fn CollectionLocal(id: ReadOnlySignal<i32>) -> Element {
                 section {
                     class: "section column gapLarge",
                     div {
-                        h1 {
-                            class: "textLarge",
-                            {collection.collection_name}
+                        class: "row gapMedium centerColumn spaceBetween",
+                        div {
+                            h1 {
+                                class: "textLarge",
+                                {collection.collection_name}
+                            }
+                            p {
+                                class: "textSmall",
+                                {collection.description.unwrap_or("".to_string())}
+                            }
                         }
-                        p {
-                            class: "textSmall",
-                            {collection.description.unwrap_or("".to_string())}
+                        div {
+                            class: "row gapSmall",
+                            
                         }
                     }
                     div {

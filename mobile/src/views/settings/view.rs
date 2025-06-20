@@ -32,19 +32,23 @@ pub fn Settings() -> Element {
                                         class: "button buttonBg3",
                                         "Account image"
                                     }
-                                    h2 {
-                                        class: "textMedium",
-                                        "Account name"
-                                    }
-                                    p {
-                                        "Account status (premium or not)"
+                                    div {
+                                        class: "column gapXSmall",
+                                        h2 {
+                                            class: "textMedium",
+                                            "Account name"
+                                        }
+                                        p {
+                                            class: "textSmall textWeak",
+                                            "Free tier"
+                                        }
                                     }
                                 }
                                 div {
-                                    class: "row gapXSmall spaceBetween textXSmall",
+                                    class: "row gapMedium textXSmall",
                                     p {
-                                        class: "{class_add} textWeak",
-                                        {format!("{}/100 recipes remaining", max_recipes - recipes_count)}"X recipes remaining"
+                                        class: "{class_add}",
+                                        {format!("{}/100 recipes remaining", max_recipes - recipes_count)}
                                     }
                                     p {
                                         class: "textWeak",
