@@ -77,3 +77,9 @@ pub async fn my_collection_recipes(collection_id: i32) -> Vec<recipe::Model> {
 
     recipes
 }
+
+pub async fn delete_collection(id: i32) -> Result<(), DbErr> {
+    let db = db_conn().await.unwrap();
+    recipe_collection::Entity::delete_by_id(id).exec(&db).await.unwrap();
+    Ok(())
+}

@@ -249,7 +249,6 @@ pub fn RecipeLocal(id: ReadOnlySignal<i32>) -> Element {
                                             }
                                         }
                                     }
-                                    
                                 }
                             }
                         }
