@@ -72,4 +72,6 @@ dx serve
 
 Gallery
 
-<img width="3483" height="1293" alt="image" src="https://github.com/user-attachments/assets/73f1fa1f-65e1-41bb-9187-1d14faa400e4" />
+<img width="961" height="1504" alt="image" src="https://github.com/user-attachments/assets/746b835c-b6f9-4e95-94af-03f73b4c59f9" />
+
+
