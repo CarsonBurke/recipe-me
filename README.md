@@ -70,7 +70,7 @@ and serve:
 dx serve
 ```
 
-Gallery
+## Gallery
 
 <img width="961" height="1504" alt="image" src="https://github.com/user-attachments/assets/746b835c-b6f9-4e95-94af-03f73b4c59f9" />
 
